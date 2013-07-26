@@ -1,7 +1,6 @@
 <script id="Template Output String">
 Outside Tag. Output String.
 <?
-  // inside tag.
   print('Inside Tag. use print() or printf().');
 ?>
 Closed Tag. Output String.

@@ -1,0 +1,13 @@
+{
+  "brand" : "AJST",
+  "buttonLeft" : [
+    { "active":true, "href":"#", "text":"Unit Test" },
+    { "href":"https://github.com/bitofsky/Async-JSTemplate/", "text":"Github" },
+    { "href":"https://github.com/bitofsky/Async-JSTemplate/archive/master.zip", "text":"Download" },
+    { "href":"https://github.com/bitofsky/Async-JSTemplate/blob/master/js/AJST.js", "text":"Source" }
+  ],
+  "buttonRight" : [
+    { "href":"https://github.com/bitofsky/Async-JSTemplate/issues", "text":"@Issues" },
+    { "href":"mailto:bitofsky0@yahoo.co.kr?subject=[Async-JSTemplate]", "text":"@Contact" }
+  ]
+}
