@@ -79,6 +79,9 @@
       }
       return key === undefined || Object.hasOwnProperty.call(o, key);
     },
+    removeElement: function(element) {
+      element.parentNode.removeChild(element);
+    },
     extend: function(o) {
       Array.prototype.slice.call(arguments, 1).forEach(function(source) {
         if (source) {
@@ -217,20 +220,6 @@
   };
 
   /**
-   * AJST Defulat Option
-   * @private
-   * @type Object
-   */
-  var DEFAULT_OPTION = {
-    path: './tpl/$id.tpl',
-    url: null,
-    util: UTIL,
-    ajaxType: 'GET',
-    ajaxCache: true,
-    ajaxData: {}
-  };
-
-  /**
    * Load Template
    * @public
    * @param {String} id Template Unique ID
@@ -260,11 +249,7 @@
           dataType: 'html'
         }).then(function(arrTemplate) {
 
-          Array.prototype.forEach.call(arrTemplate, function(oScript) {
-            if (!oScript.id)
-              return;
-            AJST.setTemplate(oScript.id, oScript.innerHTML.replace(/<!--\?/g, '<?').replace(/\?-->/g, '?>'));
-          });
+          Array.prototype.forEach.call(arrTemplate, AJST.setTemplateElement);
 
           return true;
 
@@ -281,7 +266,13 @@
 
       try {
 
-        AJST.getCompiler(id)(id, data, opt.util, AJST, Promise).then(function(result) {
+        var args = [id, data];
+
+        Object.keys(opt.global).forEach(function(k) {
+          args.push(opt.global[k]);
+        });
+        
+        AJST.getCompiler(id, opt).apply(this, args).then(function(result) {
 
           if (opt.debug)
             console.timeEnd('AJST elapsed time (ID: ' + id + ')');
@@ -292,7 +283,9 @@
             promise.resolve(result);
 
         }, function(e) {
+
           promise.reject(new Error("AJST Compile rejected (ID: " + id + ") -> " + e.message));
+
         });
 
       } catch (e) {
@@ -336,6 +329,30 @@
   };
 
   /**
+   * Remote JSON Data
+   * @param {String} id
+   * @param {String} url JSON data location
+   * @param {Option} [option]
+   * @returns {Promise}
+   */
+  AJST.ajax = function(id, url, option) {
+
+    var promise = new Promise();
+
+    UTIL.ajax({
+      url: url,
+      dataType: 'json'
+    }).then(function(data) {
+
+      AJST(id, data, option).then(promise.resolve);
+
+    });
+
+    return promise;
+
+  };
+
+  /**
    * Create/Replace Template
    * @public
    * @param {String} id
@@ -350,6 +367,56 @@
   AJST.setTemplate = function(id, tplString) {
 
     tplCache[id] = tplString.trim();
+
+  };
+
+  /**
+   * Template string is extracted from the element.
+   * @param {Element} element Attribute ID is required. element.ID is used as the template ID.
+   */
+  AJST.setTemplateElement = function(element) {
+    if (!element.id)
+      return;
+    AJST.setTemplate(element.id, element.innerHTML.replace(/<!--\?/g, '<?').replace(/\?-->/g, '?>'));
+  };
+
+  /**
+   * In the document, template is automatically collected.
+   */
+  AJST.autocollect = function() {
+
+    if (!DEFAULT_OPTION.autocollect)
+      return;
+
+    Array.prototype.forEach.call(document.querySelectorAll('SCRIPT[id]'), AJST.setTemplateElement);
+
+    Array.prototype.forEach.call(document.querySelectorAll('SCRIPT[id]'), function(element) {
+
+      // auto replace
+      if (element.getAttribute('data-ajst')) {
+        
+        var ajax = element.getAttribute('data-ajst-ajax'),
+            data = element.getAttribute('data-ajst-data') ? JSON.parse(element.getAttribute('data-ajst-data')) : undefined,
+            option = element.getAttribute('data-ajst-option') ? JSON.parse(element.getAttribute('data-ajst-option')) : undefined;
+
+        (ajax ? AJST.ajax(element.id, ajax, option) : AJST(element.id, data, option)).then(function(tplOutput) {
+
+          var tplElementList = UTIL.parseHTML(tplOutput);
+
+          Array.prototype.forEach.call(tplElementList, function(tplElement) {
+            element.parentNode.insertBefore(tplElement, element);
+          });
+
+          UTIL.removeElement(element);
+
+        });
+
+      }
+
+      else
+        UTIL.removeElement(element);
+
+    });
 
   };
 
@@ -371,16 +438,17 @@
   /**
    * Get Template Compiler
    * @param {String} id
+   * @param {Object} [option]
    * @returns {Function}
    * @throws {type} description
    */
-  AJST.getCompiler = function(id) {
+  AJST.getCompiler = function(id, option) {
 
     if (!compileCache[id]) {
       var tplString = AJST.getTemplate(id);
       if (!tplString)
         throw new Error('AJST Undefined TPL ID (ID: ' + id + ')');
-      compileCache[id] = tplCompiler(tplString);
+      compileCache[id] = tplCompiler(tplString, option);
     }
 
     return compileCache[id];
@@ -391,9 +459,11 @@
    * Create Template Compiler
    * @private
    * @param {String} str Template String
-   * @returns {Function}
+   * @param {Object} [option]
+   * @returns {Function} ( $id[, data][,option.global.firstKey][,option.global.secondKey] .. )
    */
-  var tplCompiler = function(str, dataValueName) {
+  var tplCompiler = function(str, option) {
+
     var fn = '\n\
       var print     = function(){ _s += Array.prototype.join.call(arguments,""); },\n\
           printf    = function(){ _s += sprintf.apply(this, arguments); },\n\
@@ -415,7 +485,9 @@
       return new Promise(_promises).then(function(){\n\
         return _s;\n\
       });';
-    return new Function('$id, data, util, AJST, Promise', fn);
+
+    return new Function('$id, data, ' + Object.keys(option.global).join(', '), fn);
+
   };
 
   var regexp_compile = /([\s'\\])(?![^\?]*\?>)|(?:<\?(=)([\s\S]+?)\?>)|(<\?)|(\?>)/g,
@@ -826,6 +898,30 @@
     }
 
   }
+
+  /**
+   * AJST Defulat Option
+   * @private
+   * @type Object
+   */
+  var DEFAULT_OPTION = {
+    path: './tpl/$id.tpl',
+    url: null,
+    ajaxType: 'GET',
+    ajaxCache: true,
+    ajaxData: {},
+    global: {
+      AJST: AJST,
+      util: UTIL,
+      Promise: Promise
+    },
+    autocollect: true
+  };
+
+  if (isIE8)
+    document.attachEvent("onreadystatechange", AJST.autocollect);
+  else
+    document.addEventListener("DOMContentLoaded", AJST.autocollect, false);
 
   /**
    * For AMD require.js

@@ -33,8 +33,10 @@ escaped   = <?=util.tag_escape(data.tag)?>
 unescaped = <?=util.tag_unescape(util.tag_escape(data.tag))?>
 </script>
 
-<script id="util-sub function definition">
+<script id="option.global definition.">
 <?[1,2,3].forEach(function(num){
-  print(num + ' + ' + num + ' = ' + util.add(num, num) + '\n');
+  print(num + ' + ' + num + ' = ' + add(num, num) + '\n');
 })?>
+jQuery($) Ready?
+"<?=$() instanceof jQuery ? "I am ready" : "not ready"?>"
 </script>

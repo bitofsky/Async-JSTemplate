@@ -8,7 +8,7 @@
 
     <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
 
-    <script src="//cdnjs.cloudflare.com/ajax/libs/require.js/2.1.8/require.min.js"></script>
+    <script src="//requirejs.org/docs/release/2.1.8/minified/require.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
     <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
@@ -34,6 +34,7 @@
       require(['../js/AJST'], function() {
         $(function() {
           AJST.option({debug: true});
+          AJST.autocollect();
           startTest();
         });
       });
@@ -136,7 +137,7 @@
               result: "\n  1 + 1 = 2\n  2 + 2 = 4\n  3 + 3 = 6"
             }
           ],
-          'TestCase : Print & Utils': [
+          'TestCase : Print & others': [
             {
               id: 'Template Output String',
               func: function(id) {
@@ -175,18 +176,19 @@
               result: "original  = <h4>It's H4 Tag!</h4>\nescaped   = &lt;h4&gt;It&#039;s H4 Tag!&lt;/h4&gt;\nunescaped = <h4>It's H4 Tag!</h4>"
             },
             {
-              id: 'util-sub function definition',
+              id: 'option.global definition.',
               func: function(id) {
                 return AJST(id, null, {
                   url: './tpl/TestCase2.tpl',
-                  util: {
+                  global: {
                     add: function(a, b) {
                       return +a + +b;
-                    }
+                    },
+                    $: jQuery
                   }
                 });
               },
-              result: "1 + 1 = 2\n2 + 2 = 4\n3 + 3 = 6\n"
+              result: "1 + 1 = 2\n2 + 2 = 4\n3 + 3 = 6\n\njQuery($) Ready?\n\"I am ready\""
             }
           ],
           'TestCase : Data': [
@@ -215,6 +217,13 @@
                 }, {url: './tpl/TestCase3.tpl'});
               },
               result: "1 + 1 = 2\n2 + 2 = 4\n3 + 3 = 6\n"
+            },
+            {
+              id: 'Remote Data',
+              func: function(id) {
+                return AJST.ajax(id, 'sampledata.json', {url: './tpl/TestCase3.tpl'});
+              },
+              result: "data.items.length = 22"
             }
           ],
           'TestCase : Include': [
@@ -251,6 +260,32 @@
                 });
               },
               result: "This is include1.This is include2.\nInclude other tpl.\nThis is include1.Succeed!"
+            }
+          ],
+          'TestCase : AutoCollection': [
+            {
+              id: 'Auto collection check',
+              result: function(){
+                return !!AJST.getTemplate('Auto collection check');
+              }
+            },
+            {
+              id: 'Auto replace check',
+              result: function(){
+                return !!$('P[id="p_Auto replace"]').length;
+              }
+            },
+            {
+              id: 'Auto replace with data check',
+              result: function(){
+                return $('P[id="p_Auto replace with data"]').text() == 'data is ready';
+              }
+            },
+            {
+              id: 'Auto replace with remote data check',
+              result: function(){
+                return $('P[id="p_Auto replace with remote data"]').text() == '22';
+              }
             }
           ],
           'Examples': [
@@ -300,10 +335,14 @@
         function tag_unescape(s) {
           return s.toString().replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&#0*39;/g, "'").replace(/&quot;/g, '"').replace(/&amp;/g, '&');
         }
+        
+        function funcToString(fn){
+          return tag_escape(fn).replace(/              /g, '');
+        }
 
         function newTest(TestList, caseName) {
 
-          console.clear();
+          //console.clear();
 
           $result.empty().append('<h3>' + caseName + '</h3>');
 
@@ -317,59 +356,73 @@
                 $toggle = $('<a/>').addClass('accordion-toggle inline').attr({href: '#' + id, 'data-toggle': 'collapse', 'data-parent': '#Result'}).text('Test ' + (idx + 1) + ' - ' + test.id).appendTo($head),
                 $body = $('<div/>').addClass('accordion-body collapse').attr('id', id).appendTo($group),
                 $inner = $('<div/>').addClass('accordion-inner').appendTo($body);
-
-            $inner
+            
+            if( test.func ){
+              
+              $inner
                 .append('<h4>Test Code</h4>')
-                .append('<pre>(' + tag_escape(test.func).replace(/              /g, '') + ')("' + test.id + '").then(function(output){ alert(output); });</pre>');
+                .append('<pre>(' + funcToString(test.func) + ')("' + test.id + '").then(function(output){ alert(output); });</pre>');
+              
+              test.func(test.id).then(function(result) {
 
-            test.func(test.id).then(function(result) {
-
-              $inner
-                  .append('<h4>Template Source</h4>')
-                  .append('<pre>' + tag_escape(AJST.getTemplate(test.id)) + '</pre>');
-
-              if (result == test.result) {
-                $label.addClass('label-success').html('<i class="icon-ok"></i> Success');
                 $inner
-                    .append('<h4>Result HTML Code</h4>')
-                    .append('<pre>' + tag_escape(result) + '</pre>')
-                    .append('<h4>Result Object</h4>')
-                    .append(result);
-              }
+                    .append('<h4>Template Source</h4>')
+                    .append('<pre>' + tag_escape(AJST.getTemplate(test.id)) + '</pre>');
 
-              else {
+                if (result == test.result || (typeof test.result == 'function' && test.result())) {
+                  $label.addClass('label-success').html('<i class="icon-ok"></i> Success');
+                  $inner
+                      .append('<h4>Result HTML Code</h4>')
+                      .append('<pre>' + tag_escape(result) + '</pre>')
+                      .append('<h4>Result Object</h4>')
+                      .append(result);
+                }
 
+                else {
+
+                  $label.addClass('label-warning').html('<i class="icon-remove"></i> Fail');
+                  $inner
+                      .append('<h4>Result HTML Code</h4>')
+                      .append('<pre>' + tag_escape(result) + '</pre>')
+                      .append('<h4>Right Result</h4>')
+                      .append('<pre>' + tag_escape(test.result) + '</pre>')
+                      .append('<h4>Result JSON</h4>')
+                      .append('<code>' + tag_escape(JSON.stringify(result)) + '</code>');
+
+                  console.log(test.id + '\n', JSON.stringify(result));
+
+                }
+
+              }).fail(function(e) {
+
+                try {
+                  var tpl = tag_escape(AJST.getTemplate(test.id) || ''),
+                      compiler = tpl ? tag_escape(AJST.getCompiler(test.id) || '') : '';
+                } catch (e) {
+                }
+
+                $label.removeClass('label-warning').addClass('label-important').html('<i class="icon-remove"></i> Error : ' + e.message);
+                $inner
+                    .append('<h4>Error</h4>')
+                    .append('<p>' + e.message + '</p>')
+                    .append('<h4>Template Source</h4>')
+                    .append('<pre>' + tpl + '</pre>')
+                    .append('<h4>Compiler</h4>')
+                    .append('<pre>' + compiler + '</pre>');
+
+              });
+            }
+            else{
+              test.result() ?
+                $label.addClass('label-success').html('<i class="icon-ok"></i> Success') :
                 $label.addClass('label-warning').html('<i class="icon-remove"></i> Fail');
-                $inner
-                    .append('<h4>Result HTML Code</h4>')
-                    .append('<pre>' + tag_escape(result) + '</pre>')
-                    .append('<h4>Right Result</h4>')
-                    .append('<pre>' + tag_escape(test.result) + '</pre>')
-                    .append('<h4>Result JSON</h4>')
-                    .append('<code>' + tag_escape(JSON.stringify(result)) + '</code>');
-
-                console.log(test.id + '\n', JSON.stringify(result));
-
-              }
-
-            }).fail(function(e) {
-
-              try {
-                var tpl = tag_escape(AJST.getTemplate(test.id) || ''),
-                    compiler = tpl ? tag_escape(AJST.getCompiler(test.id) || '') : '';
-              } catch (e) {
-              }
-
-              $label.removeClass('label-warning').addClass('label-important').html('<i class="icon-remove"></i> Error : ' + e.message);
+            
               $inner
-                  .append('<h4>Error</h4>')
-                  .append('<p>' + e.message + '</p>')
-                  .append('<h4>Template Source</h4>')
-                  .append('<pre>' + tpl + '</pre>')
-                  .append('<h4>Compiler</h4>')
-                  .append('<pre>' + compiler + '</pre>');
-
-            });
+                .append('<h4>Check function</h4>')
+                .append('<pre>'+funcToString(test.result)+'</pre>');
+            
+            }
+              
           });
         }
       }
@@ -425,6 +478,16 @@
 
     </div><!--/.fluid-container-->
     <!-- container -->
+
+    <script id="Auto collection check" type="text/template">Auto collection enabled.</script>
+
+    <script id="Auto replace" data-ajst="true" type="text/template"><p id="p_<?=$id?>" style="display:none">Auto replace succeed.</p></script>
+
+    <script id="Auto replace with data" data-ajst="true" data-ajst-data='["data","is","ready"]' type="text/template"><p id="p_<?=$id?>" style="display:none"><?=data.join(' ')?></p></script>
+    
+    <script id="Auto replace with remote data" data-ajst="true" data-ajst-ajax='sampledata.json' type="text/template"><p id="p_<?=$id?>" style="display:none"><?=data.items.length?></p></script>
+
+
 
   </body>
 </html>
