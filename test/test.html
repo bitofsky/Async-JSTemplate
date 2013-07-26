@@ -32,15 +32,16 @@
     <script>
 
       require(['../js/AJST', 'test.js'], function(AJST, startTest) {
+
         $(function() {
 
           AJST.option({debug: true});
           AJST.autocollect();
 
-          new AJST.Promise(
-              AJST.ajax('navbar', 'config.json', {url: 'test.tpl'}),
-          AJST('container', null, {url: 'test.tpl'})
-              ).then(function(navi, cont) {
+          new AJST.Promise([
+            AJST.ajax('navbar', 'config.json', {url: 'test.tpl'}),
+            AJST('container', null, {url: 'test.tpl'})
+          ]).then(function(navi, cont) {
 
             $('body').append(navi, cont);
 
@@ -51,6 +52,7 @@
           }).then(startTest);
 
         });
+
       });
 
     </script>
