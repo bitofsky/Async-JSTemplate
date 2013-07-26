@@ -50,27 +50,29 @@
     isIE8: isIE8,
     sprintf: sprintf,
     param: param,
-    each: function(o, eachFunction){
-      if( UTIL.isArray(o) )
+    each: function(o, eachFunction) {
+      if (UTIL.isArray(o))
         o.forEach(eachFunction);
-      else if( UTIL.isPlainObject(o) )
-        Object.keys(o).forEach(function(key){
+      else if (UTIL.isPlainObject(o))
+        Object.keys(o).forEach(function(key) {
           eachFunction(o[key], key, o);
         });
-      else if( o && o.length ){
-        for( var i=0, len=o.length; i<len; i++)
+      else if (o && o.length) {
+        for (var i = 0, len = o.length; i < len; i++)
           eachFunction(o[i], i, o);
       }
-        
+
     },
-    toArray: function(o){
-      if( isIE8 ){
+    toArray: function(o) {
+      if (isIE8) {
         var ret = [];
-        UTIL.each(o, function(x){ ret.push(x); });
+        UTIL.each(o, function(x) {
+          ret.push(x);
+        });
         return ret;
       }
       else
-        return Array.prototype.slice(o);
+        return Array.prototype.slice.call(o);
     },
     tag_escape: function(s) {
       return s.toString().replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/'/g, '&#039;').replace(/"/g, '&quot;');
@@ -290,10 +292,10 @@
 
         var args = [id, data];
 
-        UTIL.each(opt.global, function( o ) {
-          args.push( o );
+        UTIL.each(opt.global, function(o) {
+          args.push(o);
         });
-        
+
         AJST.getCompiler(id, opt).apply(this, args).then(function(result) {
 
           if (opt.debug)
@@ -307,18 +309,18 @@
         }, rejected);
 
       } catch (e) {
-        
+
         rejected(e);
-        
+
       }
     }
-    
-    function rejected(e){
-      
+
+    function rejected(e) {
+
       e.message = "AJST Compile error (ID: " + id + ") -> " + e.message;
 
       promise.reject(e);
-      
+
     }
 
   };
@@ -369,7 +371,7 @@
       url: url,
       dataType: 'json'
     }).then(function(data) {
-      
+
       AJST(id, data, option).then(promise.resolve, promise.reject);
 
     });
@@ -413,32 +415,33 @@
 
     if (!DEFAULT_OPTION.autocollect)
       return;
-    
+
     Array.prototype.forEach.call(document.querySelectorAll('SCRIPT[id]'), AJST.setTemplateElement);
 
     Array.prototype.forEach.call(document.querySelectorAll('SCRIPT[id]'), function(element) {
 
       // auto replace
       if (element.getAttribute('data-ajst')) {
-        
+
         var ajax = element.getAttribute('data-ajst-ajax'),
             data = element.getAttribute('data-ajst-data') ? JSON.parse(element.getAttribute('data-ajst-data')) : undefined,
             option = element.getAttribute('data-ajst-option') ? JSON.parse(element.getAttribute('data-ajst-option')) : undefined;
-            
+
         (ajax ? AJST.ajax(element.id, ajax, option) : AJST(element.id, data, option)).then(function(tplOutput) {
-          
+
           var tplElementList = UTIL.parseHTML(tplOutput);
-          
-          UTIL.toArray(tplElementList).forEach(function(tplElement){
+
+          UTIL.toArray(tplElementList).forEach(function(tplElement) {
+            console.debug(tplElement);
             element.parentNode.insertBefore(tplElement, element);
           });
-          
+
           UTIL.removeElement(element);
 
-        }, function(e){
-          
+        }, function(e) {
+
           throw e;
-          
+
         });
 
       }
@@ -473,7 +476,7 @@
    * @throws {type} description
    */
   AJST.getCompiler = function(id, option) {
-    
+
     if (!compileCache[id]) {
       var tplString = AJST.getTemplate(id);
       if (!tplString)
@@ -493,7 +496,7 @@
    * @returns {Function} ( $id[, data][,option.global.firstKey][,option.global.secondKey] .. )
    */
   var tplCompiler = function(str, option) {
-    
+
     var args = '$id, data, ' + Object.keys(option.global).join(', '),
         fn = '\n\
       var print     = function(){ _s += Array.prototype.join.call(arguments,""); },\n\
@@ -523,33 +526,35 @@
       return new Promise(_promises).then(function(){\n\
         return _s;\n\
       });';
-    
-    try{
-      
+
+    try {
+
       return new Function(args, fn);
-      
-    }catch(e){
-      
-      if( option.debug ){
+
+    } catch (e) {
+
+      if (option.debug) {
         console.debug('AJST tplCompiler Debug');
-        console.debug( e.message );
+        console.debug(e.message);
         console.debug('template :', str);
-        console.debug('option :',  option);
+        console.debug('option :', option);
         console.debug('args: ', args);
         console.debug('fn: ', fn);
       }
-      
+
       throw e;
-      
+
     }
 
   };
-  
+
   var regexp_remove_ws = /(?:<\?([\s\S]+?)\?>)/g,
-      replace_remove_ws = function(s){ return s.split('\n').join(' '); },
+      replace_remove_ws = function(s) {
+    return s.split('\n').join(' ');
+  },
       regexp_compile = /([\s\\])(?![^\?]*\?>)|(?:<\?(=)([\s\S]+?)\?>)|(<\?)|(\?>)/g,
       replace_compile = function(s, p1, p2, p3, p4, p5) {
-    
+
     if (p1) { // whitespace, quote and backslash in interpolation context
       return {
         "\n": "\\n",
