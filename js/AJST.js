@@ -57,6 +57,20 @@
         Object.keys(o).forEach(function(key){
           eachFunction(o[key], key, o);
         });
+      else if( o && o.length ){
+        for( var i=0, len=o.length; i<len; i++)
+          eachFunction(o[i], i, o);
+      }
+        
+    },
+    toArray: function(o){
+      if( isIE8 ){
+        var ret = [];
+        UTIL.each(o, function(x){ ret.push(x); });
+        return ret;
+      }
+      else
+        return Array.prototype.slice(o);
     },
     tag_escape: function(s) {
       return s.toString().replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/'/g, '&#039;').replace(/"/g, '&quot;');
@@ -77,7 +91,7 @@
       return o && o.constructor === Array;
     },
     isPlainObject: function(o) {
-      if (!o || typeof o != 'object' || o.toString() != '[object Object]')
+      if (!o || typeof o != 'object' || String(o) != '[object Object]')
         return false;
       var ctor = typeof o.constructor == 'function' && o.constructor.prototype;
       if (!ctor || !Object.hasOwnProperty.call(ctor, 'isPrototypeOf'))
@@ -399,7 +413,7 @@
 
     if (!DEFAULT_OPTION.autocollect)
       return;
-
+    
     Array.prototype.forEach.call(document.querySelectorAll('SCRIPT[id]'), AJST.setTemplateElement);
 
     Array.prototype.forEach.call(document.querySelectorAll('SCRIPT[id]'), function(element) {
@@ -415,7 +429,7 @@
           
           var tplElementList = UTIL.parseHTML(tplOutput);
           
-          Array.prototype.slice.call(tplElementList).forEach(function(tplElement){
+          UTIL.toArray(tplElementList).forEach(function(tplElement){
             element.parentNode.insertBefore(tplElement, element);
           });
           
@@ -497,6 +511,13 @@
               })\n\
             );\n\
             return syncOut !== undefined ? syncOut : uid;\n\
+          },\n\
+          includeEach = function(id, data, option){\n\
+            var ret = [];\n\
+            util.each(data, function(eachData, key){\n\
+              ret.push(include(id, eachData, option));\n\
+            });\n\
+            return ret.join();\n\
           };\n\
       var _s = \'' + str.replace(regexp_remove_ws, replace_remove_ws).replace(regexp_compile, replace_compile) + '\';\n\
       return new Promise(_promises).then(function(){\n\
@@ -509,8 +530,9 @@
       
     }catch(e){
       
-      if( false && option.debug ){
+      if( option.debug ){
         console.debug('AJST tplCompiler Debug');
+        console.debug( e.message );
         console.debug('template :', str);
         console.debug('option :',  option);
         console.debug('args: ', args);
