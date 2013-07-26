@@ -53,7 +53,7 @@
     each: function(o, eachFunction){
       if( UTIL.isArray(o) )
         o.forEach(eachFunction);
-      else if( UTIL.isPlainObject )
+      else if( UTIL.isPlainObject(o) )
         Object.keys(o).forEach(function(key){
           eachFunction(o[key], key, o);
         });
@@ -276,8 +276,8 @@
 
         var args = [id, data];
 
-        Object.keys(opt.global).forEach(function(k) {
-          args.push(opt.global[k]);
+        UTIL.each(opt.global, function( o ) {
+          args.push( o );
         });
         
         AJST.getCompiler(id, opt).apply(this, args).then(function(result) {
@@ -290,21 +290,21 @@
           else
             promise.resolve(result);
 
-        }, function(e) {
-          
-          e.message = "AJST Compile rejected (ID: " + id + ") -> " + e.message;
-          
-          promise.reject(e);
-
-        });
+        }, rejected);
 
       } catch (e) {
         
-        e.message = "AJST Compile error (ID: " + id + ") -> " + e.message;
-
-        promise.reject(e);
-
+        rejected(e);
+        
       }
+    }
+    
+    function rejected(e){
+      
+      e.message = "AJST Compile error (ID: " + id + ") -> " + e.message;
+
+      promise.reject(e);
+      
     }
 
   };
@@ -355,8 +355,8 @@
       url: url,
       dataType: 'json'
     }).then(function(data) {
-
-      AJST(id, data, option).then(promise.resolve);
+      
+      AJST(id, data, option).then(promise.resolve, promise.reject);
 
     });
 
@@ -410,15 +410,15 @@
         var ajax = element.getAttribute('data-ajst-ajax'),
             data = element.getAttribute('data-ajst-data') ? JSON.parse(element.getAttribute('data-ajst-data')) : undefined,
             option = element.getAttribute('data-ajst-option') ? JSON.parse(element.getAttribute('data-ajst-option')) : undefined;
-
+            
         (ajax ? AJST.ajax(element.id, ajax, option) : AJST(element.id, data, option)).then(function(tplOutput) {
-
+          
           var tplElementList = UTIL.parseHTML(tplOutput);
-
-          Array.prototype.forEach.call(tplElementList, function(tplElement) {
+          
+          Array.prototype.slice.call(tplElementList).forEach(function(tplElement){
             element.parentNode.insertBefore(tplElement, element);
           });
-
+          
           UTIL.removeElement(element);
 
         }, function(e){
@@ -459,7 +459,7 @@
    * @throws {type} description
    */
   AJST.getCompiler = function(id, option) {
-
+    
     if (!compileCache[id]) {
       var tplString = AJST.getTemplate(id);
       if (!tplString)
@@ -479,8 +479,9 @@
    * @returns {Function} ( $id[, data][,option.global.firstKey][,option.global.secondKey] .. )
    */
   var tplCompiler = function(str, option) {
-
-    var fn = '\n\
+    
+    var args = '$id, data, ' + Object.keys(option.global).join(', '),
+        fn = '\n\
       var print     = function(){ _s += Array.prototype.join.call(arguments,""); },\n\
           printf    = function(){ _s += sprintf.apply(this, arguments); },\n\
           sprintf   = util.sprintf,\n\
@@ -497,18 +498,37 @@
             );\n\
             return syncOut !== undefined ? syncOut : uid;\n\
           };\n\
-      var _s = \'' + str.replace(regexp_compile, replace_compile) + '\';\n\
+      var _s = \'' + str.replace(regexp_remove_ws, replace_remove_ws).replace(regexp_compile, replace_compile) + '\';\n\
       return new Promise(_promises).then(function(){\n\
         return _s;\n\
       });';
-
-    return new Function('$id, data, ' + Object.keys(option.global).join(', '), fn);
+    
+    try{
+      
+      return new Function(args, fn);
+      
+    }catch(e){
+      
+      if( false && option.debug ){
+        console.debug('AJST tplCompiler Debug');
+        console.debug('template :', str);
+        console.debug('option :',  option);
+        console.debug('args: ', args);
+        console.debug('fn: ', fn);
+      }
+      
+      throw e;
+      
+    }
 
   };
-
-  var regexp_compile = /([\s'\\])(?![^\?]*\?>)|(?:<\?(=)([\s\S]+?)\?>)|(<\?)|(\?>)/g,
+  
+  var regexp_remove_ws = /(?:<\?([\s\S]+?)\?>)/g,
+      replace_remove_ws = function(s){ return s.split('\n').join(' '); },
+      regexp_compile = /([\s\\])(?![^\?]*\?>)|(?:<\?(=)([\s\S]+?)\?>)|(<\?)|(\?>)/g,
       replace_compile = function(s, p1, p2, p3, p4, p5) {
-    if (p1) { // whitespace, quote and backspace in interpolation context
+    
+    if (p1) { // whitespace, quote and backslash in interpolation context
       return {
         "\n": "\\n",
         "\r": "\\r",
