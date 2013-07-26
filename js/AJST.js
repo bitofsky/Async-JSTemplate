@@ -50,6 +50,14 @@
     isIE8: isIE8,
     sprintf: sprintf,
     param: param,
+    each: function(o, eachFunction){
+      if( UTIL.isArray(o) )
+        o.forEach(eachFunction);
+      else if( UTIL.isPlainObject )
+        Object.keys(o).forEach(function(key){
+          eachFunction(o[key], key, o);
+        });
+    },
     tag_escape: function(s) {
       return s.toString().replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/'/g, '&#039;').replace(/"/g, '&quot;');
     },
@@ -283,14 +291,18 @@
             promise.resolve(result);
 
         }, function(e) {
-
-          promise.reject(new Error("AJST Compile rejected (ID: " + id + ") -> " + e.message));
+          
+          e.message = "AJST Compile rejected (ID: " + id + ") -> " + e.message;
+          
+          promise.reject(e);
 
         });
 
       } catch (e) {
+        
+        e.message = "AJST Compile error (ID: " + id + ") -> " + e.message;
 
-        promise.reject(new Error("AJST Compile error (ID: " + id + ") -> " + e.message));
+        promise.reject(e);
 
       }
     }
@@ -409,6 +421,10 @@
 
           UTIL.removeElement(element);
 
+        }, function(e){
+          
+          throw e;
+          
         });
 
       }
