@@ -373,7 +373,7 @@
               } catch (e) {
               }
 
-              $label.removeClass('label-warning').addClass('label-important').html('<i class="icon-remove"></i> Error : ' + e.message);
+              $label.addClass('label-danger').html('<i class="icon-remove"></i> Error : ' + e.message);
               $inner
                   .append('<h4>Error</h4>')
                   .append('<p>' + e.message + '</p>')
