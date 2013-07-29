@@ -244,7 +244,7 @@
   };
 
   /**
-   * Load Template
+   * Template Process
    * @public
    * @param {String} id Template Unique ID
    * @param {Mixed} [data] Template Data
@@ -254,49 +254,22 @@
   var AJST = global.AJST = function(id, data, option) {
 
     var opt = UTIL.extend({}, DEFAULT_OPTION, option),
-        url = opt.url || opt.path.replace(/\$id/g, id),
         promise = new Promise();
 
     if (opt.debug)
       console.time('AJST elapsed time (ID: ' + id + ')');
 
-    if (AJST.getTemplate(id))
-      resolve();
+    AJST.prepare(id, option).then(function(compiler) {
 
-    else
-      promiseCache(url, function() {
-        return UTIL.ajax({
-          type: opt.ajaxType,
-          cache: opt.ajaxCache,
-          data: opt.ajaxData,
-          url: url,
-          dataType: 'html'
-        }).then(function(arrTemplate) {
+      var args = [id, data];
 
-          Array.prototype.forEach.call(arrTemplate, AJST.setTemplateElement);
-
-          return true;
-
-        });
-      }).then(resolve, function() {
-
-        promise.reject(new Error('AJST file not found : (ID: ' + id + ', URL: ' + url + ')'));
-
+      UTIL.each(opt.global, function(o) {
+        args.push(o);
       });
-
-    return promise;
-
-    function resolve() {
 
       try {
 
-        var args = [id, data];
-
-        UTIL.each(opt.global, function(o) {
-          args.push(o);
-        });
-
-        AJST.getCompiler(id, opt).apply(this, args).then(function(result) {
+        compiler.apply(this, args).then(function(result) {
 
           if (opt.debug)
             console.timeEnd('AJST elapsed time (ID: ' + id + ')');
@@ -313,7 +286,10 @@
         rejected(e);
 
       }
-    }
+
+    }, rejected);
+
+    return promise;
 
     function rejected(e) {
 
@@ -321,6 +297,52 @@
 
       promise.reject(e);
 
+    }
+
+  };
+
+  /**
+   * Preparing Template
+   * @public
+   * @param {String} id Template Unique ID
+   * @param {Object} [option]
+   * @returns {Promise} Compiler
+   */
+  AJST.prepare = function(id, option) {
+
+    var opt = UTIL.extend({}, DEFAULT_OPTION, option),
+        url = opt.url || opt.path.replace(/\$id/g, id),
+        promise = new Promise();
+
+    if (AJST.getTemplate(id))
+      resolved();
+
+    else
+      promiseCache(url, function() {
+        return UTIL.ajax({
+          type: opt.ajaxType,
+          cache: opt.ajaxCache,
+          data: opt.ajaxData,
+          url: url,
+          dataType: 'html'
+        }).then(function(arrTemplate) {
+
+          Array.prototype.forEach.call(arrTemplate, AJST.setTemplateElement);
+
+        });
+      }).then(resolved, rejected);
+
+    return promise;
+
+    function resolved() {
+      try {
+        promise.resolve(AJST.getCompiler(id, opt));
+      } catch (e) {
+        promise.reject(e);
+      }
+    }
+    function rejected() {
+      promise.reject(new Error('AJST file not found : (ID: ' + id + ', URL: ' + url + ')'));
     }
 
   };
