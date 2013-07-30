@@ -7,7 +7,7 @@ The template engine for static content, there are a lot of famous like PHP.
 
 AJST creates a template on the client side rather than the server side, It was developed to make it easy to generate content in real time in the Web browser.
 
-It sounds like some in this situation exactly if you have been looking for a JavaScript template engine.
+If you're looking for a JavaScript Template engine, I think this is the reason.
 
 AJST is useful if you want to generate the HTML content dynamically, such as a Web application.
 
