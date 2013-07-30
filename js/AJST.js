@@ -143,7 +143,7 @@
     },
     ajax: function(option) {
 
-      var promise = new Promise();
+      var promise = Promise();
 
       var opt = UTIL.extend({
         type: 'GET',
@@ -253,7 +253,7 @@
   var AJST = global.AJST = function(id, data, option) {
 
     var opt = UTIL.extend({}, DEFAULT_OPTION, option),
-        promise = new Promise();
+        promise = Promise();
 
     if (opt.debug)
       console.time('AJST elapsed time (ID: ' + id + ')');
@@ -311,7 +311,7 @@
 
     var opt = UTIL.extend({}, DEFAULT_OPTION, option),
         url = opt.url || opt.path.replace(/\$id/g, id),
-        promise = new Promise();
+        promise = Promise();
 
     if (AJST.getTemplate(id))
       resolved();
@@ -386,7 +386,7 @@
    */
   AJST.ajax = function(id, url, option) {
 
-    var promise = new Promise();
+    var promise = Promise();
 
     UTIL.ajax({
       url: url,
@@ -602,10 +602,10 @@
    * @author bitofsky@neowiz.com 2013.07.25
    * @returns {Promise}
    * @example
-   * var p = new Promise();
+   * var p = Promise();
    * p.resolve( result );
    * p.reject( exception );
-   * var when = new Promise( [promise1[, promise2[, n..]]] );
+   * var when = Promise( [promise1[, promise2[, n..]]] );
    * when.then(function(){ .. }, function(){ .. });
    */
   var Promise = UTIL.Promise = AJST.Promise = (function() {
@@ -667,9 +667,7 @@
 
       };
 
-      when.apply(_this, arguments);
-
-      function when() {
+      _this.when = function() {
 
         if (!arguments.length)
           return;
@@ -700,7 +698,7 @@
         if (!promises.length)
           _this.resolve();
 
-      }
+      };
 
       function complete(callback, state, args) {
 
@@ -748,7 +746,13 @@
       return this;
     };
 
-    return Promise;
+    return function() {
+
+      var promise = new Promise();
+      if (arguments.length)
+        promise.when.apply(promise, arguments);
+      return promise;
+    };
 
   })();
 
@@ -767,7 +771,7 @@
 
     return function(name, callback) {
 
-      var promise = new Promise();
+      var promise = Promise();
 
       switch (true) {
         case !!Cached[name] : // cached arguments
