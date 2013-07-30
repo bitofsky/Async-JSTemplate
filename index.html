@@ -22,7 +22,7 @@
 
     <script>
 
-      require(['../js/AJST', 'test.js'], function(AJST, startTest) {
+      require(['js/AJST', 'js/index.js'], function(AJST, indexReady) {
 
         $(function() {
 
@@ -30,8 +30,8 @@
           AJST.autocollect();
 
           new AJST.Promise([
-            AJST.ajax('navbar', 'config.json', {url: 'test.tpl'}),
-            AJST('container', null, {url: 'test.tpl'})
+            AJST.ajax('navbar', 'config.json', {url: 'tpl/index.tpl'}),
+            AJST('container', null, {url: 'tpl/index.tpl'})
           ]).then(function(navi, cont) {
 
             $('body').append(navi, cont);
@@ -40,7 +40,7 @@
 
             throw e;
 
-          }).then(startTest);
+          }).then(indexReady);
 
         });
 
