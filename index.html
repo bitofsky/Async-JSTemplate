@@ -22,7 +22,7 @@
 
     <script>
 
-      require(['js/AJST', 'js/index.js'], function(AJST, indexReady) {
+      require(['./js/AJST', './js/index.js'], function(AJST, indexReady) {
 
         $(function() {
 
@@ -30,8 +30,8 @@
           AJST.autocollect();
 
           new AJST.Promise([
-            AJST.ajax('navbar', 'config.json', {url: 'tpl/index.tpl'}),
-            AJST('container', null, {url: 'tpl/index.tpl'})
+            AJST.ajax('navbar', 'config.json', {url: './tpl/index.tpl'}),
+            AJST('container', null, {url: './tpl/index.tpl'})
           ]).then(function(navi, cont) {
 
             $('body').append(navi, cont);
