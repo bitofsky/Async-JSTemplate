@@ -225,6 +225,7 @@ In this case, the execution is delayed. so you must be run manually [AJST.autoco
  * blueimp : [JavaScript-Templates](https://github.com/blueimp/JavaScript-Templates/)
 
 # License
+
 (The MIT License)
 
 Copyright (c) 2013 Bum-seok Hwang <bitofsky@neowiz.com>
