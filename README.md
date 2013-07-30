@@ -153,6 +153,58 @@ You can use the variable $id to have a **Tpl_ID** in syntax.
 
 @see [Wiki](https://github.com/bitofsky/Async-JSTemplate/wiki/3.-How-to-use-Promise)
 
+AJST works on the basis of Promise. All requests, it will generate and return the Promise.
+
+You can Asynchronous multiple calls and error handling easily When you use the method Promise provided by.
+
+#### Success or failure callbacks
+
+If successfully created the template, Template is passed successCallback is executed.
+
+If it fails, the failCallback is executed, an error is passed.
+
+    AJST('TPL_ID').then( successCallback, failCallback );
+    AJST('TPL_ID').then( successCallback ).fail( failCallback );
+
+#### Promise Chainning
+
+Promise can be chainning multiple .then().
+
+If success or failure, Callback is executed in the order in which they were connected.
+
+If do not return a value from the Callback that was executed, the first argument would be passed continue,
+
+If returns a value, Callback takes as argument the value returned then.
+
+    AJST('TPL_ID')
+      .then(function( output ){
+      }).then(function( output ){
+        return {
+          "html": output
+        };
+      }).then(function( obj ){
+        // obj.html
+      }).fail(function(err){
+        // if error
+      });
+
+#### Multiple Promises
+
+You may want to run a successful Callback only if multiple Promises all succeed.
+
+if you use a AJST.Promise() that is provided to easily control in such a case.
+
+    AJST.Promise(
+      AJST('TPL_A'),
+      AJST('TPL_B'),
+      AJST('TPL_C')
+    ).then(function( outputA, outputB, outputC ){
+      // if all is successful,
+    }, fail( err ){
+      // if not,
+    });
+
+
 # Utility of built in
 
 @see [Wiki](https://github.com/bitofsky/Async-JSTemplate/wiki/4.-Utility-of-built-in)
