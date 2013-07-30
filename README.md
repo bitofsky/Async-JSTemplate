@@ -4,17 +4,20 @@ AJST : Asynchronous JavaScript Template
 # What is AJST?
 
 The template engine for static content, there are a lot of famous like PHP.
+
 AJST creates a template on the client side rather than the server side, It was developed to make it easy to generate content in real time in the Web browser.
+
 It sounds like some in this situation exactly if you have been looking for a JavaScript template engine.
+
 AJST is useful if you want to generate the HTML content dynamically, such as a Web application.
 
 # Features
 
-1. It uses syntax similar to the PHP / ASP. **<? ~ ?>**
-2. to accept **JavaScript** in your template syntax.
-3. This **remote load automatically** when needed source of templates that do not exist in the current HTML document.
+1. uses syntax similar to the PHP / ASP. **<? ~ ?>**
+2. accept **JavaScript** in your template syntax.
+3. **remote load automatically** when needed source of templates that do not exist in the current HTML document.
 4. In template source, which is supporting the **include** function to load the other templates source.
-5. It uses '[Promise/A](http://wiki.commonjs.org/wiki/Promises/A)' defined in CommonJS.
+5. uses '[Promise/A](http://wiki.commonjs.org/wiki/Promises/A)' defined in CommonJS.
 
 # Examples
 
@@ -32,6 +35,7 @@ and run AJST(**Tpl_ID**). It will return back the new Promise().
     });
 
 If you already defined **Tpl_ID**='Hello' then template will be created immediately.
+
 if not, TPL source file(option.path/**Tpl_ID**.tpl) will automatically load by [Ajax](http://en.wikipedia.org/wiki/Ajax).
 
 TPL Source is defined by the following syntax.
@@ -46,8 +50,11 @@ TPL Source is defined by the following syntax.
 # Syntax
 
 AJST uses syntax similar to the PHP / ASP. **<? ~ ?>**
+
 You can generate a string by using JavaScript, to output in this syntax.
+
 In order to output a string in the syntax, you can use the [print](print-string-str-) or [printf](printf-string-format-stringnumber-outn-).
+
 Outside of the syntax, all strings will be output automatically.
 
     <script id="List">
@@ -58,7 +65,9 @@ Outside of the syntax, all strings will be output automatically.
     Hello AJST!!
 
 You can also use the syntax of the <?=?> line output statement.
+
 This syntax is convenient to use the type to be output immediately.
+
 Semicolon is not appended to the end.
 
     Hello <?=true ? 'AJST':''?>!!
@@ -67,7 +76,9 @@ Semicolon is not appended to the end.
     Hello AJST!!
 
 You can also choose to create and run a new variables and functions in the Syntax.
+
 Variable that has been declared here, The only valid this [Scope](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions_and_function_scope) of one-time
+
 It does not affect the global variables such as templates and other.
 
     <?
@@ -139,11 +150,13 @@ You can use the variable $id to have a **Tpl_ID** in syntax.
 # Promise 사용하기
 
 AJST works on the basis of Promise. All requests, it will generate and return the Promise.
+
 You can Asynchronous multiple calls and error handling easily When you use the method Promise provided by.
 
 #### Success or failure callbacks
 
 If successfully created the template, Template is passed successCallback is executed.
+
 If it fails, the failCallback is executed, an error is passed.
 
     AJST('TPL_ID').then( successCallback, failCallback );
@@ -152,8 +165,11 @@ If it fails, the failCallback is executed, an error is passed.
 #### Promise Chainning
 
 Promise can be chainning multiple .then().
+
 If success or failure, Callback is executed in the order in which they were connected.
+
 If do not return a value from the Callback that was executed, the first argument would be passed continue,
+
 If returns a value, Callback takes as argument the value returned then.
 
     AJST('TPL_ID')
@@ -171,6 +187,7 @@ If returns a value, Callback takes as argument the value returned then.
 #### Multiple Promises
 
 You may want to run a successful Callback only if multiple Promises all succeed.
+
 if you use a AJST.Promise() that is provided to easily control in such a case.
 
     AJST.Promise(
@@ -357,6 +374,7 @@ XML string are converted to xmlDocument and then return.
 #### util.ajax( {Object option} )
 
 Ajax calls to try to option.url. Promise returns.
+
 Similar with [jQuery.ajax](http://api.jquery.com/jQuery.ajax/). but provides only basic functionality only.
 
     <?
@@ -383,7 +401,9 @@ Similar with [jQuery.ajax](http://api.jquery.com/jQuery.ajax/). but provides onl
 # AutoCollect
 
 AJST is the ability to automatically collect the template source that is contained in the document, to be definition.
+
 That way, you can use immediately template source was placed in the BODY from the server.
+
 Template source loaded in this way, to help the speed of the first content because it does not load the remote call.
 
     <html>
@@ -407,6 +427,7 @@ Template source loaded in this way, to help the speed of the first content becau
 #### Attribute 'data-ajst'
 
 You can insert Template at the same time as the definition. 'Script' must be inside BODY.
+
 try use attribute 'data-ajst'.
 
     <script id="Hello" data-ajst="true">
@@ -432,6 +453,7 @@ It is possible to define and use 'data'. it should be defined in the syntax of t
 #### Attribute 'data-ajst-ajax'
 
 To use the 'data-ajst-ajax' to retrieve 'data' from a remote location if. It must also be defined in [JSON](http://json.org).
+
 If you want to import data from other Host, the server must support the [CORS](http://en.wikipedia.org/wiki/Cross-origin_resource_sharing).
 
     <script id="List" data-ajst="true" data-ajst-ajax="http://dataLocation">
@@ -456,9 +478,11 @@ If you delay execution with AMD. or need to be run manually.
 # AJST support [AMD](https://github.com/amdjs/amdjs-api/wiki).
 
 You can call asynchronously by using [require.js](http://requirejs.org).
+
 In this case, the execution is delayed. so you must be run manually [AJST.autocollect](#ajstautocollect).
 
 # Inspired by
+
  * John Resig : [JavaScript Micro-Templating](http://ejohn.org/blog/javascript-micro-templating/)
  * blueimp : [JavaScript-Templates](https://github.com/blueimp/JavaScript-Templates/)
 
