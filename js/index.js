@@ -9,7 +9,7 @@
   /**
    * AMD(Asynchronous Module Definition)
    */
-  define(['../js/AJST', 'jquery'], function(AJST, $) {
+  define(['./js/AJST', 'jquery'], function(AJST, $) {
 
     return function() {
 
