@@ -61,7 +61,6 @@
         for (var i = 0, len = o.length; i < len; i++)
           eachFunction(o[i], i, o);
       }
-
     },
     toArray: function(o) {
       if (isIE8) {
@@ -417,6 +416,7 @@
   AJST.setTemplate = function(id, tplString) {
 
     tplCache[id] = tplString.trim();
+    compileCache[id] = null;
 
   };
 
