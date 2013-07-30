@@ -219,6 +219,14 @@ You can call asynchronously by using [require.js](http://requirejs.org).
 
 In this case, the execution is delayed. so you must be run manually [AJST.autocollect](#ajstautocollect).
 
+# Supported Web Browsers
+
+ * IE8+
+ * Google Chrome
+ * Safari
+ * FireFox
+ * Opera
+
 # Inspired by
 
  * John Resig : [JavaScript Micro-Templating](http://ejohn.org/blog/javascript-micro-templating/)
