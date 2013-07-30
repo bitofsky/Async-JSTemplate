@@ -49,6 +49,8 @@ TPL Source is defined by the following syntax.
 
 # Syntax
 
+@see [Wiki](https://github.com/bitofsky/Async-JSTemplate/wiki/2.-Syntax)
+
 AJST uses syntax similar to the PHP / ASP. **<? ~ ?>**
 
 You can generate a string by using JavaScript, to output in this syntax.
@@ -147,7 +149,9 @@ You can use the variable $id to have a **Tpl_ID** in syntax.
     output
     I am template
 
-# Promise 사용하기
+# How to use Promise
+
+@see [Wiki](https://github.com/bitofsky/Async-JSTemplate/wiki/3.-How-to-use-Promise)
 
 AJST works on the basis of Promise. All requests, it will generate and return the Promise.
 
@@ -201,279 +205,13 @@ if you use a AJST.Promise() that is provided to easily control in such a case.
     });
 
 
-# Utility of built-in
+# Utility of built in
 
-AJST is providing several utilities that can be used in the template syntax.
-
-#### print( [{String str}] )
-
-The function that the output is specified in the argument.
-
-    <?
-    print('aa','bb');
-    ?>
-
-    output
-    aabb
-
-#### printf( {String format} [,{String|Number outN}] )
-
-This is a function for output to match the format that has been input. It work similar to printf in PHP.
-
-    <?
-    printf('%d + %.2f = %.2f', 1, 1.2, 2.2);
-    ?>
-
-    output
-    1 + 1.20 = 2.20
-
-#### sprintf( {String format} [,{String|Number outN}] )
-
-This is a function for return to match the format that has been input. It work similar to sprintf in PHP.
-
-    <?=sprintf('%d + %.2f = %.2f', 1, 1.2, 2.2);
-
-    output
-    1 + 1.20 = 2.20
-
-#### util.isIE8 {Boolean}
-
-It have a true if only less than IE8. If not, false.
-
-#### util.each( {Object|Array obj}, {Function callback} )
-
-If the first argument is Object or Array, will run the second argument for each.
-
-    <?
-    util.each({a:10, b:20}, function(value, key){
-      printf('key: %s, value: %s\n', key, value);
-    });
-    ?>
-
-    output
-    key: a, value=10
-    key: b, value=20
-
-#### util.toArray( {Object|Array obj} )
-
-If the argument is an Object or Array, Returns an array in contained values
-
-    <?
-    util.toArray( arguments ).forEach(function(arg){ /*...*/ });
-    ?>
-
-#### util.tag_escape( {String tag} )
-
-Returns by replacing the tag string.
-
-    <?=util.tag_escape('<span>text</span>')?>
-
-    output
-    &lt;span&gt;text&lt;/span&gt;
-
-* & : &amp;amp;
-* < : &amp;lt;
-* > : &amp;gt;
-* ' : &amp;#039;
-* " : &amp;quot;
-
-#### util.tag_unescape( {String escapedTag} )
-
-Returns by restoring the escaped tag string.
-
-    <?=util.tag_unescape('&lt;span&gt;text&lt;/span&gt;')?>
-
-    output
-    <span>text</span>
-
-* &amp;amp; : &
-* &amp;lt; : <
-* &amp;gt; : >
-* &amp;#039; : '
-* &amp;quot; : "
-
-#### util.makeUID( {String prefix} )
-
-It will generate and return the random Unique ID.
-
-    new id = <?=util.makeUID()?>
-
-    output
-    new id = 13751575415646227269370
-
-#### util.randomFromTo( {Number from}, {Number to} )
-
-Returns to seek a random number between two numbers.
-
-    random 1 to 10 = <?=util.randomFromTo(1, 10)?>
-
-    output
-    random 1 to 10 = 3
-
-#### util.isFunction( {Mixed o} )
-
-Returns true if the argument is a function. If not, false.
-
-    printf is function = <?=util.isFunction( printf )?>
-
-    output
-    printf is function = True
-
-#### util.isArray( {Mixed o} )
-
-Returns true if the argument is an Array. If not, false.
-
-    is array = <?=util.isArray([])?>
-
-    output
-    is array = True
-
-#### util.isPlainObject( {Mixed o} )
-
-Returns true if the argument is an [PlainObject](http://api.jquery.com/Types/#PlainObject). If not, false.
-
-    is plain object = <?=util.isPlainObject({})?>
-
-    output
-    is plain object = True
-
-#### util.extend( {Object a}, {Object b} )
-
-Merge the contents of two or more objects together into the first object
-
-    <?
-      var a = {a:1},
-          b = {b:2},
-          c = util.extend(a, b);
-      print( c.a + c.b );
-    ?>
-
-    output
-    3
-
-#### util.parseHTML( {String str} )
-
-HTML string are converted to Elements and then return.
-
-    <?
-    var div = util.parseHTML('<div>aaa</div');
-    print( div.innerHTML );
-    ?>
-
-    output
-    aaa
-
-#### util.parseXML( {String str} )
-
-XML string are converted to xmlDocument and then return.
-
-    <?
-    var xml = util.parseHTML('<?xml version="1.0" encoding="utf-8"?><article></article>');
-    ?>
-
-#### util.ajax( {Object option} )
-
-Ajax calls to try to option.url. Promise returns.
-
-Similar with [jQuery.ajax](http://api.jquery.com/jQuery.ajax/). but provides only basic functionality only.
-
-    <?
-    // By importing JSON Data during the creation of the template, put a different template to this place.
-    var id = util.makeUID();
-    util.ajax({
-      url: 'http://some.json.data',
-      dataType: 'json'
-    }).then(function( data ){
-      AJST('SomeOtherTPL', data).then(function( otherHTML ){
-        $('#'+id).html( otherHTML );
-      });
-    });
-    ?>
-    <div id=<?=id?>></div>
-
- * option.url {String} Ajax URL
- * option.type {String} Request method type. default=GET
- * option.header {Object} Request headers. default={'Content-Type': 'text/plain; charset=utf-8'}
- * option.data {Object} Request parameters. default={}
- * option.dataType {String} Type of return data. default='text'. [json or html or xml]
- * option.cache {Boolean} Whether to use the cache. Valid only for the GET method. default=true
+@see [Wiki](https://github.com/bitofsky/Async-JSTemplate/wiki/4.-Utility-of-built-in)
 
 # AutoCollect
 
-AJST is the ability to automatically collect the template source that is contained in the document, to be definition.
-
-That way, you can use immediately template source was placed in the BODY from the server.
-
-Template source loaded in this way, to help the speed of the first content because it does not load the remote call.
-
-    <html>
-      <head>
-        <script src="AJST.js">
-        <script>
-        function main(){
-          AJST('Hello').then(function( output ){
-            // output
-          });
-        }
-        </script>
-      </head>
-      <body onload="main">
-        <script id="Hello">
-        Hello AJST!
-        </script>
-      </body>
-    </html>
-
-#### Attribute 'data-ajst'
-
-You can insert Template at the same time as the definition. 'Script' must be inside BODY.
-
-try use attribute 'data-ajst'.
-
-    <script id="Hello" data-ajst="true">
-    Hello AJST!
-    </script>
-
-#### Attribute 'data-ajst-data'
-
-It is possible to define and use 'data'. it should be defined in the syntax of the [JSON](http://json.org).
-
-    <script id="List" data-ajst="true" data-ajst-data='["one","two","tree"]'>
-    <ol>
-    <? for( var i in data ) printf('<li>%s</li>', data[i]); ?>
-    </ol>
-    </script>
-    // output
-    <ol>
-    <li>one</li>
-    <li>two</li>
-    <li>three</li>
-    </ol>
-
-#### Attribute 'data-ajst-ajax'
-
-To use the 'data-ajst-ajax' to retrieve 'data' from a remote location if. It must also be defined in [JSON](http://json.org).
-
-If you want to import data from other Host, the server must support the [CORS](http://en.wikipedia.org/wiki/Cross-origin_resource_sharing).
-
-    <script id="List" data-ajst="true" data-ajst-ajax="http://dataLocation">
-    <ol>
-    <? for( var i in data ) printf('<li>%s</li>', data[i]); ?>
-    </ol>
-    </script>
-
-#### AJST.autocollect
-
-If you delay execution with AMD. or need to be run manually.
-
-    require("ajst/path/AJST", function( AJST ){
-      // use AJST.
-      AJST.autocollect();
-      AJST('Hello').then(function( output ){
-        $('BODY').html( output );
-      });
-    });
-
+@see [Wiki](https://github.com/bitofsky/Async-JSTemplate/wiki/5.-AutoCollect)
 
 # AJST support [AMD](https://github.com/amdjs/amdjs-api/wiki).
 
@@ -487,6 +225,7 @@ In this case, the execution is delayed. so you must be run manually [AJST.autoco
  * blueimp : [JavaScript-Templates](https://github.com/blueimp/JavaScript-Templates/)
 
 # License
+
 (The MIT License)
 
 Copyright (c) 2013 Bum-seok Hwang <bitofsky@neowiz.com>
