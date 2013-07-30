@@ -30,7 +30,7 @@
           AJST.autocollect();
 
           new AJST.Promise([
-            AJST.ajax('navbar', 'config.json', {url: './tpl/index.tpl'}),
+            AJST.ajax('navbar', './data/config.json', {url: './tpl/index.tpl'}),
             AJST('container', null, {url: './tpl/index.tpl'})
           ]).then(function(navi, cont) {
 
@@ -58,7 +58,7 @@
 
     <script id="Auto replace with data" data-ajst="true" data-ajst-data='["data","is","ready"]' type="text/template"><p id="p_<?=$id?>" style="display:none"><?=data.join(' ')?></p></script>
 
-    <script id="Auto replace with remote data" data-ajst="true" data-ajst-ajax='sampledata.json' type="text/template"><p id="p_<?=$id?>" style="display:none"><?=data.items.length?></p></script>
+    <script id="Auto replace with remote data" data-ajst="true" data-ajst-ajax='./data/sampledata.json' type="text/template"><p id="p_<?=$id?>" style="display:none"><?=data.items.length?></p></script>
     <!-- TestCase : AutoCollection -->
 
   </body>
