@@ -51,6 +51,104 @@ TPL Source is defined by the following syntax.
 
 @see [Wiki](https://github.com/bitofsky/Async-JSTemplate/wiki/2.-Syntax)
 
+AJST uses syntax similar to the PHP / ASP. **<? ~ ?>**
+
+You can generate a string by using JavaScript, to output in this syntax.
+
+In order to output a string in the syntax, you can use the [print](print-string-str-) or [printf](printf-string-format-stringnumber-outn-).
+
+Outside of the syntax, all strings will be output automatically.
+
+    <script id="List">
+    Hello <? if(true) print('AJST'); ?>!!
+    </script>
+
+    output
+    Hello AJST!!
+
+You can also use the syntax of the <?=?> line output statement.
+
+This syntax is convenient to use the type to be output immediately.
+
+Semicolon is not appended to the end.
+
+    Hello <?=true ? 'AJST':''?>!!
+
+    output
+    Hello AJST!!
+
+You can also choose to create and run a new variables and functions in the Syntax.
+
+Variable that has been declared here, The only valid this [Scope](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions_and_function_scope) of one-time
+
+It does not affect the global variables such as templates and other.
+
+    <?
+    var getButton = function( text ){ printf('<button type="button">%s</button>\n', text); };
+    ?>
+    Hello Buttons!
+    <?
+    ['one','two'].forEach( getButton );
+    ?>
+
+    output
+    Hello Buttons!
+    <button type="button">one</button>
+    <button type="button">two</button>
+
+#### data
+
+You pass the data can be used in the template syntax.
+
+    <?
+    for( var key in data )
+      printf('Item key : %s, value : %s\n', key, data[key]);
+    ?>
+
+    script
+    AJST('List', {"aa":"AA", "bb":"BB", "cc":"CC"}).then(function( output ){  });
+
+    output
+    Item key : aa, value : AA
+    Item key : bb, value : BB
+    Item key : cc, value : CC
+
+You can use it also put function.
+
+    <script id="Add">
+    <?=data.add(1,2)?>
+    </script>
+
+    script
+    AJST('Add', function(a,b){ return +a + +b; }).then(function( output ){  });
+
+    output
+    3
+
+You can use the AJST.ajax if use remote data.
+
+    <script id="RemoteData">
+    <?
+    data.forEach(function(value, key){
+      print('value = ' + value);
+    });
+    ?>
+    </script>
+
+    script
+    AJST.ajax('RemoteData', 'http://url.data.json').then(function( output ){ });
+
+#### $id
+
+You can use the variable $id to have a **Tpl_ID** in syntax.
+
+    <script id="template">
+    I am <?=$id?>
+    </script>
+
+    output
+    I am template
+
 # How to use Promise
 
 @see [Wiki](https://github.com/bitofsky/Async-JSTemplate/wiki/3.-How-to-use-Promise)
