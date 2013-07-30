@@ -147,7 +147,7 @@ You can use the variable $id to have a **Tpl_ID** in syntax.
     output
     I am template
 
-# Promise 사용하기
+# How to use Promise
 
 AJST works on the basis of Promise. All requests, it will generate and return the Promise.
 
