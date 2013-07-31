@@ -258,6 +258,9 @@
     if (opt.debug)
       console.time('AJST elapsed time (ID: ' + id + ')');
 
+    if (typeof opt.onerror == 'function')
+      promise.fail(opt.onerror);
+
     AJST.prepare(id, option).then(function(compiler) {
 
       var args = [id, data];
@@ -1003,7 +1006,10 @@
       util: UTIL,
       Promise: Promise
     },
-    autocollect: true
+    autocollect: true,
+    onerror: function(err) {
+      throw err;
+    }
   };
 
   if (isIE8)
