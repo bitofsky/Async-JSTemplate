@@ -454,7 +454,6 @@
           var tplElementList = UTIL.parseHTML(tplOutput);
 
           UTIL.toArray(tplElementList).forEach(function(tplElement) {
-            console.debug(tplElement);
             element.parentNode.insertBefore(tplElement, element);
           });
 
