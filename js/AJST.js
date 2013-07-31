@@ -258,9 +258,9 @@
     if (opt.debug)
       console.time('AJST elapsed time (ID: ' + id + ')');
 
-    try {
+    AJST.prepare(id, option).then(function(compiler) {
 
-      AJST.prepare(id, option).then(function(compiler) {
+      try {
 
         var args = [id, data];
 
@@ -280,13 +280,13 @@
 
         }, rejected);
 
-      }, rejected);
+      } catch (e) {
 
-    } catch (e) {
+        promise.reject(e);
 
-      rejected(e);
+      }
 
-    }
+    }, rejected);
 
     return promise;
 
@@ -313,32 +313,41 @@
         url = opt.url || opt.path.replace(/\$id/g, id),
         promise = Promise();
 
-    if (AJST.getTemplate(id))
-      resolved();
+    try {
 
-    else
-      promiseCache(url, function() {
-        return UTIL.ajax({
-          type: opt.ajaxType,
-          cache: opt.ajaxCache,
-          data: opt.ajaxData,
-          url: url,
-          dataType: 'html'
-        }).then(function(arrTemplate) {
+      if (AJST.getTemplate(id))
+        resolved();
 
-          Array.prototype.forEach.call(arrTemplate, AJST.setTemplateElement);
+      else
+        promiseCache(url, function() {
+          return UTIL.ajax({
+            type: opt.ajaxType,
+            cache: opt.ajaxCache,
+            data: opt.ajaxData,
+            url: url,
+            dataType: 'html'
+          }).then(function(arrTemplate) {
 
+            Array.prototype.forEach.call(arrTemplate, AJST.setTemplateElement);
+
+          });
+        }).then(resolved, function() {
+          promise.reject(new Error('AJST file not found : (ID: ' + id + ', URL: ' + url + ')'));
         });
-      }).then(resolved, rejected);
+
+    } catch (e) {
+      promise.reject(e);
+    }
 
     return promise;
 
     function resolved() {
-      promise.resolve(AJST.getCompiler(id, opt));
-    }
-
-    function rejected() {
-      throw new Error('AJST file not found : (ID: ' + id + ', URL: ' + url + ')');
+      try {
+        promise.resolve(AJST.getCompiler(id, opt));
+      }
+      catch (e) {
+        promise.reject(e);
+      }
     }
 
   };
