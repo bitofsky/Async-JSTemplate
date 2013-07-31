@@ -258,44 +258,41 @@
     if (opt.debug)
       console.time('AJST elapsed time (ID: ' + id + ')');
 
-    if (typeof opt.onerror == 'function')
-      promise.fail(opt.onerror);
+    try {
 
-    AJST.prepare(id, option).then(function(compiler) {
+      AJST.prepare(id, option).then(function(compiler) {
 
-      var args = [id, data];
+        var args = [id, data];
 
-      UTIL.each(opt.global, function(o) {
-        args.push(o);
-      });
+        UTIL.each(opt.global, function(o) {
+          args.push(o);
+        });
 
-      try {
-
-        compiler.apply(this, args).then(function(result) {
+        compiler.apply(this, args).then(function(output) {
 
           if (opt.debug)
             console.timeEnd('AJST elapsed time (ID: ' + id + ')');
 
           if (UTIL.isIE8)
-            promise.resolve(result.replace(/\r\n/g, '\n'));
+            promise.resolve(output.replace(/\r\n/g, '\n'));
           else
-            promise.resolve(result);
+            promise.resolve(output);
 
         }, rejected);
 
-      } catch (e) {
+      }, rejected);
 
-        rejected(e);
+    } catch (e) {
 
-      }
+      rejected(e);
 
-    }, rejected);
+    }
 
     return promise;
 
     function rejected(e) {
 
-      e.message = "AJST Compile error (ID: " + id + ") -> " + e.message;
+      e.message = "AJST error (ID: " + id + ") -> " + e.message;
 
       promise.reject(e);
 
@@ -337,14 +334,11 @@
     return promise;
 
     function resolved() {
-      try {
-        promise.resolve(AJST.getCompiler(id, opt));
-      } catch (e) {
-        promise.reject(e);
-      }
+      promise.resolve(AJST.getCompiler(id, opt));
     }
+
     function rejected() {
-      promise.reject(new Error('AJST file not found : (ID: ' + id + ', URL: ' + url + ')'));
+      throw new Error('AJST file not found : (ID: ' + id + ', URL: ' + url + ')');
     }
 
   };
@@ -1006,10 +1000,7 @@
       util: UTIL,
       Promise: Promise
     },
-    autocollect: true,
-    onerror: function(err) {
-      throw err;
-    }
+    autocollect: true
   };
 
   if (isIE8)
