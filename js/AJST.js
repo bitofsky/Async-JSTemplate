@@ -1017,7 +1017,7 @@
    * http://requirejs.org
    */
   if (global.define && global.define.amd)
-    global.define([], function() {
+    global.define([], 'AJST', function() {
       return AJST;
     });
 
