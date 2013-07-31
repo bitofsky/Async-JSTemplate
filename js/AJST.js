@@ -17,6 +17,7 @@
  * @version 1.0
  */
 
+"test";
 "use strict";
 
 (function(global) {
