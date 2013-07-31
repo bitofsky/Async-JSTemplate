@@ -193,9 +193,7 @@
 
         var body = UTIL.isPlainObject(opt.data) ? UTIL.param(opt.data) : opt.data;
 
-        xhr.onerror = function() {
-          promise.reject(xhr);
-        };
+        xhr.onerror = reject;
 
         xhr.onreadystatechange = function() {
           if (xhr.readyState != 4)
@@ -203,7 +201,7 @@
           else if (xhr.status >= 200 && xhr.status < 400)
             promise.resolve(parseDataType(xhr.responseText));
           else if (xhr.status > 400)
-            promise.reject(xhr);
+            reject();
 
         };
 
@@ -221,6 +219,10 @@
           xhr.setRequestHeader(key, opt.header[key]);
 
         xhr.send(body);
+
+        function reject() {
+          promise.reject(new Error('AJST Ajax error(status: ' + (xhr.status || 404) + ') - ' + opt.url), xhr);
+        }
 
       }
 
@@ -401,6 +403,9 @@
 
       AJST(id, data, option).then(promise.resolve, promise.reject);
 
+    }, function(x) {
+      console.debug(x);
+      promise.reject(x);
     });
 
     return promise;
