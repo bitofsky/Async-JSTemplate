@@ -1,8 +1,7 @@
-<script id="navbar">
-<?var makeBtn = function(btn){ printf('<li class="%s"><a href="%s">%s</a></li>', (btn.active?'active':''), btn.href, btn.text); };?>
+<script id="indexMain">
 <!-- navbar -->
 <div class="navbar navbar-inverse navbar-fixed-top">
-  <a class="navbar-brand" href="#">AJST</a>
+  <a class="navbar-brand" href="#" onclick="return false;">AJST</a>
   <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".nav-collapse">
     <span class="icon-bar"></span>
     <span class="icon-bar"></span>
@@ -18,20 +17,27 @@
   </div>
 </div>
 <!-- navbar -->
+
+<!-- container -->
+<div class="container"></div>
+<!-- container -->
 </script>
 
 <script id="navbar.btn">
-<li class="<?=data.active?'active':''?>"><a href="<?=data.href?>"><?=data.icon ? sprintf('<i class="%s"></i> %s', data.icon, data.text) : data.text?></a></li>
+<li><a name="<?=data.name?>" href="<?=data.href?>"><?=data.icon ? sprintf('<i class="%s"></i> %s', data.icon, data.text) : data.text?></a></li>
 </script>
 
-<script id="container">
-<!-- container -->
-<div class="container">
+<script id="index">
+Index
+</script>
+
+<script id="unitTest">
+
   <div class="row">
 
     <div class="col-12 col-sm-4">
       <div class="affix-top">
-        <ul class="nav" id="TestList">
+        <ul class="nav nav-pills nav-stacked" id="TestList">
           <li class="nav-header">Test List</li>
         </ul>
       </div>
@@ -44,6 +50,4 @@
 
   </div>
 
-</div>
-<!-- container -->
 </script>

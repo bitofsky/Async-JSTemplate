@@ -22,27 +22,37 @@
 
     <script>
 
-      require(['./js/AJST', './js/index.js'], function(AJST, indexReady) {
+      requirejs.config({
+        baseUrl: 'js' //By default load any module IDs from js/lib
+      });
+
+      require(['AJST', 'index', 'unit_test', 'jmarkdown'], function(AJST, indexReady, unitTest) {
+
+        $(window).on('hashchange', onChangeHash);
 
         $(function() {
 
           AJST.option({debug: true});
           AJST.autocollect();
 
-          new AJST.Promise([
-            AJST.ajax('navbar', './data/config.json', {url: './tpl/index.tpl'}),
-            AJST('container', null, {url: './tpl/index.tpl'})
-          ]).then(function(navi, cont) {
-
-            $('body').append(navi, cont);
-
-          }, function(e) {
-
-            throw e;
-
-          }).then(indexReady);
+          AJST.ajax('indexMain', './data/config.json', {url: './tpl/index.tpl'}).then(function(output) {
+            $('BODY').append(output);
+          }).then(onChangeHash);
 
         });
+
+        function onChangeHash() {
+          var arr = location.hash.split('/');
+          switch (arr[0]) {
+            case '#unittest' :
+              unitTest(arr[1]);
+              break;
+            case '' :
+            case '#index'    :
+              indexReady();
+              break;
+          }
+        }
 
       });
 
