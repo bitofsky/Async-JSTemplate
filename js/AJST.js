@@ -284,6 +284,9 @@
 
       } catch (e) {
 
+        if (promise.state != 'unfulfilled')
+          throw e;
+
         promise.reject(e);
 
       }
@@ -404,8 +407,9 @@
       AJST(id, data, option).then(promise.resolve, promise.reject);
 
     }, function(x) {
-      console.debug(x);
+
       promise.reject(x);
+
     });
 
     return promise;
