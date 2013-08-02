@@ -213,7 +213,7 @@ if you use a AJST.Promise() that is provided to easily control in such a case.
 
 @see [Wiki](https://github.com/bitofsky/Async-JSTemplate/wiki/5.-AutoCollect)
 
-# Escape <Script> tag
+# Escape &lt;Script&gt; tag
 
 @see [Wiki](https://github.com/bitofsky/Async-JSTemplate/wiki/6.-Escape-Script-Tag)
 
