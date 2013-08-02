@@ -55,7 +55,7 @@ AJST uses syntax similar to the PHP / ASP. **<? ~ ?>**
 
 You can generate a string by using JavaScript, to output in this syntax.
 
-In order to output a string in the syntax, you can use the [print](print-string-str-) or [printf](printf-string-format-stringnumber-outn-).
+In order to output a string in the syntax, you can use the [print](https://github.com/bitofsky/Async-JSTemplate/wiki/4.-Utility-of-built-in#print-string-str-) or [printf](https://github.com/bitofsky/Async-JSTemplate/wiki/4.-Utility-of-built-in#printf-string-format-stringnumber-outn-).
 
 Outside of the syntax, all strings will be output automatically.
 
@@ -234,7 +234,7 @@ In this case, the execution is delayed. so you must be run manually [AJST.autoco
 
 # Supported Web Browsers
 
- * IE7+ (IE8 required [es5-shim](https://github.com/kriskowal/es5-shim/), IE7 required [JSON](http://json.org))
+ * IE7+ (IE7 required [JSON](http://json.org), IE8 required [es5-shim](https://github.com/kriskowal/es5-shim/))
  * Google Chrome
  * Safari
  * FireFox
