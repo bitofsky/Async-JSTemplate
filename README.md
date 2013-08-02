@@ -204,6 +204,11 @@ if you use a AJST.Promise() that is provided to easily control in such a case.
       // if not,
     });
 
+# Why we do use Promise/A?
+
+> **Problems when using asynchronous programming** : [MSDN](http://msdn.microsoft.com/en-us/library/windows/apps/hh700330.aspx)
+> 
+> Asynchronous programming can quickly become complicated. Many of the standard JavaScript APIs rely heavily on callbacks, which are often nested, making them difficult to debug. In addition, the use of anonymous inline functions can make reading the call stack problematic. Exceptions that are thrown from within a heavily nested set of callbacks might not be propagated up to a function that initiated the chain. This makes it difficult to determine exactly where a bug is hidden.
 
 # Utility of built in
 
