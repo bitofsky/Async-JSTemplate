@@ -725,8 +725,7 @@
 
       function executeAllCallbacks(callbacks) {
 
-        // then/fail callback 수행 도중 발생하는 exception은 바로 throw 되도록 실행 scope를 분리 한다.
-        setTimeout(function() {
+        try {
 
           var fn, override;
 
@@ -739,7 +738,11 @@
           while (typeof (fn = always.shift()) == 'function')
             fn.call(_this);
 
-        });
+        }
+        catch (e) {
+          console.error('AJST Promise error [' + _this.state + '] ' + e.constructor.name + ': ' + e.message);
+          throw e;
+        }
 
       }
 
