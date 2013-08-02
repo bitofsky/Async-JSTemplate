@@ -229,7 +229,7 @@ In this case, the execution is delayed. so you must be run manually [AJST.autoco
 
 # Supported Web Browsers
 
- * IE8+ (IE8 required [es5-shim](https://github.com/kriskowal/es5-shim/))
+ * IE7+ (IE8 required [es5-shim](https://github.com/kriskowal/es5-shim/), IE7 required [JSON](http://json.org))
  * Google Chrome
  * Safari
  * FireFox
