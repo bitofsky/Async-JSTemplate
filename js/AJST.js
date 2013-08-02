@@ -284,9 +284,6 @@
 
       } catch (e) {
 
-        if (promise.state != 'unfulfilled')
-          throw e;
-
         promise.reject(e);
 
       }
@@ -407,9 +404,8 @@
       AJST(id, data, option).then(promise.resolve, promise.reject);
 
     }, function(x) {
-
+      console.debug(x);
       promise.reject(x);
-
     });
 
     return promise;
@@ -729,16 +725,21 @@
 
       function executeAllCallbacks(callbacks) {
 
-        var fn, override;
+        // then/fail callback 수행 도중 발생하는 exception은 바로 throw 되도록 실행 scope를 분리 한다.
+        setTimeout(function() {
 
-        // shift and execute
-        while (typeof (fn = callbacks.shift()) == 'function') {
-          override = fn.apply(_this, lastReturn);
-          lastReturn = override !== undefined ? [override] : lastReturn;
-        }
+          var fn, override;
 
-        while (typeof (fn = always.shift()) == 'function')
-          fn.call(_this);
+          // shift and execute
+          while (typeof (fn = callbacks.shift()) == 'function') {
+            override = fn.apply(_this, lastReturn);
+            lastReturn = override !== undefined ? [override] : lastReturn;
+          }
+
+          while (typeof (fn = always.shift()) == 'function')
+            fn.call(_this);
+
+        });
 
       }
 
