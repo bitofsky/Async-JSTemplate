@@ -213,6 +213,10 @@ if you use a AJST.Promise() that is provided to easily control in such a case.
 
 @see [Wiki](https://github.com/bitofsky/Async-JSTemplate/wiki/5.-AutoCollect)
 
+# Escape <Script> tag
+
+@see [Wiki](https://github.com/bitofsky/Async-JSTemplate/wiki/6.-Escape-Script-Tag)
+
 # AJST support [AMD](https://github.com/amdjs/amdjs-api/wiki).
 
 You can call asynchronously by using [require.js](http://requirejs.org).
