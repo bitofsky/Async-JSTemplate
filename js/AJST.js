@@ -47,22 +47,6 @@
   };
 
   /**
-   * IE7 document.querySelectorAll
-   */
-  if (!global.document.querySelectorAll) {
-    (function(document) {
-      var a = document.styleSheets[0] || document.createStyleSheet();
-      document.querySelectorAll = function(e) {
-        a.addRule(e, 'f:b');
-        for (var l = document.all, b = 0, c = [], f = l.length; b < f; b++)
-          l[b].currentStyle.f && c.push(l[b]);
-        a.removeRule(0);
-        return c;
-      };
-    })(global.document);
-  }
-
-  /**
    * AJST Utils
    * @private
    * @type Object
@@ -1021,13 +1005,6 @@
         // Serialize array item.
         obj.forEach(function(v, i) {
 
-          // If array item is non-scalar (array or object), encode its
-          // numeric index to resolve deserialization ambiguity issues.
-          // Note that rack (as of 1.0.0) can't currently deserialize
-          // nested arrays properly, and attempting to do so may cause
-          // a server error. Possible fixes are to modify rack's
-          // deserialization algorithm or to provide an option or flag
-          // to force array serialization to be shallow.
           buildParams(prefix + "[" + (typeof v === "object" || UTIL.isArray(v) ? i : "") + "]", v);
 
         });
@@ -1117,59 +1094,19 @@
   };
 
   /**
-   * Array.prototype.forEach
-   * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach
+   * IE7 document.querySelectorAll
    */
-  if (!Array.prototype.forEach) {
-    Array.prototype.forEach = function(fn, scope) {
-      for (var i = 0, len = this.length; i < len; ++i)
-        if (i in this)
-          fn.call(scope, this[i], i, this);
-    };
-  }
-
-  /**
-   * String.prototype.trim
-   * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/Trim
-   */
-  if (!String.prototype.trim) {
-    String.prototype.trim = function() {
-      return this.replace(/^\s+|\s+$/g, '');
-    };
-  }
-
-  /**
-   * Object.keys
-   * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/keys
-   */
-  if (!Object.keys) {
-    Object.keys = (function() {
-
-      var hasOwnProperty = Object.prototype.hasOwnProperty,
-          hasDontEnumBug = !({toString: null}).propertyIsEnumerable('toString'),
-          dontEnums = ['toString', 'toLocaleString', 'valueOf', 'hasOwnProperty', 'isPrototypeOf', 'propertyIsEnumerable', 'constructor'],
-          dontEnumsLength = dontEnums.length;
-
-      return function(obj) {
-        if (typeof obj !== 'object' && typeof obj !== 'function' || obj === null)
-          throw new TypeError('Object.keys called on non-object');
-
-        var result = [];
-
-        for (var prop in obj)
-          if (hasOwnProperty.call(obj, prop))
-            result.push(prop);
-
-        if (hasDontEnumBug)
-          for (var i = 0; i < dontEnumsLength; i++)
-            if (hasOwnProperty.call(obj, dontEnums[i]))
-              result.push(dontEnums[i]);
-
-        return result;
-
+  if (!global.document.querySelectorAll) {
+    (function(document) {
+      var a = document.styleSheets[0] || document.createStyleSheet();
+      document.querySelectorAll = function(e) {
+        a.addRule(e, 'f:b');
+        for (var l = document.all, b = 0, c = [], f = l.length; b < f; b++)
+          l[b].currentStyle.f && c.push(l[b]);
+        a.removeRule(0);
+        return c;
       };
-
-    })();
+    })(global.document);
   }
 
 })(this, this.console || {});
