@@ -554,7 +554,7 @@
             });\n\
             return ret.join();\n\
           };\n\
-      var _s = \'' + str.replace(regexp_remove_ws, replace_remove_ws).replace(regexp_compile, replace_compile) + '\';\n\
+      var _s = \'' + str.replace(regexp_remove_ws, replace_remove_ws).replace(regexp_compile, replace_compile).replace(regexp_escape, replace_remove_quotes) + '\';\n\
       return new Promise(_promises).then(function(){\n\
         return _s;\n\
       });';
@@ -582,9 +582,16 @@
 
   var regexp_remove_ws = /(?:<\?([\s\S]+?)\?>)/g,
       replace_remove_ws = function(s) {
-    return s.split('\n').join(' ');
+    return s.split('\n').join(' ').replace(/'/g, '_ESCAPE__1_').replace(/"/g, '_ESCAPE__2_');
   },
-      regexp_compile = /([\s\\])(?![^\?]*\?>)|(?:<\?(=)([\s\S]+?)\?>)|(<\?)|(\?>)/g,
+      regexp_escape = /_ESCAPE__1_|_ESCAPE__2_/g,
+      replace_remove_quotes = function(s) {
+    return {
+      _ESCAPE__1_: "'",
+      _ESCAPE__2_: '"'
+    }[s] || s;
+  },
+      regexp_compile = /([\s'\\])(?![^\?]*\?>)|(?:<\?(=)([\s\S]+?)\?>)|(<\?)|(\?>)/g,
       replace_compile = function(s, p1, p2, p3, p4, p5) {
 
     if (p1) { // whitespace, quote and backslash in interpolation context
