@@ -39,7 +39,12 @@
    */
   var compileCache = {};
 
-  var isIE8 = !global.document.addEventListener;
+  var support = {
+    addEventListener: !!document.addEventListener,
+    argumentsSlice: !(document.documentMode && document.documentMode <= 8),
+    uglyInnerHTML: document.documentMode && document.documentMode <= 8,
+    cors: 'withCredentials' in new XMLHttpRequest()
+  };
 
   /**
    * AJST Utils
@@ -47,7 +52,7 @@
    * @type Object
    */
   var UTIL = {
-    isIE8: isIE8,
+    support: support,
     sprintf: sprintf,
     param: param,
     each: function(o, eachFunction) {
@@ -63,7 +68,7 @@
       }
     },
     toArray: function(o) {
-      if (isIE8) {
+      if (!support.argumentsSlice) {
         var ret = [];
         UTIL.each(o, function(x) {
           ret.push(x);
@@ -128,7 +133,7 @@
 
       var container = global.document.createElement('div');
 
-      if (isIE8) {
+      if (support.uglyInnerHTML) {
         container.innerHTML = '_' + htmlString.replace(/\r\n/g, '\n');
         container.removeChild(container.firstChild);
       }
@@ -167,7 +172,15 @@
 
         var xhr;
 
-        if (global.XMLHttpRequest)
+        if (!support.cors && opt.useCors && global.XDomainRequest) {
+          xhr = new global.XDomainRequest();
+          xhr.onload = function() {
+            xhr.readyState = 4;
+            xhr.status = 200;
+            xhr.onreadystatechange();
+          };
+        }
+        else if (global.XMLHttpRequest)
           xhr = new global.XMLHttpRequest();
         else if (global.ActiveXObject) {
           try {
@@ -202,7 +215,6 @@
             promise.resolve(parseDataType(xhr.responseText));
           else if (xhr.status > 400)
             reject();
-
         };
 
         if (opt.type == 'POST') {
@@ -215,8 +227,10 @@
 
         xhr.open(opt.type, opt.url);
 
-        for (var key in opt.header)
-          xhr.setRequestHeader(key, opt.header[key]);
+        if (xhr.setRequestHeader) {
+          for (var key in opt.header)
+            xhr.setRequestHeader(key, opt.header[key]);
+        }
 
         xhr.send(body);
 
@@ -275,7 +289,7 @@
           if (opt.debug)
             console.timeEnd('AJST elapsed time (ID: ' + id + ')');
 
-          if (UTIL.isIE8)
+          if (support.uglyInnerHTML)
             promise.resolve(output.replace(/\r\n/g, '\n'));
           else
             promise.resolve(output);
@@ -1034,10 +1048,11 @@
     autocollect: true
   };
 
-  if (isIE8)
-    document.attachEvent("onreadystatechange", AJST.autocollect);
-  else
+  if (support.addEventListener)
     document.addEventListener("DOMContentLoaded", AJST.autocollect, false);
+  else
+    document.attachEvent("onreadystatechange", AJST.autocollect);
+
 
   /**
    * For AMD require.js
