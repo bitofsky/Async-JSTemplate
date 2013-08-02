@@ -1,13 +1,14 @@
 {
   "brand": "AJST",
   "buttonLeft": [
-    {"active": true, "href": "#", "text": "Unit Test", "icon": "icon-check-sign"},
-    {"href": "https://github.com/bitofsky/Async-JSTemplate/", "text": "Github", "icon": "icon-github-alt"},
-    {"href": "https://github.com/bitofsky/Async-JSTemplate/archive/master.zip", "text": "Download", "icon": "icon-download-alt"},
-    {"href": "https://github.com/bitofsky/Async-JSTemplate/blob/master/js/AJST.js", "text": "Source", "icon": "icon-code"}
+    {"name": "index", "href": "#index", "text": "About", "icon": "icon-bullhorn"},
+    {"name": "unittest", "href": "#unittest", "text": "Unit Test", "icon": "icon-check-sign"},
+    {"name": "github", "href": "https://github.com/bitofsky/Async-JSTemplate/", "text": "Github", "icon": "icon-github-alt"},
+    {"name": "download", "href": "https://github.com/bitofsky/Async-JSTemplate/archive/master.zip", "text": "Download", "icon": "icon-download-alt"},
+    {"name": "source", "href": "https://github.com/bitofsky/Async-JSTemplate/blob/master/js/AJST.js", "text": "Source", "icon": "icon-code"}
   ],
   "buttonRight": [
-    {"href": "https://github.com/bitofsky/Async-JSTemplate/issues", "text": "Issues", "icon": "icon-comments"},
-    {"href": "mailto:bitofsky0@yahoo.co.kr?subject=[Async-JSTemplate]", "text": "Contact", "icon": "icon-envelope"}
+    {"name": "issues", "href": "https://github.com/bitofsky/Async-JSTemplate/issues", "text": "Issues", "icon": "icon-comments"},
+    {"name": "contact", "href": "mailto:bitofsky0@yahoo.co.kr?subject=[Async-JSTemplate]", "text": "Contact", "icon": "icon-envelope"}
   ]
 }
