@@ -213,6 +213,14 @@ if you use a AJST.Promise() that is provided to easily control in such a case.
 
 @see [Wiki](https://github.com/bitofsky/Async-JSTemplate/wiki/5.-AutoCollect)
 
+# Escape &lt;Script&gt; tag
+
+@see [Wiki](https://github.com/bitofsky/Async-JSTemplate/wiki/6.-Escape-Script-Tag)
+
+# Demo
+
+@see [AJST Introduce & Test with Bootstrap 3](http://bitofsky.github.io/Async-JSTemplate/)
+
 # AJST support [AMD](https://github.com/amdjs/amdjs-api/wiki).
 
 You can call asynchronously by using [require.js](http://requirejs.org).
@@ -221,7 +229,7 @@ In this case, the execution is delayed. so you must be run manually [AJST.autoco
 
 # Supported Web Browsers
 
- * IE8+
+ * IE7+ (IE8 required [es5-shim](https://github.com/kriskowal/es5-shim/), IE7 required [JSON](http://json.org))
  * Google Chrome
  * Safari
  * FireFox
