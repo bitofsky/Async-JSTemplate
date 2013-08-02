@@ -554,7 +554,7 @@
             });\n\
             return ret.join();\n\
           };\n\
-      var _s = \'' + str.replace(regexp_remove_ws, replace_remove_ws).replace(regexp_compile, replace_compile).replace(regexp_escape, replace_remove_quotes) + '\';\n\
+      var _s = \'' + str.replace(regexp_remove_ws, replace_remove_ws).replace(regexp_compile, replace_compile).replace(regexp_escape, replace_escape) + '\';\n\
       return new Promise(_promises).then(function(){\n\
         return _s;\n\
       });';
@@ -584,11 +584,13 @@
       replace_remove_ws = function(s) {
     return s.split('\n').join(' ').replace(/'/g, '_ESCAPE__1_').replace(/"/g, '_ESCAPE__2_');
   },
-      regexp_escape = /_ESCAPE__1_|_ESCAPE__2_/g,
-      replace_remove_quotes = function(s) {
+      regexp_escape = /_ESCAPE__1_|_ESCAPE__2_|{{script}}|{{\/script}}/g,
+      replace_escape = function(s) {
     return {
       _ESCAPE__1_: "'",
-      _ESCAPE__2_: '"'
+      _ESCAPE__2_: '"',
+      '{{script}}': '<script>',
+      '{{/script}}': '</script>'
     }[s] || s;
   },
       regexp_compile = /([\s'\\])(?![^\?]*\?>)|(?:<\?(=)([\s\S]+?)\?>)|(<\?)|(\?>)/g,
