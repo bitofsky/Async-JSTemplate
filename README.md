@@ -148,6 +148,52 @@ You can use the variable $id to have a **Tpl_ID** in syntax.
 
     output
     I am template
+    
+# Include
+
+AJST allows you to Include other Template in Template.
+There is no problem in other files template to Include. AJST read that files automatically too.
+If you include another template file from template that is included further, it is also handled automatically.
+
+#### include( {String tpl_id}, [{Mixed data}], [{Object option}] )
+
+    <script id="Table">
+    <table>
+      <tr>
+        <td>Name</td> <td>Age</td> <td>Child</td>
+      </tr>
+      <? data.forEach(function( person ){
+        include("Table-td", person);
+      }); ?>
+    </table>
+    </script>
+    <script id="Table-td">
+      <tr>
+        <td><?=data.name?></td>
+        <td><?=data.age?></td>
+        <td><?=data.child ? include('Table', data.child) : ""?></td>
+      </tr>
+    </script>
+
+#### includeEach( {String tpl_id}, {Object|Array data}, [{Object option}] )
+
+If you want to include for each element of the data, I would recommend includeEach.
+
+    <script id="Table">
+    <table>
+      <tr>
+        <td>Name</td> <td>Age</td> <td>Child</td>
+      </tr>
+      <? includeEach("Table-td", data); ?>
+    </table>
+    </script>
+    <script id="Table-td">
+      <tr>
+        <td><?=data.name?></td>
+        <td><?=data.age?></td>
+        <td><?=data.child ? include('Table', data.child) : ""?></td>
+      </tr>
+    </script>
 
 # How to use Promise
 
