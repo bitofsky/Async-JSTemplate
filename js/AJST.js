@@ -402,18 +402,20 @@
   /**
    * Remote JSON Data
    * @param {String} id
-   * @param {String} url JSON data location
+   * @param {String|Promise} type
    * @param {Option} [option]
    * @returns {Promise}
    */
-  AJST.ajax = function(id, url, option) {
+  AJST.ajax = function(id, type, option) {
 
     var promise = Promise();
 
-    UTIL.ajax({
-      url: url,
-      dataType: 'json'
-    }).then(function(data) {
+    (( type && typeof type.then == 'function' ) ?
+      type :
+      UTIL.ajax({
+        url: url,
+        dataType: 'json'
+      })).then(function(data) {
 
       AJST(id, data, option).then(promise.resolve, promise.reject);
 
@@ -549,17 +551,23 @@
           printf    = function(){ _s += sprintf.apply(this, arguments); },\n\
           sprintf   = util.sprintf,\n\
           _promises = [],\n\
-          include   = function(){\n\
+          includeExecute = function(){\n\
             var uid     = util.makeUID("include");\n\
                 syncOut = undefined;\n\
             _s += uid;\n\
             _promises.push(\n\
-              AJST.apply(this, arguments).then(function(output){\n\
+              this.apply(null, arguments).then(function(output){\n\
                 syncOut = output;\n\
                 _s = _s.replace(uid, output);\n\
               })\n\
             );\n\
             return syncOut !== undefined ? syncOut : uid;\n\
+          },\n\
+          include = function(){\n\
+            return includeExecute.apply(AJST, arguments);\n\
+          },\n\
+          includeAjax = function(){\n\
+            return includeExecute.apply(AJST.ajax, arguments);\n\
           },\n\
           includeEach = function(id, data, option){\n\
             var ret = [];\n\
@@ -763,7 +771,10 @@
 
         }
         catch (e) {
-          console.error('AJST Promise error [' + _this.state + '] ' + e.constructor.name + ': ' + e.message);
+          if( !e.AJSTPromiseError ){
+            console.error('AJST Promise error [' + _this.state + '] ' + e.constructor.name + ': ' + e.message);
+            e.AJSTPromiseError = true;
+          }
           throw e;
         }
 
