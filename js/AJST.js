@@ -527,7 +527,7 @@
 
     if (!compileCache[id]) {
       var tplString = AJST.getTemplate(id);
-      if (!tplString)
+      if (tplString === undefined)
         throw new Error('AJST Undefined TPL ID (ID: ' + id + ')');
       compileCache[id] = tplCompiler(tplString, option);
     }
