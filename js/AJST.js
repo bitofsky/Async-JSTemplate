@@ -604,15 +604,16 @@
 
   var regexp_remove_ws = /(?:<\?([\s\S]+?)\?>)/g,
       replace_remove_ws = function(s) {
-    return s.split('\n').join(' ').replace(/'/g, '_ESCAPE__1_').replace(/"/g, '_ESCAPE__2_');
+    return s.split('\n').join(' ').replace(/'/g, '_ESCAPE__1_').replace(/"/g, '_ESCAPE__2_').replace(/\\n/g, '_ESCAPE__NEWLINE_');
   },
-      regexp_escape = /_ESCAPE__1_|_ESCAPE__2_|{{script}}|{{\/script}}/g,
+      regexp_escape = /_ESCAPE__1_|_ESCAPE__2_|{{script}}|{{\/script}}|_ESCAPE__NEWLINE_/g,
       replace_escape = function(s) {
     return {
       _ESCAPE__1_: "'",
       _ESCAPE__2_: '"',
       '{{script}}': '<script>',
-      '{{/script}}': '</script>'
+      '{{/script}}': '</script>',
+      _ESCAPE__NEWLINE_: '\\n'
     }[s] || s;
   },
       regexp_compile = /([\s'\\])(?![^\?]*\?>)|(?:<\?(=)([\s\S]+?)\?>)|(<\?)|(\?>)/g,
