@@ -1,0 +1,19 @@
+{
+  "brand": "AJST",
+  "readme": "http://rawgithub.com/bitofsky/Async-JSTemplate/master/README.md",
+  "download": "https://github.com/bitofsky/Async-JSTemplate/archive/master.zip",
+  "downloadjs": "https://rawgithub.com/bitofsky/Async-JSTemplate/master/js/AJST.js",
+  "downloadmin": "https://rawgithub.com/bitofsky/Async-JSTemplate/master/js/AJST.min.js",
+  "navLeft": [
+    {"name": "index", "href": "#index", "text": "About", "icon": "icon-bullhorn"},
+    {"name": "unittest", "href": "#unittest", "text": "Unit Test", "icon": "icon-check-sign"},
+    {"name": "github", "href": "https://github.com/bitofsky/Async-JSTemplate/", "text": "Github", "icon": "icon-github-alt"},
+    {"name": "download", "href": "https://github.com/bitofsky/Async-JSTemplate/archive/master.zip", "text": "Download", "icon": "icon-download-alt"},
+    {"name": "source", "href": "https://github.com/bitofsky/Async-JSTemplate/blob/master/js/AJST.js", "text": "Source", "icon": "icon-code"},
+    {"name": "wiki", "href": "https://github.com/bitofsky/Async-JSTemplate/wiki", "text": "Wiki", "icon": "icon-book"}
+  ],
+  "navRight": [
+    {"name": "issues", "href": "https://github.com/bitofsky/Async-JSTemplate/issues", "text": "Issues", "icon": "icon-comments"},
+    {"name": "contact", "href": "mailto:bitofsky0@yahoo.co.kr?subject=[Async-JSTemplate]", "text": "Contact", "icon": "icon-envelope"}
+  ]
+}
