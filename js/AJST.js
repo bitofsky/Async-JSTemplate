@@ -413,7 +413,7 @@
     (( type && typeof type.then == 'function' ) ?
       type :
       UTIL.ajax({
-        url: url,
+        url: type,
         dataType: 'json'
       })).then(function(data) {
 
