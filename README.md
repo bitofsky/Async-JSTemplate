@@ -276,7 +276,7 @@ Promise 중 하나라도 실패하면 fail 콜백이 실행됩니다.
 
 [require.js](http://requirejs.org)를 사용하여 비동기 모듈로 AJST를 로드할 수 있습니다.
 
-이 경우 AJST가 딜레이 되어 로드되니 자동수집[AJST.autocollect](https://github.com/bitofsky/Async-JSTemplate/wiki/6.-%EC%9E%90%EB%8F%99-%EC%88%98%EC%A7%91) 을 사용하는 경우 이를 수동으로 활성화 해야 합니다.
+이 경우 AJST가 딜레이 되어 로드되니 자동수집([AJST.autocollect](https://github.com/bitofsky/Async-JSTemplate/wiki/6.-%EC%9E%90%EB%8F%99-%EC%88%98%EC%A7%91))을 사용하는 경우 이를 수동으로 활성화 해야 합니다.
 
 # 지원 브라우져
 
