@@ -15,3 +15,23 @@ This is Include TPL.sub
 <script id="Include multiple promise">
 Succeed!
 </script>
+
+<script id="Include with Data">
+<?include('Include Data Result', {result:'abc'})?>
+</script>
+
+<script id="Include with Ajax Data">
+<?includeAjax('Include Ajax Result', 'data/sampledata.json')?>
+</script>
+
+<script id="Include with Promise Data">
+<?include('Include Ajax Result', $.getJSON('data/sampledata.json'))?>
+</script>
+
+<script id="Include Data Result">
+result=<?=data.result?>
+</script>
+
+<script id="Include Ajax Result">
+<?=data.items[1].label?>
+</script>
