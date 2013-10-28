@@ -262,19 +262,30 @@
    * Template Process
    * @public
    * @param {String} id Template Unique ID
-   * @param {Mixed} [data] Template Data
+   * @param {Mixed|Promise} [data] Template Data
    * @param {Object} [option]
    * @returns {Promise} compiledString
    */
   var AJST = global.AJST = function(id, data, option) {
 
-    var opt = UTIL.extend({}, DEFAULT_OPTION, option),
-        promise = Promise();
+    var opt         = UTIL.extend({}, DEFAULT_OPTION, option),
+        promise     = Promise(),
+        dataPromise;
+
+    if( data && typeof data.then == 'function' )
+      dataPromise = data;
+    else{
+      dataPromise = Promise();
+      dataPromise.resolve( data );
+    }
 
     if (opt.debug)
       console.time('AJST elapsed time (ID: ' + id + ')');
 
-    AJST.prepare(id, option).then(function(compiler) {
+    Promise(
+      AJST.prepare(id, option),
+      dataPromise
+    ).then(function(compiler, data) {
 
       try {
 
@@ -402,29 +413,16 @@
   /**
    * Remote JSON Data
    * @param {String} id
-   * @param {String|Promise} type
+   * @param {String} url
    * @param {Option} [option]
    * @returns {Promise}
    */
-  AJST.ajax = function(id, type, option) {
+  AJST.ajax = function(id, url, option) {
 
-    var promise = Promise();
-
-    (( type && typeof type.then == 'function' ) ?
-      type :
-      UTIL.ajax({
-        url: type,
-        dataType: 'json'
-      })).then(function(data) {
-
-      AJST(id, data, option).then(promise.resolve, promise.reject);
-
-    }, function(x) {
-      console.debug(x);
-      promise.reject(x);
-    });
-
-    return promise;
+    return AJST(id, UTIL.ajax({
+      url: url,
+      dataType: 'json'
+    }), option);
 
   };
 
