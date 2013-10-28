@@ -289,6 +289,13 @@
           callFunction: AJST.ajax,
           args: ['data/sampledata.json', {url: './tpl/TestCase3.tpl'}],
           result: "data.items.length = 22"
+        },
+        {
+          name: 'Remote Data Promise',
+          func: getTestFunction,
+          callFunction: AJST,
+          args: [$.getJSON('data/sampledata.json'), {url: './tpl/TestCase3.tpl'}],
+          result: "data.items.length = 22"
         }
       ],
       'TestCase : Include': [
@@ -327,7 +334,28 @@
           },
           args: [],
           result: "This is include1.This is include2.\nInclude other tpl.\nThis is include1.Succeed!"
-        }
+        },
+        {
+          name: 'Include with Data',
+          func: getTestFunction,
+          callFunction: AJST,
+          args: [null, {url: './tpl/TestCase4.tpl'}],
+          result: 'result=abc'
+        },
+        {
+          name: 'Include with Ajax Data',
+          func: getTestFunction,
+          callFunction: AJST,
+          args: [null, {url: './tpl/TestCase4.tpl'}],
+          result: 'Open New'
+        },
+        {
+          name: 'Include with Promise Data',
+          func: getTestFunction,
+          callFunction: AJST,
+          args: [null, {url: './tpl/TestCase4.tpl'}],
+          result: 'Open New'
+        },
       ],
       'TestCase : AutoCollection': [
         {
