@@ -289,7 +289,7 @@
 
       try {
 
-        var args = [id, data];
+        var args = [id, data, option];
 
         UTIL.each(opt.global, function(o) {
           args.push(o);
@@ -543,7 +543,7 @@
    */
   var tplCompiler = function(str, option) {
 
-    var args = '$id, data, ' + Object.keys(option.global).join(', '),
+    var args = '$id, data, option, ' + Object.keys(option.global).join(', '),
         fn = '\n\
       var print     = function(){ _s += Array.prototype.join.call(arguments,""); },\n\
           printf    = function(){ _s += sprintf.apply(this, arguments); },\n\
