@@ -11,3 +11,5 @@ data.list.forEach(function(i){
 </script>
 
 <script id="Remote Data">data.items.length = <?=data.items.length?></script>
+
+<script id="Remote Data Promise">data.items.length = <?=data.items.length?></script>
