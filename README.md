@@ -123,8 +123,20 @@ data의 유형은 무엇이든 가능 합니다.
     output
     3
 
+
+data에 Promise가 온다면 Promise의 성공 결과를 data로 사용합니다.
+예를 들어 Ajax 통신 등 비동기 프로세스의 결과를 받아 data로 전달하고자 한다면 다음과 같이 사용 할 수 있습니다.
+
+    <script id="DataPromise">
+    <?=data.id?>
+    </script>
+
+    script
+    AJST('DataPromise', $.ajax({url: 'someDataURL', data:[blahblah]})).then(function( output ){  });
+
+
 원격으로 JSON 데이터를 받아와야 한다면 AJST.ajax 를 사용할 수도 있습니다.
-URL이나 Promise를 2번째 인자로 전달하면 됩니다.
+URL을 2번째 인자로 전달하면 됩니다.
 
     <script id="RemoteData">
     <?
@@ -153,7 +165,8 @@ URL이나 Promise를 2번째 인자로 전달하면 됩니다.
 AJST는 템플릿 안에서 다른 템플릿을 include 할 수 있습니다. 심지어 다른 .tpl 파일의 템플릿이라도 상관 없으며, 자동으로 로드 됩니다.
 include 된 템플릿에서 또다른 템플릿을 include 할 수도 있습니다. 이 역시 자동으로 핸들링 됩니다.
 
-#### include( {String tpl_id}, [{Mixed data}], [{Object option}] )
+#### include( {String tpl_id}, [{Mixed|Promise data}], [{Object option}] )
+가장 일반적인 include 입니다. 인자는 AJST()와 동일합니다. 두 번째 data 인자에 Promise가 들어오는 경우 해당 Promise의 성공 결과 값을 data로 사용 합니다.
 
     <script id="Table">
     <table>
@@ -171,6 +184,13 @@ include 된 템플릿에서 또다른 템플릿을 include 할 수도 있습니�
         <td><?=data.age?></td>
         <td><?=data.child ? include('Table', data.child) : ""?></td>
       </tr>
+    </script>
+
+#### includeAjax( {String tpl_id}, [{String url}], [{Object option}] )
+AJST.ajax와 동일하게 동작 합니다. 간단히 특정 URL에서 JSON data를 가져와 include 하고자 할 때 사용 합니다.
+
+    <script>
+    <? includeAjax('SomeTplID', 'http://jsondataurl')?>
     </script>
 
 #### includeEach( {String tpl_id}, {Object|Array data}, [{Object option}] )
