@@ -26,27 +26,6 @@
   var console = global.console = global.console || {};
 
   /**
-   * Template String Cache
-   * @private
-   * @type Object
-   */
-  var tplCache = {};
-
-  /**
-   * Template Compiler Cache
-   * @private
-   * @type Object
-   */
-  var compileCache = {};
-
-  var support = {
-    addEventListener: !!document.addEventListener,
-    argumentsSlice: !(document.documentMode && document.documentMode <= 8),
-    uglyInnerHTML: document.documentMode && document.documentMode <= 8,
-    cors: 'withCredentials' in new XMLHttpRequest()
-  };
-
-  /**
    * AJST Utils
    * @private
    * @type Object
@@ -258,284 +237,334 @@
     }
   };
 
-  /**
-   * Template Process
-   * @public
-   * @param {String} id Template Unique ID
-   * @param {Mixed|Promise} [data] Template Data
-   * @param {Object} [option]
-   * @returns {Promise} compiledString
-   */
-  var AJST = global.AJST = function(id, data, option) {
+  var support = {
+    addEventListener: !!document.addEventListener,
+    argumentsSlice: !(document.documentMode && document.documentMode <= 8),
+    uglyInnerHTML: document.documentMode && document.documentMode <= 8,
+    cors: 'withCredentials' in new XMLHttpRequest()
+  };
 
-    var opt         = UTIL.extend({}, DEFAULT_OPTION, option),
-        promise     = Promise(),
-        dataPromise;
+  function duplicate(){
 
-    if( data && typeof data.then == 'function' )
-      dataPromise = data;
-    else{
-      dataPromise = Promise();
-      dataPromise.resolve( data );
-    }
+    /**
+     * Template String Cache
+     * @private
+     * @type Object
+     */
+    var tplCache = {};
 
-    if (opt.debug)
-      console.time('AJST elapsed time (ID: ' + id + ')');
+    /**
+     * Template Compiler Cache
+     * @private
+     * @type Object
+     */
+    var compileCache = {};
 
-    Promise(
-      AJST.prepare(id, option),
-      dataPromise
-    ).then(function(compiler, data) {
+    /**
+     * Template Process
+     * @public
+     * @param {String} id Template Unique ID
+     * @param {Mixed|Promise} [data] Template Data
+     * @param {Object} [option]
+     * @returns {Promise} compiledString
+     */
+    var AJST = function(id, data, option) {
+
+      var opt         = UTIL.extend({}, DEFAULT_OPTION, option),
+          promise     = Promise(),
+          dataPromise;
+
+      if( data && typeof data.then == 'function' )
+        dataPromise = data;
+      else{
+        dataPromise = Promise();
+        dataPromise.resolve( data );
+      }
+
+      if (opt.debug)
+        console.time('AJST elapsed time (ID: ' + id + ')');
+
+      Promise(
+        AJST.prepare(id, option),
+        dataPromise
+      ).then(function(compiler, data) {
+
+        try {
+
+          var args = [id, data, option];
+
+          UTIL.each(opt.global, function(o) {
+            args.push(o);
+          });
+
+          compiler.apply(this, args).then(function(output) {
+
+            if (opt.debug)
+              console.timeEnd('AJST elapsed time (ID: ' + id + ')');
+
+            if (support.uglyInnerHTML)
+              promise.resolve(output.replace(/\r\n/g, '\n'));
+            else
+              promise.resolve(output);
+
+          }, rejected);
+
+        } catch (e) {
+
+          promise.reject(e);
+
+        }
+
+      }, rejected);
+
+      return promise;
+
+      function rejected(e) {
+
+        e.message = "AJST error (ID: " + id + ") -> " + e.message;
+
+        promise.reject(e);
+
+      }
+
+    };
+
+    /**
+     * Preparing Template
+     * @public
+     * @param {String} id Template Unique ID
+     * @param {Object} [option]
+     * @returns {Promise} Compiler
+     */
+    AJST.prepare = function(id, option) {
+
+      var opt = UTIL.extend({}, DEFAULT_OPTION, option),
+          url = opt.url || opt.path.replace(/\$id/g, id),
+          promise = Promise();
+
+      if( typeof url == 'function' )
+        url = url(id, option) || opt.path.replace(/\$id/g, id);
 
       try {
 
-        var args = [id, data, option];
+        if (AJST.getTemplate(id))
+          resolved();
 
-        UTIL.each(opt.global, function(o) {
-          args.push(o);
-        });
+        else
+          promiseCache(url, function() {
+            return UTIL.ajax({
+              type: opt.ajaxType,
+              cache: opt.ajaxCache,
+              data: opt.ajaxData,
+              url: url,
+              dataType: 'html'
+            }).then(function(arrTemplate) {
 
-        compiler.apply(this, args).then(function(output) {
+              Array.prototype.forEach.call(arrTemplate, AJST.setTemplateElement);
 
-          if (opt.debug)
-            console.timeEnd('AJST elapsed time (ID: ' + id + ')');
-
-          if (support.uglyInnerHTML)
-            promise.resolve(output.replace(/\r\n/g, '\n'));
-          else
-            promise.resolve(output);
-
-        }, rejected);
+            });
+          }).then(resolved, function() {
+            promise.reject(new Error('AJST file not found : (ID: ' + id + ', URL: ' + url + ')'));
+          });
 
       } catch (e) {
-
-        promise.reject(e);
-
-      }
-
-    }, rejected);
-
-    return promise;
-
-    function rejected(e) {
-
-      e.message = "AJST error (ID: " + id + ") -> " + e.message;
-
-      promise.reject(e);
-
-    }
-
-  };
-
-  /**
-   * Preparing Template
-   * @public
-   * @param {String} id Template Unique ID
-   * @param {Object} [option]
-   * @returns {Promise} Compiler
-   */
-  AJST.prepare = function(id, option) {
-
-    var opt = UTIL.extend({}, DEFAULT_OPTION, option),
-        url = opt.url || opt.path.replace(/\$id/g, id),
-        promise = Promise();
-
-    if( typeof url == 'function' )
-      url = url(id, option) || opt.path.replace(/\$id/g, id);
-
-    try {
-
-      if (AJST.getTemplate(id))
-        resolved();
-
-      else
-        promiseCache(url, function() {
-          return UTIL.ajax({
-            type: opt.ajaxType,
-            cache: opt.ajaxCache,
-            data: opt.ajaxData,
-            url: url,
-            dataType: 'html'
-          }).then(function(arrTemplate) {
-
-            Array.prototype.forEach.call(arrTemplate, AJST.setTemplateElement);
-
-          });
-        }).then(resolved, function() {
-          promise.reject(new Error('AJST file not found : (ID: ' + id + ', URL: ' + url + ')'));
-        });
-
-    } catch (e) {
-      promise.reject(e);
-    }
-
-    return promise;
-
-    function resolved() {
-      try {
-        promise.resolve(AJST.getCompiler(id, opt));
-      }
-      catch (e) {
         promise.reject(e);
       }
-    }
 
-  };
+      return promise;
 
-  /**
-   * return old AJST
-   * @returns {Mixed} old AJST
-   */
-  AJST.noConflict = function() {
-    global.AJST = _oldAJST;
-    return AJST;
-  };
+      function resolved() {
+        try {
+          promise.resolve(AJST.getCompiler(id, opt));
+        }
+        catch (e) {
+          promise.reject(e);
+        }
+      }
 
-  /**
-   * get/set Default Option
-   * @public
-   * @returns {Mixed}
-   * @example
-   * var opt = AJST.option();                 // get Default
-   * AJST.option({path: '/template/$id.tpl'}) // set option.path
-   * AJST.option({util:{                      // set option.util.add
-   *   add: function(a, b){ return +a + +b; }
-   * }});
-   */
-  AJST.option = function() {
-    switch (arguments.length) {
-      case 0:
-        return UTIL.extend({}, DEFAULT_OPTION);
-      case 1:
-        if (UTIL.isPlainObject(arguments[0]))
-          UTIL.extend(DEFAULT_OPTION, arguments[0]);
-        return true;
-    }
-  };
+    };
 
-  /**
-   * Remote JSON Data
-   * @param {String} id
-   * @param {String} url
-   * @param {Option} [option]
-   * @returns {Promise}
-   */
-  AJST.ajax = function(id, url, option) {
+    /**
+     * return old AJST
+     * @returns {Mixed} old AJST
+     */
+    AJST.noConflict = function() {
+      global.AJST = _oldAJST;
+      return AJST;
+    };
 
-    return AJST(id, UTIL.ajax({
-      url: url,
-      dataType: 'json'
-    }), option);
+    /**
+     * get/set Default Option
+     * @public
+     * @returns {Mixed}
+     * @example
+     * var opt = AJST.option();                 // get Default
+     * AJST.option({path: '/template/$id.tpl'}) // set option.path
+     * AJST.option({util:{                      // set option.util.add
+     *   add: function(a, b){ return +a + +b; }
+     * }});
+     */
+    AJST.option = function() {
+      switch (arguments.length) {
+        case 0:
+          return UTIL.extend({}, DEFAULT_OPTION);
+        case 1:
+          if (UTIL.isPlainObject(arguments[0]))
+            UTIL.extend(DEFAULT_OPTION, arguments[0]);
+          return true;
+      }
+    };
 
-  };
+    /**
+     * Remote JSON Data
+     * @param {String} id
+     * @param {String} url
+     * @param {Option} [option]
+     * @returns {Promise}
+     */
+    AJST.ajax = function(id, url, option) {
 
-  /**
-   * Create/Replace Template
-   * @public
-   * @param {String} id
-   * @param {String} tplString
-   * @example
-   * AJST.setTemplate('Sample1', '1 + 1 = <?=1+1?>');
-   * AJST('Sample1').then(function( output ){
-   * // output:
-   * // 1 + 1 = 2
-   * });
-   */
-  AJST.setTemplate = function(id, tplString) {
+      return AJST(id, UTIL.ajax({
+        url: url,
+        dataType: 'json'
+      }), option);
 
-    tplCache[id] = tplString.trim();
-    compileCache[id] = null;
+    };
 
-  };
+    /**
+     * Create/Replace Template
+     * @public
+     * @param {String} id
+     * @param {String} tplString
+     * @example
+     * AJST.setTemplate('Sample1', '1 + 1 = <?=1+1?>');
+     * AJST('Sample1').then(function( output ){
+     * // output:
+     * // 1 + 1 = 2
+     * });
+     */
+    AJST.setTemplate = function(id, tplString) {
 
-  /**
-   * Template string is extracted from the element.
-   * @param {Element} element Attribute ID is required. element.ID is used as the template ID.
-   */
-  AJST.setTemplateElement = function(element) {
-    if (!element.id)
-      return;
-    AJST.setTemplate(element.id, element.innerHTML.replace(/<!--\?/g, '<?').replace(/\?-->/g, '?>'));
-  };
+      tplCache[id] = tplString.trim();
+      compileCache[id] = null;
 
-  /**
-   * In the document, template is automatically collected.
-   */
-  AJST.autocollect = function() {
+    };
 
-    if (!DEFAULT_OPTION.autocollect)
-      return;
+    /**
+     * Template string is extracted from the element.
+     * @param {Element} element Attribute ID is required. element.ID is used as the template ID.
+     */
+    AJST.setTemplateElement = function(element) {
+      if (!element.id)
+        return;
+      AJST.setTemplate(element.id, element.innerHTML.replace(/<!--\?/g, '<?').replace(/\?-->/g, '?>'));
+    };
 
-    Array.prototype.forEach.call(document.querySelectorAll('SCRIPT[id]'), AJST.setTemplateElement);
+    /**
+     * In the document, template is automatically collected.
+     */
+    AJST.autocollect = function() {
 
-    Array.prototype.forEach.call(document.querySelectorAll('SCRIPT[id]'), function(element) {
+      if (!DEFAULT_OPTION.autocollect)
+        return;
 
-      // auto replace
-      if (element.getAttribute('data-ajst')) {
+      Array.prototype.forEach.call(document.querySelectorAll('SCRIPT[id]'), AJST.setTemplateElement);
 
-        var ajax = element.getAttribute('data-ajst-ajax'),
-            data = element.getAttribute('data-ajst-data') ? JSON.parse(element.getAttribute('data-ajst-data')) : undefined,
-            option = element.getAttribute('data-ajst-option') ? JSON.parse(element.getAttribute('data-ajst-option')) : undefined;
+      Array.prototype.forEach.call(document.querySelectorAll('SCRIPT[id]'), function(element) {
 
-        (ajax ? AJST.ajax(element.id, ajax, option) : AJST(element.id, data, option)).then(function(tplOutput) {
+        // auto replace
+        if (element.getAttribute('data-ajst')) {
 
-          var tplElementList = UTIL.parseHTML(tplOutput);
+          var ajax = element.getAttribute('data-ajst-ajax'),
+              data = element.getAttribute('data-ajst-data') ? JSON.parse(element.getAttribute('data-ajst-data')) : undefined,
+              option = element.getAttribute('data-ajst-option') ? JSON.parse(element.getAttribute('data-ajst-option')) : undefined;
 
-          UTIL.toArray(tplElementList).forEach(function(tplElement) {
-            element.parentNode.insertBefore(tplElement, element);
+          (ajax ? AJST.ajax(element.id, ajax, option) : AJST(element.id, data, option)).then(function(tplOutput) {
+
+            var tplElementList = UTIL.parseHTML(tplOutput);
+
+            UTIL.toArray(tplElementList).forEach(function(tplElement) {
+              element.parentNode.insertBefore(tplElement, element);
+            });
+
+            UTIL.removeElement(element);
+
+          }, function(e) {
+
+            throw e;
+
           });
 
+        }
+
+        else
           UTIL.removeElement(element);
 
-        }, function(e) {
+      });
 
-          throw e;
+    };
 
-        });
+    /**
+     * Get Template
+     * @public
+     * @param {String} id
+     * @returns {String|undefined}
+     * @example
+     * AJST.setTemplate('Sample1', '1 + 1 = <?=1+1?>');
+     * AJST.getTemplate('Sample1'); // '1 + 1 = <?=1+1?>'
+     */
+    AJST.getTemplate = function(id) {
 
+      return tplCache[id];
+
+    };
+
+    /**
+     * Get Template Compiler
+     * @param {String} id
+     * @param {Object} [option]
+     * @returns {Function}
+     * @throws {type} description
+     */
+    AJST.getCompiler = function(id, option) {
+
+      if (!compileCache[id]) {
+        var tplString = AJST.getTemplate(id);
+        if (tplString === undefined)
+          throw new Error('AJST Undefined TPL ID (ID: ' + id + ')');
+        compileCache[id] = tplCompiler(tplString, option);
       }
 
-      else
-        UTIL.removeElement(element);
+      return compileCache[id];
 
-    });
+    };
 
-  };
+    AJST.Promise = Promise;
 
-  /**
-   * Get Template
-   * @public
-   * @param {String} id
-   * @returns {String|undefined}
-   * @example
-   * AJST.setTemplate('Sample1', '1 + 1 = <?=1+1?>');
-   * AJST.getTemplate('Sample1'); // '1 + 1 = <?=1+1?>'
-   */
-  AJST.getTemplate = function(id) {
+    AJST.duplicate = duplicate;
 
-    return tplCache[id];
+    /**
+     * AJST Defulat Option
+     * @private
+     * @type Object
+     */
+    var DEFAULT_OPTION = {
+      path: './tpl/$id.tpl',
+      url: null,
+      ajaxType: 'GET',
+      ajaxCache: true,
+      ajaxData: {},
+      global: {
+        AJST: AJST,
+        util: UTIL,
+        Promise: Promise
+      },
+      autocollect: true
+    };
 
-  };
+    return AJST;
 
-  /**
-   * Get Template Compiler
-   * @param {String} id
-   * @param {Object} [option]
-   * @returns {Function}
-   * @throws {type} description
-   */
-  AJST.getCompiler = function(id, option) {
-
-    if (!compileCache[id]) {
-      var tplString = AJST.getTemplate(id);
-      if (tplString === undefined)
-        throw new Error('AJST Undefined TPL ID (ID: ' + id + ')');
-      compileCache[id] = tplCompiler(tplString, option);
-    }
-
-    return compileCache[id];
-
-  };
+  }
 
   /**
    * Create Template Compiler
@@ -653,7 +682,7 @@
    * var when = Promise( [promise1[, promise2[, n..]]] );
    * when.then(function(){ .. }, function(){ .. });
    */
-  var Promise = UTIL.Promise = AJST.Promise = (function() {
+  var Promise = UTIL.Promise = (function() {
 
     var Promise = function() {
 
@@ -1037,24 +1066,7 @@
 
   }
 
-  /**
-   * AJST Defulat Option
-   * @private
-   * @type Object
-   */
-  var DEFAULT_OPTION = {
-    path: './tpl/$id.tpl',
-    url: null,
-    ajaxType: 'GET',
-    ajaxCache: true,
-    ajaxData: {},
-    global: {
-      AJST: AJST,
-      util: UTIL,
-      Promise: Promise
-    },
-    autocollect: true
-  };
+  var AJST = global.AJST = duplicate();
 
   if (support.addEventListener)
     document.addEventListener("DOMContentLoaded", AJST.autocollect, false);
