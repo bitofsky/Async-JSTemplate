@@ -340,6 +340,9 @@
         url = opt.url || opt.path.replace(/\$id/g, id),
         promise = Promise();
 
+    if( typeof url == 'function' )
+      url = url(id, option) || opt.path.replace(/\$id/g, id);
+
     try {
 
       if (AJST.getTemplate(id))
