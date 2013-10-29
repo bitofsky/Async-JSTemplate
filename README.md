@@ -288,6 +288,65 @@ Promise 중 하나라도 실패하면 fail 콜백이 실행됩니다.
 
 @see [Wiki](https://github.com/bitofsky/Async-JSTemplate/wiki/7.--Script--%ED%83%9C%EA%B7%B8-%EC%9D%B4%EC%8A%A4%EC%BC%80%EC%9D%B4%ED%94%84)
 
+# 실행 옵션과 기본 옵션 변경
+
+TPL 생성시, 3번째 인자를 넣어서 옵션을 변경할 수 있습니다.
+
+    AJST( ID, DATA, OPTION );
+
+이렇게 변경된 OPTION 은 해당 TPL 에서만 유효하며, TPL 안에서 include 해도 include 된 TPL 로 OPTION 이 전달되지는 않습니다. OPTION을 전달하려면 include 사용 시 명시적으로 **option** 을 전달해야 합니다.
+
+    <script id="TPL_ID">
+      <? include('Other_TPL_ID', null, option); ?>
+    </script>
+
+#### {String} OPTION.path = './tpl/$id.tpl'
+TPL 파일을 찾을 기본 경로입니다. $id 는 TPL_ID와 치환됩니다. OPTION.url 이 정의되지 않았을 때에만 동작 합니다.
+
+    AJST('TestTemplate', null, {path: 'http://other.fileserver/path/$id.tpl'});
+
+#### {String|Function} OPTION.url = null
+TPL 파일의 경로를 지정 합니다. null 이면 OPTION.path 와 $id 를 통해 url 을 자동 생성 합니다.
+Function 일 경우 TPL 파일이 필요한 시점에 함수가 실행되며 인자로 TPL_ID 와 OPTION 을 전달 합니다.
+이 Function에서는 반드시 {String} URL 주소를 리턴 해야 합니다.
+Function 은 TPL ID의 규칙 별로 파일 위치를 다르게 하고자 할 때 유용합니다.
+
+    AJST('TestTemplate', null, {url: function(id, option){ return 'http://siteurl/filename.tpl'; });
+
+#### {String} OPTION.ajaxType = 'GET'
+TPL 파일을 호출할 때 Method type을 정할 수 있습니다.
+
+#### {Boolean} OPTION.ajaxCache = true
+TPL 파일을 호출할 때 브라우저 캐쉬 사용 여부를 정할 수 있습니다. false인 경우 매 호출마다 TimeStamp가 붙어 캐쉬가 동작하지 않도록 합니다.
+
+#### {Object} OPTION.ajaxData = {}
+TPL 파일을 호출할 때 파라미터를 입력할 수 있습니다.
+
+#### {Object} OPTION.global = {AJST:AJST, util:UTIL, Promise:Promise}
+TPL을 컴파일 할 때 내부 스크립트 영역(<? ~ ?>) 안에서 쓸 글로벌 변수를 정의할 수 있습니다.
+
+#### {Boolean} OPTION.autocollect = true
+브라우저가 처음 시작할 때 AutoCollect 를 자동 실행할지 여부를 정할 수 있습니다.
+
+
+
+1회만 옵션을 변경하는게 아니라 기본 옵션 자체를 변경 하려면 AJST.option() 을 사용 합니다.
+
+#### {Object} AJST.option()
+현재 설정된 기본 옵션을 반환합니다.
+
+#### {Boolean} AJST.option( {Object newOption} )
+기본 옵션에 newOption 을 덮어 씌웁니다.
+
+    AJST.option({
+      path: function( id, option ){
+        var match = id.match(/^([A-Z]{1,}[a-z0-9]{1,})/);
+        if( !match ) throw new Error('Invalid ID Pattern : ' + id);
+        return './' + match[0] + '/tpl/' + id + '.tpl';
+      }
+    });
+
+
 # 데모
 
 @see [AJST Introduce & Test with Bootstrap 3](http://bitofsky.github.io/Async-JSTemplate/)
