@@ -410,7 +410,7 @@
           return UTIL.extend({}, DEFAULT_OPTION);
         case 1:
           if (UTIL.isPlainObject(arguments[0]))
-            UTIL.extend(DEFAULT_OPTION, arguments[0]);
+            UTIL.extend(DEFAULT_OPTION, arguments[0], CONST_OPTION);
           return true;
       }
     };
@@ -549,18 +549,22 @@
      * @type Object
      */
     var DEFAULT_OPTION = {
-      path: './tpl/$id.tpl',
-      url: null,
-      ajaxType: 'GET',
-      ajaxCache: true,
-      ajaxData: {},
-      global: {
-        AJST: AJST,
-        util: UTIL,
-        Promise: Promise
-      },
-      autocollect: true
-    };
+          path: './tpl/$id.tpl',
+          url: null,
+          ajaxType: 'GET',
+          ajaxCache: true,
+          ajaxData: {},
+          autocollect: true
+        },
+        CONST_OPTION   = {
+          global: {
+            AJST: AJST,
+            util: UTIL,
+            Promise: Promise
+          }
+        };
+
+    UTIL.extend(DEFAULT_OPTION, CONST_OPTION);
 
     /**
      * Async Promise Cache
