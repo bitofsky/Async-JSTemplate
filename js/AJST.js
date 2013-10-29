@@ -562,6 +562,54 @@
       autocollect: true
     };
 
+    /**
+     * Async Promise Cache
+     *
+     * @author bitofsky@neowiz.com 2013.07.25
+     * @param {String} name
+     * @param {Function} callback
+     * @return {Promise}
+     */
+    var promiseCache = (function() {
+
+      var Cached = {},
+          Waiting = {};
+
+      return function(name, callback) {
+
+        var promise = Promise();
+
+        switch (true) {
+          case !!Cached[name] : // cached arguments
+            resolveCache();
+            break;
+          case !!Waiting[name] : // waiting
+            Waiting[name].then(resolveCache, onerror);
+            break;
+          default : // first call
+            Waiting[name] = callback().then(setNewCache, onerror).then(resolveCache);
+        }
+
+        return promise;
+
+        function setNewCache() {
+          Waiting[name] = null;
+          Cached[name] = arguments;
+        }
+
+        function resolveCache() {
+          promise.resolve.apply(promise, Cached[name]);
+        }
+
+        function onerror() {
+          Waiting[name] = null;
+          promise.reject.apply(promise, arguments);
+        }
+
+      };
+
+    })();
+
     return AJST;
 
   }
@@ -837,54 +885,6 @@
       if (arguments.length)
         promise.when.apply(promise, arguments);
       return promise;
-    };
-
-  })();
-
-  /**
-   * Async Promise Cache
-   *
-   * @author bitofsky@neowiz.com 2013.07.25
-   * @param {String} name
-   * @param {Function} callback
-   * @return {Promise}
-   */
-  var promiseCache = (function() {
-
-    var Cached = {},
-        Waiting = {};
-
-    return function(name, callback) {
-
-      var promise = Promise();
-
-      switch (true) {
-        case !!Cached[name] : // cached arguments
-          resolveCache();
-          break;
-        case !!Waiting[name] : // waiting
-          Waiting[name].then(resolveCache, onerror);
-          break;
-        default : // first call
-          Waiting[name] = callback().then(setNewCache, onerror).then(resolveCache);
-      }
-
-      return promise;
-
-      function setNewCache() {
-        Waiting[name] = null;
-        Cached[name] = arguments;
-      }
-
-      function resolveCache() {
-        promise.resolve.apply(promise, Cached[name]);
-      }
-
-      function onerror() {
-        Waiting[name] = null;
-        promise.reject.apply(promise, arguments);
-      }
-
     };
 
   })();
