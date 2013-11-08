@@ -2,6 +2,9 @@
  * AJST : Asynchronous JavaScript Templating
  *   for Web Browsers
  *
+ * Demo : http://bitofsky.github.io/Async-JSTemplate
+ * Source : https://github.com/bitofsky/Async-JSTemplate
+ * 
  * Inspired by
  *   John Resig's JavaScript Micro-Templating: http://ejohn.org/blog/javascript-micro-templating/
  *   blueimp's JavaScript-Templates: https://github.com/blueimp/JavaScript-Templates/
