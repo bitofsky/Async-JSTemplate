@@ -4,7 +4,7 @@
  *
  * Demo : http://bitofsky.github.io/Async-JSTemplate
  * Source : https://github.com/bitofsky/Async-JSTemplate
- * 
+ *
  * Inspired by
  *   John Resig's JavaScript Micro-Templating: http://ejohn.org/blog/javascript-micro-templating/
  *   blueimp's JavaScript-Templates: https://github.com/blueimp/JavaScript-Templates/
@@ -354,7 +354,7 @@
           resolved();
 
         else
-          promiseCache(url, function() {
+          Promise().cache(url, function() {
             return UTIL.ajax({
               type: opt.ajaxType,
               cache: opt.ajaxCache,
@@ -569,54 +569,6 @@
 
     UTIL.extend(DEFAULT_OPTION, CONST_OPTION);
 
-    /**
-     * Async Promise Cache
-     *
-     * @author bitofsky@neowiz.com 2013.07.25
-     * @param {String} name
-     * @param {Function} callback
-     * @return {Promise}
-     */
-    var promiseCache = (function() {
-
-      var Cached = {},
-          Waiting = {};
-
-      return function(name, callback) {
-
-        var promise = Promise();
-
-        switch (true) {
-          case !!Cached[name] : // cached arguments
-            resolveCache();
-            break;
-          case !!Waiting[name] : // waiting
-            Waiting[name].then(resolveCache, onerror);
-            break;
-          default : // first call
-            Waiting[name] = callback().then(setNewCache, onerror).then(resolveCache);
-        }
-
-        return promise;
-
-        function setNewCache() {
-          Waiting[name] = null;
-          Cached[name] = arguments;
-        }
-
-        function resolveCache() {
-          promise.resolve.apply(promise, Cached[name]);
-        }
-
-        function onerror() {
-          Waiting[name] = null;
-          promise.reject.apply(promise, arguments);
-        }
-
-      };
-
-    })();
-
     return AJST;
 
   }
@@ -741,11 +693,13 @@
 
     var Promise = function() {
 
-      var then = [],
-          fail = [],
-          progress = [],
-          always = [],
-          lastReturn = undefined;
+      var then       = [],
+          fail       = [],
+          progress   = [],
+          always     = [],
+          lastReturn = undefined,
+          cacheCplt  = {},
+          cacheWait  = {};
 
       var _this = this;
 
@@ -829,6 +783,45 @@
 
       };
 
+      /**
+       * Async Promise Cache
+       *
+       * @author bitofsky@neowiz.com 2013.07.25
+       * @param {String} name
+       * @param {Function} callback
+       * @return {Promise}
+       */
+      _this.cache = function(name, callback) {
+
+        switch (true) {
+          case !!cacheCplt[name] : // cached arguments
+            resolveCache();
+            break;
+          case !!cacheWait[name] : // waiting
+            cacheWait[name].then(resolveCache, onerror);
+            break;
+          default : // first call
+            cacheWait[name] = callback().then(setNewCache, onerror).then(resolveCache);
+        }
+
+        return _this;
+
+        function setNewCache() {
+          cacheWait[name] = null;
+          cacheCplt[name] = arguments;
+        }
+
+        function resolveCache() {
+          _this.resolve.apply(_this, cacheCplt[name]);
+        }
+
+        function onerror() {
+          cacheWait[name] = null;
+          _this.reject.apply(_this, arguments);
+        }
+
+      };
+
       function complete(callback, state, args) {
 
         if (_this.state != 'unfulfilled')
@@ -889,9 +882,12 @@
     return function() {
 
       var promise = new Promise();
+
       if (arguments.length)
         promise.when.apply(promise, arguments);
+
       return promise;
+
     };
 
   })();
