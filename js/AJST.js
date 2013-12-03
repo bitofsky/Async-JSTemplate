@@ -464,7 +464,7 @@
     };
 
     /**
-     * In the document, template is automatically collected.
+     * Template auto collecting.
      */
     AJST.autocollect = function() {
 
