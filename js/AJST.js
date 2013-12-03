@@ -22,6 +22,237 @@
 
 "use strict";
 
+(function( window ){
+
+  var oldPromise = window.Promise,
+      console    = window.console,
+      cacheCplt  = {},
+      cacheWait  = {};
+
+  var PromiseObject = function() {
+
+    var then       = [],
+        fail       = [],
+        progress   = [],
+        always     = [],
+        lastReturn = undefined;
+
+    var _this = this;
+
+    _this.state = 'unfulfilled';
+
+    _this.then = function() {
+
+      var args = arguments;
+
+      [then, fail, progress].forEach(function(callbacks, i) {
+        if (typeof args[i] == 'function')
+          callbacks.push(args[i]);
+      });
+
+      if (_this.state != 'unfulfilled')
+        executeAllCallbacks(_this.state == 'fulfilled' ? then : fail);
+
+      return this;
+
+    };
+
+    _this.always = function() {
+      Array.prototype.push.apply(always, arguments);
+      if (_this.state != 'unfulfilled')
+        complete(_this.state);
+      return this;
+    };
+
+    _this.resolve = function() {
+      complete(then, 'fulfilled', arguments);
+    };
+
+    _this.reject = function() {
+      complete(fail, 'failed', arguments);
+    };
+
+    _this.notify = function() {
+
+      // progress
+      if (_this.state != 'unfulfilled')
+        return;
+
+      var args = arguments;
+
+      progress.forEach(function(fn) {
+        fn.apply(_this, args);
+      });
+
+    };
+
+    _this.when = function() {
+
+      if (!arguments.length)
+        return;
+
+      var promiseReturn = [],
+          promises = arguments.length == 1 && arguments[0].constructor == Array ? arguments[0] : arguments,
+          currentCnt = 0;
+
+      Array.prototype.forEach.call(promises, function(promise, idx, promises) {
+
+        promise.then(function() {
+
+          promiseReturn[idx] = arguments[0];
+
+          if (promises.length == ++currentCnt)
+            _this.resolve.apply(_this, promiseReturn);
+
+          return arguments[0];
+
+        }, function() {
+
+          _this.reject.apply(_this, arguments);
+
+        });
+
+      });
+
+      if (!promises.length)
+        _this.resolve();
+
+      return this;
+
+    };
+
+    /**
+     * Async Promise Cache
+     *
+     * @author bitofsky@neowiz.com 2013.07.25
+     * @param {String} name
+     * @param {Function} callback
+     * @return {Promise}
+     */
+    _this.cache = function(name, callback) {
+
+      switch (true) {
+        case !!cacheCplt[name] : // cached arguments
+          resolveCache();
+          break;
+        case !!cacheWait[name] : // waiting
+          cacheWait[name].then(resolveCache, onerror);
+          break;
+        default : // first call
+          cacheWait[name] = callback().then(setNewCache, onerror).then(resolveCache);
+      }
+
+      return _this;
+
+      function setNewCache() {
+        cacheWait[name] = null;
+        cacheCplt[name] = arguments;
+      }
+
+      function resolveCache() {
+        _this.resolve.apply(_this, cacheCplt[name]);
+      }
+
+      function onerror() {
+        cacheWait[name] = null;
+        _this.reject.apply(_this, arguments);
+      }
+
+    };
+
+    function complete(callback, state, args) {
+
+      if (_this.state != 'unfulfilled')
+        return;
+
+      _this.state = state;
+
+      lastReturn = args;
+
+      executeAllCallbacks(callback);
+
+    }
+
+    function executeAllCallbacks(callbacks) {
+
+      try {
+
+        var fn, override;
+
+        // shift and execute
+        while (typeof (fn = callbacks.shift()) == 'function') {
+          override = fn.apply(_this, lastReturn);
+          lastReturn = override !== undefined ? [override] : lastReturn;
+        }
+
+        while (typeof (fn = always.shift()) == 'function')
+          fn.call(_this);
+
+      }
+      catch (e) {
+        if( !e.PromiseError ){
+          console.error('Promise error [' + _this.state + '] ' + e.constructor.name + ': ' + e.message);
+          e.PromiseError = true;
+        }
+        throw e;
+      }
+
+    }
+
+  };
+
+  PromiseObject.prototype.fail = function() {
+    var _this = this;
+    Array.prototype.forEach.call(arguments, function(callback) {
+      _this.then(null, callback);
+    });
+    return this;
+  };
+
+  PromiseObject.prototype.progress = function() {
+    var _this = this;
+    Array.forEach.call(arguments, function(callback) {
+      _this.then(null, null, callback);
+    });
+    return this;
+  };
+
+  /**
+   * Promise/A
+   * @example
+   * var p = new Promise();
+   * p.resolve(function( result ){ .. });
+   * p.reject(function( err ){ .. });
+   * var when = new Promise().when( [promise1[, promise2[, n..]]] );
+   * when.then(function( promise1Result, promise2Result ){ .. }, function( err ){ .. });
+   */
+  var Promise = window.Promise = function(){
+
+    var oPromise = new PromiseObject();
+
+    if (arguments.length)
+      oPromise.when.apply(oPromise, arguments);
+
+    return oPromise;
+
+  };
+
+  Promise.noConflict = function(){
+
+    window.Promise = oldPromise;
+
+    return Promise;
+
+  };
+
+  /**
+   * AMD(Asynchronous Module Definition)
+   */
+  if( window.define && window.amd )
+    window.define('Promise', [/*Require*/], function(){ return Promise; });
+
+})( this );
+
 (function(global) {
 
   var _oldAJST = global.AJST;
@@ -676,221 +907,6 @@
       return ";\n_s+='";
     }
   };
-
-  /**
-   * Promise/A
-   *
-   * @author bitofsky@neowiz.com 2013.07.25
-   * @returns {Promise}
-   * @example
-   * var p = Promise();
-   * p.resolve( result );
-   * p.reject( exception );
-   * var when = Promise( [promise1[, promise2[, n..]]] );
-   * when.then(function(){ .. }, function(){ .. });
-   */
-  var Promise = UTIL.Promise = (function() {
-
-    var Promise = function() {
-
-      var then       = [],
-          fail       = [],
-          progress   = [],
-          always     = [],
-          lastReturn = undefined,
-          cacheCplt  = {},
-          cacheWait  = {};
-
-      var _this = this;
-
-      _this.state = 'unfulfilled';
-
-      _this.then = function() {
-
-        var args = arguments;
-
-        [then, fail, progress].forEach(function(callbacks, i) {
-          if (typeof args[i] == 'function')
-            callbacks.push(args[i]);
-        });
-
-        if (_this.state != 'unfulfilled')
-          executeAllCallbacks(_this.state == 'fulfilled' ? then : fail);
-
-        return this;
-
-      };
-
-      _this.always = function() {
-        Array.prototype.push.apply(always, arguments);
-        if (_this.state != 'unfulfilled')
-          complete(_this.state);
-        return this;
-      };
-
-      _this.resolve = function() {
-        complete(then, 'fulfilled', arguments);
-      };
-
-      _this.reject = function() {
-        complete(fail, 'failed', arguments);
-      };
-
-      _this.notify = function() {
-
-        // progress
-        if (_this.state != 'unfulfilled')
-          return;
-
-        var args = arguments;
-
-        progress.forEach(function(fn) {
-          fn.apply(_this, args);
-        });
-
-      };
-
-      _this.when = function() {
-
-        if (!arguments.length)
-          return;
-
-        var promiseReturn = [],
-            promises = arguments.length == 1 && arguments[0].constructor == Array ? arguments[0] : arguments,
-            currentCnt = 0;
-
-        Array.prototype.forEach.call(promises, function(promise, idx, promises) {
-
-          promise.then(function() {
-
-            promiseReturn[idx] = arguments[0];
-
-            if (promises.length == ++currentCnt)
-              _this.resolve.apply(_this, promiseReturn);
-
-            return arguments[0];
-
-          }, function() {
-
-            _this.reject.apply(_this, arguments);
-
-          });
-
-        });
-
-        if (!promises.length)
-          _this.resolve();
-
-      };
-
-      /**
-       * Async Promise Cache
-       *
-       * @author bitofsky@neowiz.com 2013.07.25
-       * @param {String} name
-       * @param {Function} callback
-       * @return {Promise}
-       */
-      _this.cache = function(name, callback) {
-
-        switch (true) {
-          case !!cacheCplt[name] : // cached arguments
-            resolveCache();
-            break;
-          case !!cacheWait[name] : // waiting
-            cacheWait[name].then(resolveCache, onerror);
-            break;
-          default : // first call
-            cacheWait[name] = callback().then(setNewCache, onerror).then(resolveCache);
-        }
-
-        return _this;
-
-        function setNewCache() {
-          cacheWait[name] = null;
-          cacheCplt[name] = arguments;
-        }
-
-        function resolveCache() {
-          _this.resolve.apply(_this, cacheCplt[name]);
-        }
-
-        function onerror() {
-          cacheWait[name] = null;
-          _this.reject.apply(_this, arguments);
-        }
-
-      };
-
-      function complete(callback, state, args) {
-
-        if (_this.state != 'unfulfilled')
-          return;
-
-        _this.state = state;
-
-        lastReturn = args;
-
-        executeAllCallbacks(callback);
-
-      }
-
-      function executeAllCallbacks(callbacks) {
-
-        try {
-
-          var fn, override;
-
-          // shift and execute
-          while (typeof (fn = callbacks.shift()) == 'function') {
-            override = fn.apply(_this, lastReturn);
-            lastReturn = override !== undefined ? [override] : lastReturn;
-          }
-
-          while (typeof (fn = always.shift()) == 'function')
-            fn.call(_this);
-
-        }
-        catch (e) {
-          if( !e.AJSTPromiseError ){
-            console.error('AJST Promise error [' + _this.state + '] ' + e.constructor.name + ': ' + e.message);
-            e.AJSTPromiseError = true;
-          }
-          throw e;
-        }
-
-      }
-
-    };
-
-    Promise.prototype.fail = function() {
-      var _this = this;
-      Array.prototype.forEach.call(arguments, function(callback) {
-        _this.then(null, callback);
-      });
-      return this;
-    };
-
-    Promise.prototype.progress = function() {
-      var _this = this;
-      Array.forEach.call(arguments, function(callback) {
-        _this.then(null, null, callback);
-      });
-      return this;
-    };
-
-    return function() {
-
-      var promise = new Promise();
-
-      if (arguments.length)
-        promise.when.apply(promise, arguments);
-
-      return promise;
-
-    };
-
-  })();
 
   /**
    * Return a formatted string
