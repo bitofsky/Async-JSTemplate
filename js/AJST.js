@@ -259,6 +259,13 @@
 
   var console = global.console = global.console || {};
 
+  var support = {
+    addEventListener: !!document.addEventListener,
+    argumentsSlice: !(document.documentMode && document.documentMode <= 8),
+    uglyInnerHTML: document.documentMode && document.documentMode <= 8,
+    cors: 'withCredentials' in new XMLHttpRequest()
+  };
+
   /**
    * AJST Utils
    * @private
@@ -469,13 +476,6 @@
       }
 
     }
-  };
-
-  var support = {
-    addEventListener: !!document.addEventListener,
-    argumentsSlice: !(document.documentMode && document.documentMode <= 8),
-    uglyInnerHTML: document.documentMode && document.documentMode <= 8,
-    cors: 'withCredentials' in new XMLHttpRequest()
   };
 
   function duplicate(){
