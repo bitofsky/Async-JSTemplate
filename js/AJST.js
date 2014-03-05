@@ -594,7 +594,14 @@
               dataType: 'html'
             }).then(function(arrTemplate) {
 
-              Array.prototype.forEach.call(arrTemplate, AJST.setTemplateElement);
+              var arr = [];
+
+              Array.prototype.forEach.call(arrTemplate, function( element, idx ){
+                // check opt.override id set
+                if( idx == 0 || !opt.override[element.id] ) arr.push( element );
+              });
+
+              arr.forEach( AJST.setTemplateElement );
 
             });
           }).then(resolved, function() {
@@ -788,7 +795,8 @@
           ajaxType: 'GET',
           ajaxCache: true,
           ajaxData: {},
-          autocollect: true
+          autocollect: true,
+          override: {}
         },
         CONST_OPTION   = {
           global: {
