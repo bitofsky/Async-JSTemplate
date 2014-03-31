@@ -1152,7 +1152,7 @@
    */
   if (!global.document.querySelectorAll) {
     (function(document) {
-      var a = document.styleSheets[0] || document.createStyleSheet();
+      var a = document.styleSheets.length ? document.styleSheets[0] : document.createStyleSheet();
       document.querySelectorAll = function(e) {
         a.addRule(e, 'f:b');
         for (var l = document.all, b = 0, c = [], f = l.length; b < f; b++)
