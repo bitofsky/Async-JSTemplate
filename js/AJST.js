@@ -898,8 +898,6 @@
 
     } catch (e) {
 
-      console.dir( e );
-
       if (option.debug) {
         console.debug('AJST tplCompiler Debug');
         console.debug(e.message);
