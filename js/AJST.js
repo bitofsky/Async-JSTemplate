@@ -17,7 +17,7 @@
  *
  * @author bitofsky@neowiz.com 2013.07.25
  * @encoding UTF-8
- * @version 1.0
+ * @version 1.1
  */
 
 "use strict";
@@ -673,6 +673,43 @@
     };
 
     /**
+     * AJST for iterable data (array or promise)
+     * @param {String} id
+     * @param {Array|Promise} data
+     * @param {Option} option
+     * @returns {Promise}
+     */
+    AJST.each = function(id, data, option) {
+
+      var promise = Promise();
+
+      if( data && typeof data.then == 'function' )
+        data.then( eachDataProc );
+      else
+        eachDataProc( data );
+
+      return promise;
+
+      function eachDataProc( list ){
+
+        var dataPromise = [];
+
+        UTIL.each(list, function(v){
+          dataPromise.push( AJST(id, v, option) );
+        });
+
+        if( !dataPromise.length )
+          promise.resolve('');
+        else
+          Promise( dataPromise ).then(function(){
+            promise.resolve( (UTIL.toArray(arguments)||[]).join('') );
+          }, promise.reject );
+
+      }
+
+    };
+
+    /**
      * Create/Replace Template
      * @public
      * @param {String} id
@@ -848,11 +885,7 @@
             return includeExecute.apply(AJST.ajax, arguments);\n\
           },\n\
           includeEach = function(id, data, option){\n\
-            var ret = [];\n\
-            util.each(data, function(eachData, key){\n\
-              ret.push(include(id, eachData, option));\n\
-            });\n\
-            return ret.join();\n\
+            return includeExecute.apply(AJST.each, arguments);\n\
           };\n\
       var _s = \'' + str.replace(regexp_remove_ws, replace_remove_ws).replace(regexp_compile, replace_compile).replace(regexp_escape, replace_escape) + '\';\n\
       return new Promise(_promises).then(function(){\n\
@@ -864,6 +897,8 @@
       return new Function(args, fn);
 
     } catch (e) {
+
+      console.dir( e );
 
       if (option.debug) {
         console.debug('AJST tplCompiler Debug');
