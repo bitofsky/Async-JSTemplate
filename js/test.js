@@ -324,12 +324,12 @@
           name: 'Include multiple promise',
           func: getTestFunction,
           callFunction: function() {
-            return AJST.Promise([
+            return Promise([
               AJST('include1'),
               AJST('include2'),
               AJST('Include multiple promise', null, {url: './tpl/TestCase4.tpl'})
-            ]).then(function() {
-              return Array.prototype.join.call(arguments, '');
+            ]).then(function(all) {
+              return all.join('');
             });
           },
           args: [],
