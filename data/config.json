@@ -1,6 +1,6 @@
 {
   "brand": "AJST",
-  "readme": "http://rawgithub.com/bitofsky/Async-JSTemplate/master/README.md",
+  "readme": "README.md",
   "download": "https://github.com/bitofsky/Async-JSTemplate/archive/master.zip",
   "downloadjs": "https://rawgithub.com/bitofsky/Async-JSTemplate/master/js/AJST.js",
   "downloadmin": "https://rawgithub.com/bitofsky/Async-JSTemplate/master/js/AJST.min.js",
