@@ -52,7 +52,7 @@ AJST는 PHP나 ASP와 비슷한 구문을 사용 합니다. **<? ~ ?>**
 
 자바스크립트로 문자열을 생성할 수 있습니다.
 
-구문 안에서 문자열을 출력하려면 [print](https://github.com/bitofsky/Async-JSTemplate/wiki/5.-%EB%82%B4%EC%9E%A5-%EC%9C%A0%ED%8B%B8%EB%A6%AC%ED%8B%B0#print-string-str-) 나 [printf](https://github.com/bitofsky/Async-JSTemplate/wiki/5.-%EB%82%B4%EC%9E%A5-%EC%9C%A0%ED%8B%B8%EB%A6%AC%ED%8B%B0#printf-string-format-stringnumber-outn-) 를 쓰세요.
+구문 안에서 문자열을 출력하려면 print나 printf를 쓰세요.
 
 구문 밖에서는 모든 문자열이 자동 출력 됩니다.
 
@@ -217,7 +217,7 @@ AJST.ajax와 동일하게 동작 합니다. 간단히 특정 URL에서 JSON data
 
 # Promise 사용 방법
 
-@see [Wiki](https://github.com/bitofsky/Async-JSTemplate/wiki/4.-Promise-%EC%82%AC%EC%9A%A9-%EB%B0%A9%EB%B2%95)
+@see [Promise](https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Global_Objects/Promise)
 
 AJST는 Promise 를 기반으로 동작 합니다. 모든 요청은 Promise 객체가 반환됩니다.
 
@@ -271,18 +271,6 @@ Promise 중 하나라도 실패하면 fail 콜백이 실행됩니다.
     }, fail( err ){
       // if not,
     });
-
-# 내장 유틸리티
-
-@see [Wiki](https://github.com/bitofsky/Async-JSTemplate/wiki/5.-%EB%82%B4%EC%9E%A5-%EC%9C%A0%ED%8B%B8%EB%A6%AC%ED%8B%B0)
-
-# 자동 수집
-
-@see [Wiki](https://github.com/bitofsky/Async-JSTemplate/wiki/6.-%EC%9E%90%EB%8F%99-%EC%88%98%EC%A7%91)
-
-# &lt;Script&gt; 태그 이스케이프
-
-@see [Wiki](https://github.com/bitofsky/Async-JSTemplate/wiki/7.--Script--%ED%83%9C%EA%B7%B8-%EC%9D%B4%EC%8A%A4%EC%BC%80%EC%9D%B4%ED%94%84)
 
 # 실행 옵션과 기본 옵션 변경
 
@@ -351,7 +339,7 @@ TPL을 컴파일 할 때 내부 스크립트 영역(<? ~ ?>) 안에서 쓸 글�
 
 [require.js](http://requirejs.org)를 사용하여 비동기 모듈로 AJST를 로드할 수 있습니다.
 
-이 경우 AJST가 딜레이 되어 로드되니 자동수집([AJST.autocollect](https://github.com/bitofsky/Async-JSTemplate/wiki/6.-%EC%9E%90%EB%8F%99-%EC%88%98%EC%A7%91))을 사용하는 경우 이를 수동으로 활성화 해야 합니다.
+이 경우 AJST가 딜레이 되어 로드되니 자동수집([AJST.autocollect])을 사용하는 경우 이를 수동으로 활성화 해야 합니다.
 
 # 지원 브라우져
 
