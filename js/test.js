@@ -324,7 +324,7 @@
           name: 'Include multiple promise',
           func: getTestFunction,
           callFunction: function() {
-            return Promise([
+            return Promise.all([
               AJST('include1'),
               AJST('include2'),
               AJST('Include multiple promise', null, {url: './tpl/TestCase4.tpl'})
