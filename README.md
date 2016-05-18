@@ -15,7 +15,7 @@ AJST는 서버측 보다는 클라이언트측에서 동작하도록 되어있�
 2. 전용 템플릿 문법 없이 **자바스크립트** 를 사용 하므로 쉽습니다.
 3. 템플릿 소스가 필요한 시점에 **자동으로 원격 로딩** 합니다.
 4. 템플릿 안에서 **Include** 로 다른 템플릿을 참조시킬 수 있습니다.
-5. CommonJS에 정의된 '[Promise/A](http://wiki.commonjs.org/wiki/Promises/A)'를 사용.
+5. ES6 Promise '[Promise](https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Global_Objects/Promise)'를 사용.
 
 # 샘플 및 예제
 
@@ -162,8 +162,10 @@ URL을 2번째 인자로 전달하면 됩니다.
     
 # Include
 
-AJST는 템플릿 안에서 다른 템플릿을 include 할 수 있습니다. 심지어 다른 .tpl 파일의 템플릿이라도 상관 없으며, 자동으로 로드 됩니다.
-include 된 템플릿에서 또다른 템플릿을 include 할 수도 있습니다. 이 역시 자동으로 핸들링 됩니다.
+AJST는 템플릿 안에서 다른 템플릿을 include 할 수 있습니다. 다른 .tpl 파일의 템플릿이라도 상관 없으며, 자동으로 로드 됩니다.
+include 된 템플릿에서 또 다른 템플릿을 include 할 수도 있습니다. 이 역시 자동으로 핸들링 됩니다.
+얼마나 많은 TPL을 include 하건 상관없이 모든 TPL 생성이 성공하면 Promise가 then callback을 실행하게 됩니다.
+도중 1가지라도 TPL 생성에 실패하는 경우 fail callback이 실행됩니다.
 
 #### include( {String tpl_id}, [{Mixed|Promise data}], [{Object option}] )
 가장 일반적인 include 입니다. 인자는 AJST()와 동일합니다. 두 번째 data 인자에 Promise가 들어오는 경우 해당 Promise의 성공 결과 값을 data로 사용 합니다.
@@ -228,7 +230,7 @@ AJST는 Promise 를 기반으로 동작 합니다. 모든 요청은 Promise 객�
 실패하면 failCallback 이 실행되어 오류가 전달 됩니다.
 
     AJST('TPL_ID').then( successCallback, failCallback );
-    AJST('TPL_ID').then( successCallback ).fail( failCallback );
+    AJST('TPL_ID').then( successCallback ).catch( failCallback );
 
 #### Promise 체인
 
@@ -236,19 +238,16 @@ Promise는 여러개를 체인으로 묶을 수 있습니다.
 
 요청이 성공 또는 실패하면 콜백 함수가 실행되는데, 체인으로 묶인 순서대로 실행 됩니다.
 
-만약 콜백 함수가 return 을 하지 않으면 전달 인자는 그대로 유지되어 다음 콜백 함수가 실행 됩니다.
-
 만약 콜백 함수가 무언가를 return 하면 다음 콜백 함수의 첫번째 인자는 이 리턴 값이 됩니다.
 
     AJST('TPL_ID')
       .then(function( output ){
-      }).then(function( output ){
         return {
           "html": output
         };
       }).then(function( obj ){
         // obj.html
-      }).fail(function(err){
+      }, function(err){
         // if error
       });
 
@@ -256,25 +255,22 @@ Promise는 여러개를 체인으로 묶을 수 있습니다.
 
 만약 여러개의 Promise가 모두 성공했을 때에만 success 콜백을 실행하고 싶을 때가 있을겁니다.
 
-이럴때 AJST.Promise() 에 인자로 Promise를 전달하면 전달된 Promise가 모두 성공일 때에만 success 콜백이 실행됩니다.
+이럴때 [Promise.all](https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Global_Objects/Promise/all)() 에 인자로 Promise를 전달하면 전달된 Promise가 모두 성공일 때에만 success 콜백이 실행됩니다.
 
 Promise 중 하나라도 실패하면 fail 콜백이 실행됩니다.
 
-    AJST.Promise(
+    Promise.all([
       AJST('TPL_A'),
       AJST('TPL_B'),
       AJST('TPL_C')
-    ).then(function( outputA, outputB, outputC ){
+    ]).then(function( all ){
       // if all is successful,
+      var outputA = all[0];
+      var outputB = all[1];
+      var outputC = all[2];
     }, fail( err ){
       // if not,
     });
-
-# 왜 Promise/A 를 사용 할까요?
-
-> **Problems when using asynchronous programming** : [MSDN](http://msdn.microsoft.com/en-us/library/windows/apps/hh700330.aspx)
-> 
-> Asynchronous programming can quickly become complicated. Many of the standard JavaScript APIs rely heavily on callbacks, which are often nested, making them difficult to debug. In addition, the use of anonymous inline functions can make reading the call stack problematic. Exceptions that are thrown from within a heavily nested set of callbacks might not be propagated up to a function that initiated the chain. This makes it difficult to determine exactly where a bug is hidden.
 
 # 내장 유틸리티
 
@@ -359,7 +355,7 @@ TPL을 컴파일 할 때 내부 스크립트 영역(<? ~ ?>) 안에서 쓸 글�
 
 # 지원 브라우져
 
- * IE7+ (IE7 [JSON](http://json.org) 필수, IE8 [es5-shim](https://github.com/kriskowal/es5-shim/) 필수)
+ * IE7+ (IE7 [JSON](http://json.org) 필수, IE7-IE9 [es6-shim](https://github.com/paulmillr/es6-shim) 필수)
  * Google Chrome
  * Safari
  * FireFox
