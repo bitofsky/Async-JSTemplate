@@ -11,7 +11,7 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/json2/20121008/json2.min.js"></script>
     <![endif]-->
 
-    <script src="//requirejs.org/docs/release/2.1.8/minified/require.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/systemjs/0.20.9/system-production.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
 
@@ -88,7 +88,9 @@
         }
       });
 
-      require(['AJST', 'index', 'unit_test', 'showdown', 'es6-shim'], function(AJST, indexReady, unitTest) {
+      require(['AJST', 'index', 'unit_test', 'showdown', 'es6-shim'], function(_AJST, indexReady, unitTest) {
+
+        var AJST = _AJST.default;
 
         $(window).on('hashchange', onChangeHash);
 

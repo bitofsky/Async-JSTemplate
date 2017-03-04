@@ -11,7 +11,9 @@
   /**
    * AMD(Asynchronous Module Definition)
    */
-  define(['AJST'], function(AJST) {
+  define(['AJST'], function(_AJST) {
+
+    var AJST = _AJST.default;
 
     var returnTestResult = function(testData, testResult, testOutput) {
 
