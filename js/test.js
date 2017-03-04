@@ -11,7 +11,7 @@
   /**
    * AMD(Asynchronous Module Definition)
    */
-  define([/*Require*/], function() {
+  define(['AJST'], function(AJST) {
 
     var returnTestResult = function(testData, testResult, testOutput) {
 
