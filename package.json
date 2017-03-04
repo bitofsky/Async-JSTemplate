@@ -1,0 +1,93 @@
+{
+  "_args": [
+    [
+      {
+        "raw": "ajst",
+        "scope": null,
+        "escapedName": "ajst",
+        "name": "ajst",
+        "rawSpec": "",
+        "spec": "latest",
+        "type": "tag"
+      },
+      "D:\\project\\angular2"
+    ]
+  ],
+  "_from": "ajst@latest",
+  "_id": "ajst@1.5.0",
+  "_inCache": true,
+  "_location": "/ajst",
+  "_nodeVersion": "7.6.0",
+  "_npmOperationalInternal": {
+    "host": "packages-12-west.internal.npmjs.com",
+    "tmp": "tmp/ajst-1.5.0.tgz_1488648530601_0.08847466926090419"
+  },
+  "_npmUser": {
+    "name": "bitofsky",
+    "email": "bitofsky@naver.com"
+  },
+  "_npmVersion": "4.1.2",
+  "_phantomChildren": {},
+  "_requested": {
+    "raw": "ajst",
+    "scope": null,
+    "escapedName": "ajst",
+    "name": "ajst",
+    "rawSpec": "",
+    "spec": "latest",
+    "type": "tag"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/ajst/-/ajst-1.5.0.tgz",
+  "_shasum": "43b9d9cec28fc5edeadc5e155c2cf63b5d3b3e0c",
+  "_shrinkwrap": null,
+  "_spec": "ajst",
+  "_where": "D:\\project\\angular2",
+  "author": {
+    "name": "Bum-seok Hwang",
+    "email": "bitofsky@naver.com"
+  },
+  "bugs": {
+    "url": "https://github.com/bitofsky/Async-JSTemplate/issues"
+  },
+  "dependencies": {},
+  "description": "AJST : Asynchronous JavaScript Template",
+  "devDependencies": {},
+  "directories": {},
+  "dist": {
+    "shasum": "43b9d9cec28fc5edeadc5e155c2cf63b5d3b3e0c",
+    "tarball": "https://registry.npmjs.org/ajst/-/ajst-1.5.0.tgz"
+  },
+  "gitHead": "e4ce42ec5fee6f1e3cdaa1445c730ae431dbbe30",
+  "homepage": "https://github.com/bitofsky/Async-JSTemplate#readme",
+  "keywords": [
+    "Javascript",
+    "Template",
+    "HTML",
+    "Async",
+    "Promise"
+  ],
+  "license": "MIT",
+  "main": "./index.js",
+  "maintainers": [
+    {
+      "name": "bitofsky",
+      "email": "bitofsky@naver.com"
+    }
+  ],
+  "name": "ajst",
+  "optionalDependencies": {},
+  "readme": "ERROR: No README data found!",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bitofsky/Async-JSTemplate.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "types": "./index.d.ts",
+  "version": "1.5.0"
+}
