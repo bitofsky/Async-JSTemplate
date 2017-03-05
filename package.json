@@ -44,5 +44,5 @@
     "watch": "tsc -p . -w"
   },
   "types": "./index.d.ts",
-  "version": "1.6.3"
+  "version": "1.6.4"
 }
