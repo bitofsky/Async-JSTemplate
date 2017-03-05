@@ -585,7 +585,7 @@ define("src/prepare", ["require", "exports", "src/template", "src/lib/UTIL", "sr
     exports.prepare = function (id, option) {
         if (option === void 0) { option = {}; }
         return __awaiter(_this, void 0, void 0, function () {
-            var opt, url, fromURL, allTemplate, newElements;
+            var opt, url, fromURL, strTemplate, allTemplate, newElements;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -600,20 +600,22 @@ define("src/prepare", ["require", "exports", "src/template", "src/lib/UTIL", "sr
                             cache: opt.ajaxCache,
                             data: opt.ajaxData,
                             url: url,
-                            dataType: 'html'
+                            dataType: 'text'
                         }).catch(function (e) {
                             throw new Error("AJST prepare failed : file not found (ID: " + id + ", URL: " + url + ")");
                         }); };
                         return [4 /*yield*/, template_1.getTemplateFromURL(url, fromURL)];
                     case 1:
-                        allTemplate = _a.sent();
+                        strTemplate = _a.sent();
+                        allTemplate = UTIL_2.UTIL.parseHTML(strTemplate);
                         newElements = [];
                         try {
                             Array.prototype.forEach.call(allTemplate, function (element, idx) {
                                 if (idx === 0 || !opt.override[element.id])
                                     newElements.push(element);
                             });
-                            newElements.filter(template_1.setTemplateElement);
+                            if (!newElements.filter(template_1.setTemplateElement).length)
+                                template_1.setTemplate(id, strTemplate);
                             return [2 /*return*/, template_1.getCompiler(id, opt)];
                         }
                         catch (e) {

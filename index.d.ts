@@ -65,7 +65,7 @@ declare module "src/tplCompiler" {
 }
 declare module "src/template" {
     import { ns } from "src/ns";
-    export const getTemplateFromURL: (id: string, getAjax: () => Promise<any>) => Promise<any>;
+    export const getTemplateFromURL: (id: string, getAjax: () => Promise<string>) => Promise<string>;
     export const getTemplate: (id: string) => string;
     export const setTemplate: (id: string, tplString: string) => void;
     export const getCompiler: (id: string, option: ns.AJSTOption) => ns.AJSTCompiler;

@@ -10,7 +10,7 @@ const tplCache: ns.AJSTCacheContainer<string> = {};
 /**
  * Ajax URL Cache
  */
-const ajaxCache: ns.AJSTCacheContainer<Promise<any>> = {};
+const ajaxCache: ns.AJSTCacheContainer<Promise<string>> = {};
 
 /**
  * Template Compiler Cache
@@ -20,7 +20,7 @@ const compileCache: ns.AJSTCacheContainer<ns.AJSTCompiler> = {};
 /**
  * Get Template from URL
  */
-export const getTemplateFromURL = (id: string, getAjax: () => Promise<any>) =>
+export const getTemplateFromURL = (id: string, getAjax: () => Promise<string>) =>
     ajaxCache[id] = ajaxCache[id] || getAjax();
 
 /**

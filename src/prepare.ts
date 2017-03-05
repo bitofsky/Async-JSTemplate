@@ -21,12 +21,13 @@ export const prepare = async (id: string, option: ns.AJSTOption = {}) => {
         cache: opt.ajaxCache,
         data: opt.ajaxData,
         url: url,
-        dataType: 'html'
+        dataType: 'text'
     }).catch(e => {
         throw new Error(`AJST prepare failed : file not found (ID: ${id}, URL: ${url})`);
     });
 
-    const allTemplate = <NodeList>await getTemplateFromURL(url, fromURL); // Template file load from URL
+    const strTemplate = await getTemplateFromURL(url, fromURL); // Template file load from URL
+    const allTemplate = UTIL.parseHTML(strTemplate);
     const newElements = [];
 
     try { // compile error handling
@@ -36,7 +37,8 @@ export const prepare = async (id: string, option: ns.AJSTOption = {}) => {
             if (idx === 0 || !opt.override[element.id]) newElements.push(element);
         });
 
-        newElements.filter(setTemplateElement);
+        if (!newElements.filter(setTemplateElement).length) // if just text nodes
+            setTemplate(id, strTemplate); // set response string
 
         return getCompiler(id, opt);
 
