@@ -1,10 +1,10 @@
-declare namespace AJST {
+export namespace ns {
 
-    interface AJSTCompiler {
+    export interface AJSTCompiler {
         (id: string, data?: any, option?: AJSTOption, ...globalVariables: any[]): string;
     }
 
-    interface AJSTOption {
+    export interface AJSTOption {
 
         /**
          * TPL File URL
@@ -26,11 +26,8 @@ declare namespace AJST {
 
     }
 
-    interface AJSTCacheContainer<T> {
+    export interface AJSTCacheContainer<T> {
         [index: string]: T;
     }
 
 }
-
-declare var XDomainRequest: any;
-declare var ActiveXObject: any;

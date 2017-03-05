@@ -1,9 +1,10 @@
 // Preparing Template
+import { ns } from '../namespace';
 import { getTemplateFromURL, getTemplate, setTemplateElement, setTemplate, getCompiler } from './template';
 import { UTIL } from './lib/UTIL';
 import { DEFAULT_OPTION } from './option';
 
-export const prepare = async (id: string, option: AJST.AJSTOption = {}) => {
+export const prepare = async (id: string, option: ns.AJSTOption = {}) => {
 
     const opt = UTIL.extend({}, DEFAULT_OPTION, option);
     let url = opt.url || opt.path.replace(/\$id/g, id);

@@ -1,4 +1,5 @@
 // Create Template Compiler
+import { ns } from '../namespace';
 export const tplCompiler = (str: string, option: any) => {
 
     const args = '$id, data, option, ' + Object.keys(option.global).join(', '),
@@ -38,7 +39,7 @@ export const tplCompiler = (str: string, option: any) => {
 
     try {
 
-        return <AJST.AJSTCompiler>new Function(args, fn);
+        return <ns.AJSTCompiler>new Function(args, fn);
 
     } catch (e) {
 

@@ -1,9 +1,10 @@
+import { ns } from '../namespace';
 import { UTIL } from './lib/UTIL';
 
 /**
  * Default Option
  */
-export const DEFAULT_OPTION: AJST.AJSTOption = {
+export const DEFAULT_OPTION: ns.AJSTOption = {
     path: './tpl/$id',
     url: null,
     ajaxType: 'GET',
@@ -16,7 +17,7 @@ export const DEFAULT_OPTION: AJST.AJSTOption = {
 /**
  * Constant Option
  */
-export const CONST_OPTION: AJST.AJSTOption = {};
+export const CONST_OPTION: ns.AJSTOption = {};
 
 /**
  * get/set Default Option
@@ -27,7 +28,7 @@ export const CONST_OPTION: AJST.AJSTOption = {};
  *   add: function(a, b){ return +a + +b; }
  * }});
  */
-export const option = (newOption?: AJST.AJSTOption): AJST.AJSTOption | boolean => {
+export const option = (newOption?: ns.AJSTOption): ns.AJSTOption | boolean => {
     if (!newOption)
         return UTIL.extend({}, DEFAULT_OPTION);
     if (UTIL.isPlainObject(newOption))

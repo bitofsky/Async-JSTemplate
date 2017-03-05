@@ -1,6 +1,9 @@
 import { CommentStripper } from './CommentStripper.js';
 import { sprintf } from './sprintf.js';
 
+declare var XDomainRequest: any;
+declare var ActiveXObject: any;
+
 const documentMode: number = (<any>window).documentMode;
 
 export const support = {
