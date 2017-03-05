@@ -11,7 +11,7 @@
   /**
    * AMD(Asynchronous Module Definition)
    */
-  define(['AJST'], function(AJST) {
+  define(['ajst'], function(AJST) {
 
     var returnTestResult = function(testData, testResult, testOutput) {
 
@@ -113,42 +113,42 @@
         {
           name: 'if test success',
           func: getTestFunction,
-          callFunction: AJST,
+          callFunction: AJST.get,
           args: [null, {url: './tpl/TestCase0.tpl'}],
           result: "Succeed"
         },
         {
           name: 'if test fail',
           func: getTestFunction,
-          callFunction: AJST,
+          callFunction: AJST.get,
           args: [null, {url: './tpl/TestCase0.tpl'}],
           result: "Failed"
         },
         {
           name: 'on error - could not found TPL File.',
           func: getTestFunction,
-          callFunction: AJST,
+          callFunction: AJST.get,
           args: [null, {url: '404.not.found.tpl'}],
           result: "Error"
         },
         {
           name: 'on error - undefined TPL ID.',
           func: getTestFunction,
-          callFunction: AJST,
+          callFunction: AJST.get,
           args: [null, {url: './tpl/TestCase0.tpl'}],
           result: "Error"
         },
         {
           name: 'on error - Template syntax error.',
           func: getTestFunction,
-          callFunction: AJST,
+          callFunction: AJST.get,
           args: [null, {url: './tpl/TestCase0.tpl'}],
           result: "Error"
         },
         {
           name: 'on error - Compile error.',
           func: getTestFunction,
-          callFunction: AJST,
+          callFunction: AJST.get,
           args: [null, {url: './tpl/TestCase0.tpl'}],
           result: "Error"
         }
@@ -157,49 +157,49 @@
         {
           name: 'Hello AJST!',
           func: getTestFunction,
-          callFunction: AJST,
+          callFunction: AJST.get,
           args: [null, {url: './tpl/TestCase1.tpl'}],
           result: "Hello!!"
         },
         {
           name: 'Condition: if else',
           func: getTestFunction,
-          callFunction: AJST,
+          callFunction: AJST.get,
           args: [null, {url: './tpl/TestCase1.tpl'}],
           result: "\nis true\n"
         },
         {
           name: 'Condition: switch case',
           func: getTestFunction,
-          callFunction: AJST,
+          callFunction: AJST.get,
           args: [null, {url: './tpl/TestCase1.tpl'}],
           result: "True"
         },
         {
           name: 'For',
           func: getTestFunction,
-          callFunction: AJST,
+          callFunction: AJST.get,
           args: [null, {url: './tpl/TestCase1.tpl'}],
           result: "\n  i = 1\n\n  i = 2\n\n  i = 3\n"
         },
         {
           name: 'For key:value',
           func: getTestFunction,
-          callFunction: AJST,
+          callFunction: AJST.get,
           args: [null, {url: './tpl/TestCase1.tpl'}],
           result: "\n  key = 1\n  value = A\n\n  key = 2\n  value = B\n\n  key = 3\n  value = C\n"
         },
         {
           name: 'ForEach',
           func: getTestFunction,
-          callFunction: AJST,
+          callFunction: AJST.get,
           args: [null, {url: './tpl/TestCase1.tpl'}],
           result: "\n  i = 1\n\n  i = 2\n\n  i = 3\n"
         },
         {
           name: 'Sub function',
           func: getTestFunction,
-          callFunction: AJST,
+          callFunction: AJST.get,
           args: [null, {url: './tpl/TestCase1.tpl'}],
           result: "\n  1 + 1 = 2\n  2 + 2 = 4\n  3 + 3 = 6"
         }
@@ -208,42 +208,42 @@
         {
           name: 'Template Output String',
           func: getTestFunction,
-          callFunction: AJST,
+          callFunction: AJST.get,
           args: [null, {url: './tpl/TestCase2.tpl'}],
           result: "Outside Tag. Output String.\nInside Tag. use print() or printf().\nClosed Tag. Output String.\nAnd <?=Output?>"
         },
         {
           name: 'print',
           func: getTestFunction,
-          callFunction: AJST,
+          callFunction: AJST.get,
           args: [null, {url: './tpl/TestCase2.tpl'}],
           result: "1 + 1 = 2\n2 + 2 = 4\n3 + 3 = 6\n"
         },
         {
           name: 'printf',
           func: getTestFunction,
-          callFunction: AJST,
+          callFunction: AJST.get,
           args: [null, {url: './tpl/TestCase2.tpl'}],
           result: "1 + 1 = 2.200\n2 + 2 = 4.400\n3 + 3 = 6.600\n"
         },
         {
           name: 'sprintf',
           func: getTestFunction,
-          callFunction: AJST,
+          callFunction: AJST.get,
           args: [null, {url: './tpl/TestCase2.tpl'}],
           result: "1 + 1 = 2.200\n2 + 2 = 4.400\n3 + 3 = 6.600\n"
         },
         {
           name: 'util.tag_escape, util.tag_unescape',
           func: getTestFunction,
-          callFunction: AJST,
+          callFunction: AJST.get,
           args: [{tag: "<h4>It's H4 Tag!</h4>"}, {url: './tpl/TestCase2.tpl'}],
           result: "original  = <h4>It's H4 Tag!</h4>\nescaped   = &lt;h4&gt;It&#039;s H4 Tag!&lt;/h4&gt;\nunescaped = <h4>It's H4 Tag!</h4>"
         },
         {
           name: 'option.global definition.',
           func: getTestFunction,
-          callFunction: AJST,
+          callFunction: AJST.get,
           args: [null, {
               url: './tpl/TestCase2.tpl',
               global: {
@@ -260,21 +260,21 @@
         {
           name: 'Template data',
           func: getTestFunction,
-          callFunction: AJST,
+          callFunction: AJST.get,
           args: ['This is Template Data', {url: './tpl/TestCase3.tpl'}],
           result: "This is Template Data"
         },
         {
           name: 'Array data',
           func: getTestFunction,
-          callFunction: AJST,
+          callFunction: AJST.get,
           args: [[1, 2, 3], {url: './tpl/TestCase3.tpl'}],
           result: "1, 2, 3"
         },
         {
           name: 'Object data',
           func: getTestFunction,
-          callFunction: AJST,
+          callFunction: AJST.get,
           args: [{
               list: [1, 2, 3],
               add: function(a, b) {
@@ -293,7 +293,7 @@
         {
           name: 'Remote Data Promise',
           func: getTestFunction,
-          callFunction: AJST,
+          callFunction: AJST.get,
           args: [$.getJSON('data/sampledata.json'), {url: './tpl/TestCase3.tpl'}],
           result: "data.items.length = 22"
         }
@@ -302,21 +302,21 @@
         {
           name: 'Include TPL',
           func: getTestFunction,
-          callFunction: AJST,
+          callFunction: AJST.get,
           args: [null, {url: './tpl/TestCase4.tpl'}],
           result: "This is Include TPL.sub"
         },
         {
           name: 'Include other tpl file',
           func: getTestFunction,
-          callFunction: AJST,
+          callFunction: AJST.get,
           args: [null, {url: './tpl/TestCase4.tpl'}],
           result: "This is include1."
         },
         {
           name: 'Include more..',
           func: getTestFunction,
-          callFunction: AJST,
+          callFunction: AJST.get,
           args: [null, {url: './tpl/TestCase4.tpl'}],
           result: "This is include2.\nInclude other tpl.\nThis is include1."
         },
@@ -325,9 +325,9 @@
           func: getTestFunction,
           callFunction: function() {
             return Promise.all([
-              AJST('include1'),
-              AJST('include2'),
-              AJST('Include multiple promise', null, {url: './tpl/TestCase4.tpl'})
+              AJST.get('include1'),
+              AJST.get('include2'),
+              AJST.get('Include multiple promise', null, {url: './tpl/TestCase4.tpl'})
             ]).then(function(all) {
               return all.join('');
             });
@@ -338,21 +338,21 @@
         {
           name: 'Include with Data',
           func: getTestFunction,
-          callFunction: AJST,
+          callFunction: AJST.get,
           args: [null, {url: './tpl/TestCase4.tpl'}],
           result: 'result=abc'
         },
         {
           name: 'Include with Ajax Data',
           func: getTestFunction,
-          callFunction: AJST,
+          callFunction: AJST.get,
           args: [null, {url: './tpl/TestCase4.tpl'}],
           result: 'Open New'
         },
         {
           name: 'Include with Promise Data',
           func: getTestFunction,
-          callFunction: AJST,
+          callFunction: AJST.get,
           args: [null, {url: './tpl/TestCase4.tpl'}],
           result: 'Open New'
         },
@@ -376,14 +376,14 @@
           name: 'Auto replace with data check',
           func: getTestFunction,
           callFunction: function() {
-            return $('P[id="p_Auto replace with data"]').text() == 'data is ready';
+            return $('P[id="p_Auto replace with data"]').text().trim() == 'data is ready';
           }
         },
         {
           name: 'Auto replace with remote data check',
           func: getTestFunction,
           callFunction: function() {
-            return $('P[id="p_Auto replace with remote data"]').text() == '22';
+            return $('P[id="p_Auto replace with remote data"]').text().trim() == '22';
           }
         }
       ],
@@ -391,7 +391,7 @@
         {
           name: 'Escape quotes',
           func: getTestFunction,
-          callFunction: AJST,
+          callFunction: AJST.get,
           result: "He said: \"It's Fun ! \\\"Yeah!!\\\"\" 1\"2\"",
           setTemplate: (function() {
 
@@ -403,7 +403,7 @@
         {
           name: 'Escape {{script}}',
           func: getTestFunction,
-          callFunction: AJST,
+          callFunction: AJST.get,
           result: "Script inside Script <script>console.debug(1);</script>"
         }
       ],
@@ -411,7 +411,7 @@
         {
           name: 'MemberList',
           func: getTestFunction,
-          callFunction: AJST,
+          callFunction: AJST.get,
           args: [[
               {nickname: 'John', age: 10},
               {nickname: 'Sam', age: 13},

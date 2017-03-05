@@ -41,30 +41,37 @@
       padding-top: 70px;
     }
 
+
     .index-navi .active>ul {
       display: block;
     }
+
 
     .index-navi ul {
       display: none;
       padding: 5px 20px;
     }
 
+
     LI.active>a>i.icon-check-empty {
       display: none;
     }
+
 
     LI.active>a>i.icon-check {
       display: inline;
     }
 
+
     LI>a>i.icon-check-empty {
       display: inline;
     }
 
+
     LI>a>i.icon-check {
       display: none;
     }
+
 
     .index-navi.affix {
       /* tablet~ */
@@ -91,50 +98,47 @@
   </style>
 
   <script>
-      requirejs.config({
-        baseUrl: 'js', //By default load any module IDs from js/lib
-        paths: {
-          ajst: 'https://rawgit.com/bitofsky/Async-JSTemplate/master/index'
+    requirejs.config({
+      baseUrl: 'js', //By default load any module IDs from js/lib
+      paths: {
+        ajst: 'https://rawgit.com/bitofsky/Async-JSTemplate/master/index'
+        //ajst: '/ajst/index'
+      }
+    });
+
+    require(['ajst', 'index', 'unit_test', 'showdown', 'es6-shim'], function (AJST, indexReady, unitTest) {
+
+      $(window).on('hashchange', onChangeHash);
+
+      $(function () {
+
+        AJST.option({ path: './tpl/$id.tpl', debug: true });
+        AJST.autocollect();
+
+        AJST.ajax('indexMain', './data/config.json', { url: './tpl/index.tpl' }).then(function (output) {
+          $('BODY').append(output);
+          return false;
+        }).then(onChangeHash);
+
+      });
+
+      function onChangeHash(onHashChanged) {
+        var name = location.hash.split('/')[0].replace('#', '') || 'index';
+        var args = location.hash.split('/')[1];
+        switch (name) {
+          case 'unittest':
+            unitTest(args);
+            break;
+          case 'index':
+            indexReady();
+            break;
+          default:
+            !onHashChanged && indexReady();
+            name = 'index';
         }
-      });
+      }
 
-      define('AJST', ['ajst'], function (mAJST) {
-        return mAJST.default;
-      });
-
-      require(['AJST', 'index', 'unit_test', 'showdown', 'es6-shim'], function (AJST, indexReady, unitTest) {
-
-        $(window).on('hashchange', onChangeHash);
-
-        $(function () {
-
-          AJST.option({ path: './tpl/$id.tpl', debug: true });
-          AJST.autocollect();
-
-          AJST.ajax('indexMain', './data/config.json', { url: './tpl/index.tpl' }).then(function (output) {
-            $('BODY').append(output);
-            return false;
-          }).then(onChangeHash);
-
-        });
-
-        function onChangeHash(onHashChanged) {
-          var name = location.hash.split('/')[0].replace('#', '') || 'index';
-          var args = location.hash.split('/')[1];
-          switch (name) {
-            case 'unittest':
-              unitTest(args);
-              break;
-            case 'index':
-              indexReady();
-              break;
-            default:
-              !onHashChanged && indexReady();
-              name = 'index';
-          }
-        }
-
-      });
+    });
   </script>
 
 </head>
