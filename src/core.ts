@@ -47,7 +47,7 @@ export const get = async (id: string, data: any = null, option: ns.AJSTOption = 
 
         outputDebug && outputDebugConsole(curLogs); // show log groups..
 
-        return support.uglyInnerHTML ? output.replace(/\r\n/g, '\n') : output;
+        return output;
 
     }
     catch (e) {
@@ -85,11 +85,11 @@ export const each = async function (id: string, data: any, option: ns.AJSTOption
  * return old AJST
  */
 export const noConflict = () => window['AJST'] = _oldAJST;
+
 const _oldAJST = window['AJST'];
 
 // constant default option.global
 CONST_OPTION.global = {};
-CONST_OPTION.global.Promise = Promise;
 CONST_OPTION.global.AJSTget = get;
 CONST_OPTION.global.AJSTajax = ajax;
 CONST_OPTION.global.AJSTeach = each;

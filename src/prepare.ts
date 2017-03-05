@@ -7,6 +7,7 @@ import { DEFAULT_OPTION } from './option';
 export const prepare = async (id: string, option: ns.AJSTOption = {}) => {
 
     const opt = UTIL.extend({}, DEFAULT_OPTION, option);
+
     let url = opt.url || opt.path.replace(/\$id/g, id);
 
     if (typeof url === 'function')
@@ -22,27 +23,25 @@ export const prepare = async (id: string, option: ns.AJSTOption = {}) => {
         url: url,
         dataType: 'html'
     }).catch(e => {
-        throw new Error(`AJST file not found : (ID: ${id}, URL: ${url})`);
+        throw new Error(`AJST prepare failed : file not found (ID: ${id}, URL: ${url})`);
     });
 
-    const arrTemplate = await getTemplateFromURL(url, fromURL);
-    const arr = [];
-    let cnt = 0;
+    const allTemplate = <NodeList>await getTemplateFromURL(url, fromURL); // Template file load from URL
+    const newElements = [];
 
-    try {
+    try { // compile error handling
 
-        Array.prototype.forEach.call(arrTemplate, function (element, idx) {
+        Array.prototype.forEach.call(allTemplate, function (element, idx) {
             // check opt.override id set
-            if (idx === 0 || !opt.override[element.id]) arr.push(element);
+            if (idx === 0 || !opt.override[element.id]) newElements.push(element);
         });
 
-        if (!arr.filter(setTemplateElement).length)
-            setTemplate(id, arrTemplate.htmlString);
+        newElements.filter(setTemplateElement);
 
         return getCompiler(id, opt);
 
     } catch (e) {
-        e.message = `AJST Prepare failed : (ID: ${id}, URL: ${url})\n${e.message}`;
+        e.message = `AJST Prepare failed : compile (ID: ${id}, URL: ${url})\n${e.message}`;
         throw e;
     }
 };

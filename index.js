@@ -223,7 +223,6 @@ define("src/lib/UTIL", ["require", "exports", "src/lib/CommentStripper", "src/li
     exports.support = {
         addEventListener: !!document.addEventListener,
         argumentsSlice: !(documentMode && documentMode <= 8),
-        uglyInnerHTML: documentMode && documentMode <= 8,
         cors: 'withCredentials' in new XMLHttpRequest()
     };
     exports.outputDebugConsole = function (logList) {
@@ -326,13 +325,7 @@ define("src/lib/UTIL", ["require", "exports", "src/lib/CommentStripper", "src/li
         },
         parseHTML: function (htmlString) {
             var container = document.createElement('div');
-            if (exports.support.uglyInnerHTML) {
-                container.innerHTML = '_' + htmlString;
-                container.removeChild(container.firstChild);
-            }
-            else
-                container.innerHTML = htmlString;
-            container.childNodes['htmlString'] = htmlString;
+            container.innerHTML = htmlString;
             return container.childNodes;
         },
         parseXML: function (xmlString) {
@@ -484,48 +477,20 @@ define("src/lib/UTIL", ["require", "exports", "src/lib/CommentStripper", "src/li
 define("src/tplCompiler", ["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    exports.tplCompiler = function (str, option) {
-        var args = '$id, data, option, ' + Object.keys(option.global).join(', '), fn = '\n\
-      var print     = function(){ _s += Array.prototype.join.call(arguments,""); },\n\
-          printf    = function(){ _s += sprintf.apply(this, arguments); },\n\
-          uid       = util.makeUID("template");\n\
-          sprintf   = util.sprintf,\n\
-          _promises = [],\n\
-          includeExecute = function(){\n\
-            var uid     = util.makeUID("include");\n\
-                syncOut = undefined,\n\
-                args    = util.toArray(arguments);\n\
-            util.extend(args, {2:{global:{$parent:$id},_log:option._log}});\n\
-            _s += uid;\n\
-            _promises.push(\n\
-              this.apply(this, args).then(function(output){\n\
-                syncOut = output;\n\
-                _s = _s.replace(uid, output);\n\
-              })\n\
-            );\n\
-            return syncOut !== undefined ? syncOut : uid;\n\
-          },\n\
-          include = function(){\n\
-            return includeExecute.apply(AJSTget, arguments);\n\
-          },\n\
-          includeAjax = function(){\n\
-            return includeExecute.apply(AJSTajax, arguments);\n\
-          },\n\
-          includeEach = function(id, data, option){\n\
-            return includeExecute.apply(AJSTeach, arguments);\n\
-          };\n\
-      var _s = \'' + str.replace(regexp_remove_ws, replace_remove_ws).replace(regexp_compile, replace_compile).replace(regexp_escape, replace_escape) + '\';\n\
-      return Promise.all(_promises).then(function(){\n\
-        return _s;\n\
-      });';
+    exports.tplCompiler = function (tplString, option) {
+        if (tplString === undefined)
+            throw new Error('AJST tplCompiler tplString undefined.');
+        var args = "$id, data, option, " + Object.keys(option.global).join(', ');
+        var fn = "\nvar print          = function(){ _s += Array.prototype.join.call(arguments, ''); };\nvar printf         = function(){ _s += sprintf.apply(this, arguments); };\nvar uid            = util.makeUID('template');\nvar sprintf        = util.sprintf;\nvar _promises      = [];\nvar includeExecute = function(){\n    var uid     = util.makeUID('include');\n    var syncOut = undefined;\n    var args    = util.toArray(arguments);\n    util.extend(args, {2:{global:{$parent:$id},_log:option._log}});\n    _s += uid;\n    _promises.push(\n        this.apply(this, args).then(function(output){\n            syncOut = output;\n            _s = _s.replace(uid, output);\n        })\n    );\n    return syncOut !== undefined ? syncOut : uid;\n};\nvar include = function(){\n    return includeExecute.apply(AJSTget, arguments);\n};\nvar includeAjax = function(){\n    return includeExecute.apply(AJSTajax, arguments);\n};\nvar includeEach = function(id, data, option){\n    return includeExecute.apply(AJSTeach, arguments);\n};\nvar _s = '" + tplString.replace(regexp_remove_ws, replace_remove_ws).replace(regexp_compile, replace_compile).replace(regexp_escape, replace_escape) + "';\nreturn Promise.all(_promises).then(function(){\n    return _s;\n});";
         try {
-            return new Function(args, fn);
+            var compiler = new Function(args, fn);
+            return compiler;
         }
         catch (e) {
             if (option.debug) {
                 console.log('AJST tplCompiler Debug');
                 console.log(e.message);
-                console.log('template :', str);
+                console.log('tplString :', tplString);
                 console.log('option :', option);
                 console.log('args: ', args);
                 console.log('fn: ', fn);
@@ -574,25 +539,16 @@ define("src/template", ["require", "exports", "src/tplCompiler", "src/lib/Commen
     var ajaxCache = {};
     var compileCache = {};
     exports.getTemplateFromURL = function (id, getAjax) {
-        if (ajaxCache[id])
-            return ajaxCache[id];
-        return ajaxCache[id] = getAjax();
+        return ajaxCache[id] = ajaxCache[id] || getAjax();
     };
     exports.getTemplate = function (id) { return tplCache[id]; };
     exports.setTemplate = function (id, tplString) {
-        tplCache[id] = CommentStripper_1.CommentStripper.strip(tplString.trim());
+        var trimed = CommentStripper_1.CommentStripper.strip(tplString.trim());
+        tplCache[id] = id.match(/\.js$/) ? "<? " + trimed + " ?>" : trimed;
         compileCache[id] = null;
-        if (id.match(/\.js$/))
-            tplCache[id] = "<? " + tplCache[id] + " ?>";
     };
     exports.getCompiler = function (id, option) {
-        if (!compileCache[id]) {
-            var tplString = exports.getTemplate(id);
-            if (tplString === undefined)
-                throw new Error('AJST Undefined TPL ID (ID: ' + id + ')');
-            compileCache[id] = tplCompiler_1.tplCompiler(tplString, option);
-        }
-        return compileCache[id];
+        return compileCache[id] = compileCache[id] || tplCompiler_1.tplCompiler(exports.getTemplate(id), option);
     };
     exports.setTemplateElement = function (element) {
         if (!element.id || element.tagName !== 'SCRIPT')
@@ -629,7 +585,7 @@ define("src/prepare", ["require", "exports", "src/template", "src/lib/UTIL", "sr
     exports.prepare = function (id, option) {
         if (option === void 0) { option = {}; }
         return __awaiter(_this, void 0, void 0, function () {
-            var opt, url, fromURL, arrTemplate, arr, cnt;
+            var opt, url, fromURL, allTemplate, newElements;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -646,24 +602,22 @@ define("src/prepare", ["require", "exports", "src/template", "src/lib/UTIL", "sr
                             url: url,
                             dataType: 'html'
                         }).catch(function (e) {
-                            throw new Error("AJST file not found : (ID: " + id + ", URL: " + url + ")");
+                            throw new Error("AJST prepare failed : file not found (ID: " + id + ", URL: " + url + ")");
                         }); };
                         return [4 /*yield*/, template_1.getTemplateFromURL(url, fromURL)];
                     case 1:
-                        arrTemplate = _a.sent();
-                        arr = [];
-                        cnt = 0;
+                        allTemplate = _a.sent();
+                        newElements = [];
                         try {
-                            Array.prototype.forEach.call(arrTemplate, function (element, idx) {
+                            Array.prototype.forEach.call(allTemplate, function (element, idx) {
                                 if (idx === 0 || !opt.override[element.id])
-                                    arr.push(element);
+                                    newElements.push(element);
                             });
-                            if (!arr.filter(template_1.setTemplateElement).length)
-                                template_1.setTemplate(id, arrTemplate.htmlString);
+                            newElements.filter(template_1.setTemplateElement);
                             return [2 /*return*/, template_1.getCompiler(id, opt)];
                         }
                         catch (e) {
-                            e.message = "AJST Prepare failed : (ID: " + id + ", URL: " + url + ")\n" + e.message;
+                            e.message = "AJST Prepare failed : compile (ID: " + id + ", URL: " + url + ")\n" + e.message;
                             throw e;
                         }
                         return [2 /*return*/];
@@ -714,7 +668,7 @@ define("src/core", ["require", "exports", "src/lib/UTIL", "src/prepare", "src/op
                         output = compiler.apply(void 0, [id, solvedData, opt_1].concat(Object.keys(opt_1.global).map(function (k) { return opt_1.global[k]; })));
                         curLogs_1.push(['time', 'elapsed time - compile success', new Date()]);
                         outputDebug && outputDebugConsole(curLogs_1);
-                        return [2 /*return*/, support.uglyInnerHTML ? output.replace(/\r\n/g, '\n') : output];
+                        return [2 /*return*/, output];
                     case 3:
                         e_1 = _a.sent();
                         e_1.message = "AJST error (ID: " + id + ")\n" + e_1.message;
@@ -749,7 +703,6 @@ define("src/core", ["require", "exports", "src/lib/UTIL", "src/prepare", "src/op
     exports.noConflict = function () { return window['AJST'] = _oldAJST; };
     var _oldAJST = window['AJST'];
     option_2.CONST_OPTION.global = {};
-    option_2.CONST_OPTION.global.Promise = Promise;
     option_2.CONST_OPTION.global.AJSTget = exports.get;
     option_2.CONST_OPTION.global.AJSTajax = exports.ajax;
     option_2.CONST_OPTION.global.AJSTeach = exports.each;
@@ -758,30 +711,36 @@ define("src/core", ["require", "exports", "src/lib/UTIL", "src/prepare", "src/op
 });
 define("src/autocollect", ["require", "exports", "src/core", "src/option", "src/lib/UTIL", "src/template"], function (require, exports, core_1, option_3, UTIL_4, template_2) {
     "use strict";
+    var _this = this;
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.autocollect = function () {
         if (!option_3.DEFAULT_OPTION.autocollect)
             return;
         Array.prototype.forEach.call(document.querySelectorAll('SCRIPT[id]'), template_2.setTemplateElement);
-        Array.prototype.forEach.call(document.querySelectorAll('SCRIPT[id]'), function (element) {
-            if (element.getAttribute('data-ajst')) {
-                var ajaxURL = element.getAttribute('data-ajst-ajax');
-                var data = element.getAttribute('data-ajst-data') ? JSON.parse(element.getAttribute('data-ajst-data')) : undefined;
-                var option = element.getAttribute('data-ajst-option') ? JSON.parse(element.getAttribute('data-ajst-option')) : undefined;
-                (ajaxURL ? core_1.ajax(element.id, ajaxURL, option) : core_1.get(element.id, data, option)).then(function (tplOutput) {
-                    var tplElementList = UTIL_4.UTIL.parseHTML(tplOutput);
+        Array.prototype.forEach.call(document.querySelectorAll('SCRIPT[id]'), resolveElement);
+    };
+    var resolveElement = function (element) { return __awaiter(_this, void 0, void 0, function () {
+        var ajaxURL, data, option, tplOutput, tplElementList;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    if (!element.getAttribute('data-ajst'))
+                        return [2 /*return*/, UTIL_4.UTIL.removeElement(element)];
+                    ajaxURL = element.getAttribute('data-ajst-ajax');
+                    data = element.getAttribute('data-ajst-data') ? JSON.parse(element.getAttribute('data-ajst-data')) : undefined;
+                    option = element.getAttribute('data-ajst-option') ? JSON.parse(element.getAttribute('data-ajst-option')) : undefined;
+                    return [4 /*yield*/, (ajaxURL ? core_1.ajax(element.id, ajaxURL, option) : core_1.get(element.id, data, option))];
+                case 1:
+                    tplOutput = _a.sent();
+                    tplElementList = UTIL_4.UTIL.parseHTML(tplOutput);
                     UTIL_4.UTIL.toArray(tplElementList).forEach(function (tplElement) {
                         element.parentNode.insertBefore(tplElement, element);
                     });
                     UTIL_4.UTIL.removeElement(element);
-                }, function (e) {
-                    throw e;
-                });
+                    return [2 /*return*/];
             }
-            else
-                UTIL_4.UTIL.removeElement(element);
         });
-    };
+    }); };
     if (UTIL_4.support.addEventListener)
         document.addEventListener('DOMContentLoaded', exports.autocollect, false);
     else

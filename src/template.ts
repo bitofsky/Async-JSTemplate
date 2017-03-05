@@ -20,10 +20,8 @@ const compileCache: ns.AJSTCacheContainer<ns.AJSTCompiler> = {};
 /**
  * Get Template from URL
  */
-export const getTemplateFromURL = (id: string, getAjax: () => Promise<any>) => {
-    if (ajaxCache[id]) return ajaxCache[id];
-    return ajaxCache[id] = getAjax();
-};
+export const getTemplateFromURL = (id: string, getAjax: () => Promise<any>) =>
+    ajaxCache[id] = ajaxCache[id] || getAjax();
 
 /**
  * Get Template
@@ -34,35 +32,29 @@ export const getTemplate = (id: string) => tplCache[id];
  * Create/Replace Template
  */
 export const setTemplate = (id: string, tplString: string) => {
-    tplCache[id] = CommentStripper.strip(tplString.trim());
+
+    const trimed = CommentStripper.strip(tplString.trim());
+
+    tplCache[id] = id.match(/\.js$/) ? `<? ${trimed} ?>` : trimed;
     compileCache[id] = null;
 
-    if (id.match(/\.js$/))
-        tplCache[id] = `<? ${tplCache[id]} ?>`;
 }
 
 /**
  * Get Template Compiler
  */
-export const getCompiler = (id: string, option: ns.AJSTOption) => {
-
-    if (!compileCache[id]) {
-        const tplString = getTemplate(id);
-        if (tplString === undefined)
-            throw new Error('AJST Undefined TPL ID (ID: ' + id + ')');
-        compileCache[id] = tplCompiler(tplString, option);
-    }
-
-    return compileCache[id];
-
-}
+export const getCompiler = (id: string, option: ns.AJSTOption) =>
+    compileCache[id] = compileCache[id] || tplCompiler(getTemplate(id), option);
 
 /**
  * Set template element
  */
 export const setTemplateElement = function (element) {
-    if (!element.id || element.tagName !== 'SCRIPT')
-        return false;
+
+    if (!element.id || element.tagName !== 'SCRIPT') return false;
+
     setTemplate(element.id, element.innerHTML.replace(/<!--\?/g, '<?').replace(/\?-->/g, '?>'));
+
     return true;
+
 };

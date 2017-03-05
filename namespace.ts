@@ -1,5 +1,7 @@
 export namespace ns {
 
+    export type HTTPMethod = 'get' | 'post';
+
     export interface AJSTCompiler {
         (id: string, data?: any, option?: AJSTOption, ...globalVariables: any[]): string;
     }
@@ -16,7 +18,7 @@ export namespace ns {
          */
         url?: () => string;
 
-        ajaxType?: string;
+        ajaxType?: HTTPMethod;
         ajaxCache?: boolean;
         ajaxData?: object;
         autocollect?: boolean;

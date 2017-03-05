@@ -3,45 +3,36 @@ import { DEFAULT_OPTION } from './option';
 import { UTIL, support } from './lib/UTIL';
 import { setTemplateElement } from './template';
 
-// Template auto collect
-export const autocollect = function () {
+/**
+ * Template auto collect
+ */
+export const autocollect = () => {
 
-    if (!DEFAULT_OPTION.autocollect)
-        return;
+    if (!DEFAULT_OPTION.autocollect) return;
 
     Array.prototype.forEach.call(document.querySelectorAll('SCRIPT[id]'), setTemplateElement);
 
-    Array.prototype.forEach.call(document.querySelectorAll('SCRIPT[id]'), function (element) {
+    Array.prototype.forEach.call(document.querySelectorAll('SCRIPT[id]'), resolveElement);
 
-        // auto replace
-        if (element.getAttribute('data-ajst')) {
+};
 
-            const ajaxURL = element.getAttribute('data-ajst-ajax');
-            const data = element.getAttribute('data-ajst-data') ? JSON.parse(element.getAttribute('data-ajst-data')) : undefined;
-            const option = element.getAttribute('data-ajst-option') ? JSON.parse(element.getAttribute('data-ajst-option')) : undefined;
+const resolveElement = async element => {
 
-            (ajaxURL ? ajax(element.id, ajaxURL, option) : get(element.id, data, option)).then(function (tplOutput) {
+    // auto replace
+    if (!element.getAttribute('data-ajst'))
+        return UTIL.removeElement(element);
 
-                const tplElementList = UTIL.parseHTML(tplOutput);
+    const ajaxURL = element.getAttribute('data-ajst-ajax');
+    const data = element.getAttribute('data-ajst-data') ? JSON.parse(element.getAttribute('data-ajst-data')) : undefined;
+    const option = element.getAttribute('data-ajst-option') ? JSON.parse(element.getAttribute('data-ajst-option')) : undefined;
+    const tplOutput = await (ajaxURL ? ajax(element.id, ajaxURL, option) : get(element.id, data, option));
+    const tplElementList = UTIL.parseHTML(tplOutput);
 
-                UTIL.toArray(tplElementList).forEach(function (tplElement) {
-                    element.parentNode.insertBefore(tplElement, element);
-                });
-
-                UTIL.removeElement(element);
-
-            }, function (e) {
-
-                throw e;
-
-            });
-
-        }
-
-        else
-            UTIL.removeElement(element);
-
+    UTIL.toArray(tplElementList).forEach(function (tplElement) {
+        element.parentNode.insertBefore(tplElement, element);
     });
+
+    UTIL.removeElement(element);
 
 };
 

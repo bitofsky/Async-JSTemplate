@@ -9,7 +9,6 @@ const documentMode: number = (<any>window).documentMode;
 export const support = {
     addEventListener: !!document.addEventListener,
     argumentsSlice: !(documentMode && documentMode <= 8),
-    uglyInnerHTML: documentMode && documentMode <= 8,
     cors: 'withCredentials' in new XMLHttpRequest()
 };
 
@@ -115,17 +114,8 @@ export const UTIL = {
     },
     parseHTML: function (htmlString) {
 
-        let container = document.createElement('div');
-
-        if (support.uglyInnerHTML) {
-            container.innerHTML = '_' + htmlString;
-            container.removeChild(container.firstChild);
-        }
-        else
-            container.innerHTML = htmlString;
-
-        container.childNodes['htmlString'] = htmlString;
-
+        const container = document.createElement('div');
+        container.innerHTML = htmlString;
         return container.childNodes;
 
     },

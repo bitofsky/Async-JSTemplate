@@ -1,12 +1,13 @@
 declare module "namespace" {
     export namespace ns {
+        type HTTPMethod = 'get' | 'post';
         interface AJSTCompiler {
             (id: string, data?: any, option?: AJSTOption, ...globalVariables: any[]): string;
         }
         interface AJSTOption {
             path?: string;
             url?: () => string;
-            ajaxType?: string;
+            ajaxType?: HTTPMethod;
             ajaxCache?: boolean;
             ajaxData?: object;
             autocollect?: boolean;
@@ -29,7 +30,6 @@ declare module "src/lib/UTIL" {
     export const support: {
         addEventListener: boolean;
         argumentsSlice: boolean;
-        uglyInnerHTML: boolean;
         cors: boolean;
     };
     export const outputDebugConsole: (logList: any) => void;
@@ -38,7 +38,6 @@ declare module "src/lib/UTIL" {
         support: {
             addEventListener: boolean;
             argumentsSlice: boolean;
-            uglyInnerHTML: boolean;
             cors: boolean;
         };
         sprintf: () => any;
@@ -62,7 +61,7 @@ declare module "src/lib/UTIL" {
 }
 declare module "src/tplCompiler" {
     import { ns } from "namespace";
-    export const tplCompiler: (str: string, option: any) => ns.AJSTCompiler;
+    export const tplCompiler: (tplString: string, option: any) => ns.AJSTCompiler;
 }
 declare module "src/template" {
     import { ns } from "namespace";
