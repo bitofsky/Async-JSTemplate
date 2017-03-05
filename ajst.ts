@@ -17,11 +17,11 @@
  *
  * @author bitofsky@naver.com 2013.07.25
  * @encoding UTF-8
- * @version 1.5.4
+ * @version 1.6
  */
 
-import { AJST } from './src/core';
-export default AJST;
+import { get } from './src/core';
+export default get;
 export * from './src/autocollect';
 export * from './src/core';
 export * from './src/option';

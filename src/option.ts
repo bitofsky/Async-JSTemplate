@@ -1,4 +1,3 @@
-import { AJST } from './core';
 import { UTIL } from './lib/UTIL';
 
 /**
@@ -18,13 +17,6 @@ export const DEFAULT_OPTION: AJST.AJSTOption = {
  * Constant Option
  */
 export const CONST_OPTION: AJST.AJSTOption = {};
-
-CONST_OPTION.global = {};
-CONST_OPTION.global.Promise = Promise;
-CONST_OPTION.global.AJST = AJST;
-CONST_OPTION.global.util = UTIL;
-
-UTIL.extend(DEFAULT_OPTION, CONST_OPTION);
 
 /**
  * get/set Default Option

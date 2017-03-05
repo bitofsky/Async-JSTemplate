@@ -13,7 +13,7 @@ const ajaxCache: AJST.AJSTCacheContainer<Promise<any>> = {};
 
 /**
  * Template Compiler Cache
- */ 
+ */
 const compileCache: AJST.AJSTCacheContainer<AJST.AJSTCompiler> = {};
 
 /**
@@ -21,7 +21,7 @@ const compileCache: AJST.AJSTCacheContainer<AJST.AJSTCompiler> = {};
  */
 export const getTemplateFromURL = (id: string, getAjax: () => Promise<any>) => {
     if (ajaxCache[id]) return ajaxCache[id];
-    else ajaxCache[id] = getAjax();
+    return ajaxCache[id] = getAjax();
 };
 
 /**

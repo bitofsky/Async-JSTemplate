@@ -1,4 +1,4 @@
-import { AJST, ajax } from './core';
+import { get, ajax } from './core';
 import { DEFAULT_OPTION } from './option';
 import { UTIL, support } from './lib/UTIL';
 import { setTemplateElement } from './template';
@@ -20,7 +20,7 @@ export const autocollect = function () {
             const data = element.getAttribute('data-ajst-data') ? JSON.parse(element.getAttribute('data-ajst-data')) : undefined;
             const option = element.getAttribute('data-ajst-option') ? JSON.parse(element.getAttribute('data-ajst-option')) : undefined;
 
-            (ajaxURL ? ajax(element.id, ajaxURL, option) : AJST(element.id, data, option)).then(function (tplOutput) {
+            (ajaxURL ? ajax(element.id, ajaxURL, option) : get(element.id, data, option)).then(function (tplOutput) {
 
                 const tplElementList = UTIL.parseHTML(tplOutput);
 

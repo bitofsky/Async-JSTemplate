@@ -15,7 +15,7 @@ export const tplCompiler = (str: string, option: any) => {
             util.extend(args, {2:{global:{$parent:$id},_log:option._log}});\n\
             _s += uid;\n\
             _promises.push(\n\
-              this.apply(null, args).then(function(output){\n\
+              this.apply(this, args).then(function(output){\n\
                 syncOut = output;\n\
                 _s = _s.replace(uid, output);\n\
               })\n\
@@ -23,13 +23,13 @@ export const tplCompiler = (str: string, option: any) => {
             return syncOut !== undefined ? syncOut : uid;\n\
           },\n\
           include = function(){\n\
-            return includeExecute.apply(AJST, arguments);\n\
+            return includeExecute.apply(AJSTget, arguments);\n\
           },\n\
           includeAjax = function(){\n\
-            return includeExecute.apply(AJST.ajax, arguments);\n\
+            return includeExecute.apply(AJSTajax, arguments);\n\
           },\n\
           includeEach = function(id, data, option){\n\
-            return includeExecute.apply(AJST.each, arguments);\n\
+            return includeExecute.apply(AJSTeach, arguments);\n\
           };\n\
       var _s = \'' + str.replace(regexp_remove_ws, replace_remove_ws).replace(regexp_compile, replace_compile).replace(regexp_escape, replace_escape) + '\';\n\
       return Promise.all(_promises).then(function(){\n\

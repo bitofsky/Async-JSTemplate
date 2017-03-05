@@ -494,7 +494,7 @@ define("src/tplCompiler", ["require", "exports"], function (require, exports) {
             util.extend(args, {2:{global:{$parent:$id},_log:option._log}});\n\
             _s += uid;\n\
             _promises.push(\n\
-              this.apply(null, args).then(function(output){\n\
+              this.apply(this, args).then(function(output){\n\
                 syncOut = output;\n\
                 _s = _s.replace(uid, output);\n\
               })\n\
@@ -502,13 +502,13 @@ define("src/tplCompiler", ["require", "exports"], function (require, exports) {
             return syncOut !== undefined ? syncOut : uid;\n\
           },\n\
           include = function(){\n\
-            return includeExecute.apply(AJST, arguments);\n\
+            return includeExecute.apply(AJSTget, arguments);\n\
           },\n\
           includeAjax = function(){\n\
-            return includeExecute.apply(AJST.ajax, arguments);\n\
+            return includeExecute.apply(AJSTajax, arguments);\n\
           },\n\
           includeEach = function(id, data, option){\n\
-            return includeExecute.apply(AJST.each, arguments);\n\
+            return includeExecute.apply(AJSTeach, arguments);\n\
           };\n\
       var _s = \'' + str.replace(regexp_remove_ws, replace_remove_ws).replace(regexp_compile, replace_compile).replace(regexp_escape, replace_escape) + '\';\n\
       return Promise.all(_promises).then(function(){\n\
@@ -572,8 +572,7 @@ define("src/template", ["require", "exports", "src/tplCompiler", "src/lib/Commen
     exports.getTemplateFromURL = function (id, getAjax) {
         if (ajaxCache[id])
             return ajaxCache[id];
-        else
-            ajaxCache[id] = getAjax();
+        return ajaxCache[id] = getAjax();
     };
     exports.getTemplate = function (id) { return tplCache[id]; };
     exports.setTemplate = function (id, tplString) {
@@ -598,7 +597,7 @@ define("src/template", ["require", "exports", "src/tplCompiler", "src/lib/Commen
         return true;
     };
 });
-define("src/option", ["require", "exports", "src/core", "src/lib/UTIL"], function (require, exports, core_1, UTIL_1) {
+define("src/option", ["require", "exports", "src/lib/UTIL"], function (require, exports, UTIL_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.DEFAULT_OPTION = {
@@ -611,11 +610,6 @@ define("src/option", ["require", "exports", "src/core", "src/lib/UTIL"], functio
         override: {}
     };
     exports.CONST_OPTION = {};
-    exports.CONST_OPTION.global = {};
-    exports.CONST_OPTION.global.Promise = Promise;
-    exports.CONST_OPTION.global.AJST = core_1.AJST;
-    exports.CONST_OPTION.global.util = UTIL_1.UTIL;
-    UTIL_1.UTIL.extend(exports.DEFAULT_OPTION, exports.CONST_OPTION);
     exports.option = function (newOption) {
         if (!newOption)
             return UTIL_1.UTIL.extend({}, exports.DEFAULT_OPTION);
@@ -648,19 +642,26 @@ define("src/prepare", ["require", "exports", "src/template", "src/lib/UTIL", "sr
                             url: url,
                             dataType: 'html'
                         }).catch(function (e) {
-                            new Error('AJST file not found : (ID: ' + id + ', URL: ' + url + ')');
+                            throw new Error("AJST file not found : (ID: " + id + ", URL: " + url + ")");
                         }); };
                         return [4 /*yield*/, template_1.getTemplateFromURL(url, fromURL)];
                     case 1:
                         arrTemplate = _a.sent();
                         arr = [];
                         cnt = 0;
-                        Array.prototype.forEach.call(arrTemplate, function (element, idx) {
-                            if (idx === 0 || !opt.override[element.id])
-                                arr.push(element);
-                        });
-                        if (!arr.filter(template_1.setTemplateElement).length)
-                            template_1.setTemplate(id, arrTemplate.htmlString);
+                        try {
+                            Array.prototype.forEach.call(arrTemplate, function (element, idx) {
+                                if (idx === 0 || !opt.override[element.id])
+                                    arr.push(element);
+                            });
+                            if (!arr.filter(template_1.setTemplateElement).length)
+                                template_1.setTemplate(id, arrTemplate.htmlString);
+                            return [2 /*return*/, template_1.getCompiler(id, opt)];
+                        }
+                        catch (e) {
+                            e.message = "AJST Prepare failed : (ID: " + id + ", URL: " + url + ")\n" + e.message;
+                            throw e;
+                        }
                         return [2 /*return*/];
                 }
             });
@@ -672,9 +673,7 @@ define("src/core", ["require", "exports", "src/lib/UTIL", "src/prepare", "src/op
     var _this = this;
     Object.defineProperty(exports, "__esModule", { value: true });
     var outputDebugConsole = UTIL_3.UTIL.outputDebugConsole, support = UTIL_3.UTIL.support, CommentStripper = UTIL_3.UTIL.CommentStripper;
-    var global = window;
-    var _oldAJST = global['AJST'];
-    exports.AJST = function (id, data, option) {
+    exports.get = function (id, data, option) {
         if (data === void 0) { data = null; }
         if (option === void 0) { option = null; }
         return __awaiter(_this, void 0, void 0, function () {
@@ -714,15 +713,14 @@ define("src/core", ["require", "exports", "src/lib/UTIL", "src/prepare", "src/op
                         return [2 /*return*/, support.uglyInnerHTML ? output.replace(/\r\n/g, '\n') : output];
                     case 3:
                         e_1 = _a.sent();
-                        console.error(e_1);
-                        e_1.message = "AJST error (ID: " + id + ") -> " + e_1.message;
+                        e_1.message = "AJST error (ID: " + id + ")\n" + e_1.message;
                         throw e_1;
                     case 4: return [2 /*return*/];
                 }
             });
         });
     };
-    exports.ajax = function (id, url, option) { return exports.AJST(id, UTIL_3.UTIL.ajax({
+    exports.ajax = function (id, url, option) { return exports.get(id, UTIL_3.UTIL.ajax({
         url: url,
         dataType: 'json'
     }), option); };
@@ -735,7 +733,7 @@ define("src/core", ["require", "exports", "src/lib/UTIL", "src/prepare", "src/op
                     case 1:
                         list = _a.sent();
                         dataPromise = [];
-                        UTIL_3.UTIL.each(list, function (v) { return dataPromise.push(exports.AJST(id, v, option)); });
+                        UTIL_3.UTIL.each(list, function (v) { return dataPromise.push(exports.get(id, v, option)); });
                         if (!dataPromise.length)
                             return [2 /*return*/, ''];
                         return [4 /*yield*/, Promise.all(dataPromise)];
@@ -744,10 +742,17 @@ define("src/core", ["require", "exports", "src/lib/UTIL", "src/prepare", "src/op
             });
         });
     };
-    exports.noConflict = function () { return global['AJST'] = _oldAJST; };
-    global['AJST'] = exports.AJST;
+    exports.noConflict = function () { return window['AJST'] = _oldAJST; };
+    var _oldAJST = window['AJST'];
+    option_2.CONST_OPTION.global = {};
+    option_2.CONST_OPTION.global.Promise = Promise;
+    option_2.CONST_OPTION.global.AJSTget = exports.get;
+    option_2.CONST_OPTION.global.AJSTajax = exports.ajax;
+    option_2.CONST_OPTION.global.AJSTeach = exports.each;
+    option_2.CONST_OPTION.global.util = UTIL_3.UTIL;
+    UTIL_3.UTIL.extend(option_2.DEFAULT_OPTION, option_2.CONST_OPTION);
 });
-define("src/autocollect", ["require", "exports", "src/core", "src/option", "src/lib/UTIL", "src/template"], function (require, exports, core_2, option_3, UTIL_4, template_2) {
+define("src/autocollect", ["require", "exports", "src/core", "src/option", "src/lib/UTIL", "src/template"], function (require, exports, core_1, option_3, UTIL_4, template_2) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.autocollect = function () {
@@ -759,7 +764,7 @@ define("src/autocollect", ["require", "exports", "src/core", "src/option", "src/
                 var ajaxURL = element.getAttribute('data-ajst-ajax');
                 var data = element.getAttribute('data-ajst-data') ? JSON.parse(element.getAttribute('data-ajst-data')) : undefined;
                 var option = element.getAttribute('data-ajst-option') ? JSON.parse(element.getAttribute('data-ajst-option')) : undefined;
-                (ajaxURL ? core_2.ajax(element.id, ajaxURL, option) : core_2.AJST(element.id, data, option)).then(function (tplOutput) {
+                (ajaxURL ? core_1.ajax(element.id, ajaxURL, option) : core_1.get(element.id, data, option)).then(function (tplOutput) {
                     var tplElementList = UTIL_4.UTIL.parseHTML(tplOutput);
                     UTIL_4.UTIL.toArray(tplElementList).forEach(function (tplElement) {
                         element.parentNode.insertBefore(tplElement, element);
@@ -778,15 +783,15 @@ define("src/autocollect", ["require", "exports", "src/core", "src/option", "src/
     else
         document['attachEvent']('onreadystatechange', exports.autocollect);
 });
-define("ajst", ["require", "exports", "src/core", "src/autocollect", "src/core", "src/option", "src/prepare", "src/template", "src/tplCompiler"], function (require, exports, core_3, autocollect_1, core_4, option_4, prepare_2, template_3, tplCompiler_2) {
+define("ajst", ["require", "exports", "src/core", "src/autocollect", "src/core", "src/option", "src/prepare", "src/template", "src/tplCompiler"], function (require, exports, core_2, autocollect_1, core_3, option_4, prepare_2, template_3, tplCompiler_2) {
     "use strict";
     function __export(m) {
         for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
     }
     Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = core_3.AJST;
+    exports.default = core_2.get;
     __export(autocollect_1);
-    __export(core_4);
+    __export(core_3);
     __export(option_4);
     __export(prepare_2);
     __export(template_3);

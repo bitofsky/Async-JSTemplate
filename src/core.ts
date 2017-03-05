@@ -1,17 +1,13 @@
 import { UTIL } from './lib/UTIL';
 import { prepare } from './prepare';
-import { DEFAULT_OPTION } from './option';
+import { DEFAULT_OPTION, CONST_OPTION } from './option';
 
 const { outputDebugConsole, support, CommentStripper } = UTIL;
-
-const global = window;
-
-const _oldAJST = global['AJST'];
 
 /**
  * Generate AJST Template String
  */
-export const AJST = async (id: string, data: any = null, option: AJST.AJSTOption = null) => {
+export const get = async (id: string, data: any = null, option: AJST.AJSTOption = null) => {
 
     try {
 
@@ -54,8 +50,7 @@ export const AJST = async (id: string, data: any = null, option: AJST.AJSTOption
 
     }
     catch (e) {
-        console.error(e);
-        e.message = `AJST error (ID: ${id}) -> ${e.message}`;
+        e.message = `AJST error (ID: ${id})\n${e.message}`;
         throw e; // throw next
     }
 };
@@ -63,7 +58,7 @@ export const AJST = async (id: string, data: any = null, option: AJST.AJSTOption
 /**
  * Remote JSON Data
  */
-export const ajax = (id: string, url: string, option: AJST.AJSTOption) => AJST(id, UTIL.ajax({
+export const ajax = (id: string, url: string, option: AJST.AJSTOption) => get(id, UTIL.ajax({
     url,
     dataType: 'json'
 }), option);
@@ -76,7 +71,7 @@ export const each = async function (id: string, data: any, option: AJST.AJSTOpti
     const list = await data; // resolve promise
     const dataPromise: Promise<string>[] = [];
 
-    UTIL.each(list, v => dataPromise.push(AJST(id, v, option)));
+    UTIL.each(list, v => dataPromise.push(get(id, v, option)));
 
     if (!dataPromise.length)
         return '';
@@ -88,6 +83,16 @@ export const each = async function (id: string, data: any, option: AJST.AJSTOpti
 /**
  * return old AJST
  */
-export const noConflict = () => global['AJST'] = _oldAJST;
+export const noConflict = () => window['AJST'] = _oldAJST;
+const _oldAJST = window['AJST'];
 
-global['AJST'] = AJST;
+// constant default option.global
+CONST_OPTION.global = {};
+CONST_OPTION.global.Promise = Promise;
+CONST_OPTION.global.AJSTget = get;
+CONST_OPTION.global.AJSTajax = ajax;
+CONST_OPTION.global.AJSTeach = each;
+CONST_OPTION.global.util = UTIL;
+
+// option mixing
+UTIL.extend(DEFAULT_OPTION, CONST_OPTION);
