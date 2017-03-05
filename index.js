@@ -561,9 +561,9 @@ define("src/option", ["require", "exports", "src/lib/UTIL"], function (require, 
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.DEFAULT_OPTION = {
-        path: './tpl/$id',
+        path: '$id',
         url: null,
-        ajaxType: 'GET',
+        ajaxType: 'get',
         ajaxCache: true,
         ajaxData: {},
         autocollect: true,

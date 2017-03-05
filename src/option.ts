@@ -5,9 +5,9 @@ import { UTIL } from './lib/UTIL';
  * Default Option
  */
 export const DEFAULT_OPTION: ns.AJSTOption = {
-    path: './tpl/$id',
+    path: '$id',
     url: null,
-    ajaxType: 'GET',
+    ajaxType: 'get',
     ajaxCache: true,
     ajaxData: {},
     autocollect: true,
