@@ -68,10 +68,6 @@ define("lib/CommentStripper", ["require", "exports"], function (require, exports
 define("lib/sprintf", ["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    /**
-     * Return a formatted string
-     * discuss at: http://phpjs.org/functions/sprintf
-     */
     function sprintf() {
         var i = 0;
         var regex = /%%|%(\d+\$)?([-+\'#0 ]*)(\*\d+\$|\*|\d+)?(\.(\*\d+\$|\*|\d+))?([scboxXuidfegEG])/g;
@@ -420,45 +416,31 @@ define("lib/UTIL", ["require", "exports", "lib/CommentStripper", "lib/sprintf"],
     };
     function param(a) {
         var s = [];
-        // If traditional, encode the "old" way (the way 1.3.2 or older
-        // did it), otherwise encode params recursively.
         for (var prefix in a) {
             buildParams(prefix, a[prefix]);
         }
-        // Return the resulting serialization
         return s.join('&').replace(/%20/g, '+');
         function add(key, value) {
-            // If value is a function, invoke it and return its value
             value = exports.UTIL.isFunction(value) ? value() : value;
             s[s.length] = encodeURIComponent(key) + '=' + encodeURIComponent(value);
         }
         function buildParams(prefix, obj) {
             if (exports.UTIL.isArray(obj)) {
-                // Serialize array item.
                 obj.forEach(function (v, i) {
                     buildParams(prefix + '[' + (typeof v === 'object' || exports.UTIL.isArray(v) ? i : '') + ']', v);
                 });
             }
             else if (obj != null && typeof obj === 'object') {
-                // Serialize object item.
                 for (var k in obj)
                     buildParams(prefix + '[' + k + ']', obj[k]);
             }
             else {
-                // Serialize scalar item.
                 add(prefix, obj);
             }
         }
     }
-    /**
-     * Browser Compatibility
-     */
     (function (global, console) {
-        // tslint:disable:no-console
         var fn = new Function();
-        /**
-         * console implementation for IE
-         */
         console.clear = console.clear || fn;
         console.log = console.log || fn;
         console.info = console.info || console.log;
@@ -480,9 +462,6 @@ define("lib/UTIL", ["require", "exports", "lib/CommentStripper", "lib/sprintf"],
             delete console.timeCounters[name];
             return diff;
         };
-        /**
-         * IE7 document.querySelectorAll
-         */
         if (global.document && !global.document.querySelectorAll) {
             (function (document) {
                 var a = document.styleSheets.length ? document.styleSheets[0] : document.createStyleSheet();
@@ -498,48 +477,23 @@ define("lib/UTIL", ["require", "exports", "lib/CommentStripper", "lib/sprintf"],
         }
     })(this || window, (this || window).console || {});
 });
-/**
- * AJST : Asynchronous JavaScript Templating
- *   for Web Browsers
- *
- * Demo : http://bitofsky.github.io/Async-JSTemplate
- * Source : https://github.com/bitofsky/Async-JSTemplate
- *
- * Inspired by
- *   John Resig's JavaScript Micro-Templating: http://ejohn.org/blog/javascript-micro-templating/
- *   blueimp's JavaScript-Templates: https://github.com/blueimp/JavaScript-Templates/
- *
- * The MIT License
- * Copyright (C) 2013 Bum-seok Hwang (bitofsky@naver.com)
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
- * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- *
- * @author bitofsky@naver.com 2013.07.25
- * @encoding UTF-8
- * @version 1.5
- */
-define("ajst", ["require", "exports", "lib/UTIL"], function (require, exports, UTIL_js_1) {
+define("ajst", ["require", "exports", "lib/UTIL"], function (require, exports, UTIL_1) {
     'use strict';
     Object.defineProperty(exports, "__esModule", { value: true });
-    var outputDebugConsole = UTIL_js_1.UTIL.outputDebugConsole, support = UTIL_js_1.UTIL.support, CommentStripper = UTIL_js_1.UTIL.CommentStripper;
+    var outputDebugConsole = UTIL_1.UTIL.outputDebugConsole, support = UTIL_1.UTIL.support, CommentStripper = UTIL_1.UTIL.CommentStripper;
     var global = window;
     var _oldAJST = global['AJST'];
     var DEFAULT_OPTION;
     var CONST_OPTION;
-    // Template String Cache
     var tplCache = {};
-    // Ajax URL Cache
     var ajaxCache = {};
-    // Template Compiler Cache
     var compileCache = {};
-    // Template Process
     var AJST;
     AJST = function (id, data, option) {
         if (data === void 0) { data = undefined; }
         if (option === void 0) { option = undefined; }
         return __awaiter(this, void 0, void 0, function () {
-            var curLogs_1, parentLogs, opt, outputDebug, pData, pCompiler, compiler, output, e_1;
+            var curLogs_1, parentLogs, opt_1, outputDebug, pData, pCompiler, solvedData, compiler, output, e_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -547,53 +501,53 @@ define("ajst", ["require", "exports", "lib/UTIL"], function (require, exports, U
                         option = option || {};
                         curLogs_1 = [];
                         parentLogs = option['_log'] || [];
-                        opt = UTIL_js_1.UTIL.extend({}, DEFAULT_OPTION, option);
+                        opt_1 = UTIL_1.UTIL.extend({}, DEFAULT_OPTION, option);
                         curLogs_1['id'] = id;
                         curLogs_1['now'] = new Date();
-                        curLogs_1['isRoot'] = !opt.global.$parent;
-                        outputDebug = !!(curLogs_1['isRoot'] && opt.debug);
+                        curLogs_1['isRoot'] = !opt_1.global.$parent;
+                        outputDebug = !!(curLogs_1['isRoot'] && opt_1.debug);
                         parentLogs.push(curLogs_1);
-                        opt._log = curLogs_1;
+                        opt_1._log = curLogs_1;
                         pData = Promise.resolve(typeof data === 'function' ? data() : data).then(function (result) {
                             curLogs_1.push(['time', 'elapsed time - data', new Date()]);
                             curLogs_1.push(['log', 'data', result]);
                             return result;
                         });
-                        pCompiler = AJST.prepare(id, opt).then(function (result) {
+                        pCompiler = AJST.prepare(id, opt_1).then(function (result) {
                             curLogs_1.push(['time', 'elapsed time - tpl prepare', new Date()]);
                             return result;
                         });
                         return [4 /*yield*/, pData];
                     case 1:
-                        data = _a.sent();
+                        solvedData = _a.sent();
                         return [4 /*yield*/, pCompiler];
                     case 2:
                         compiler = _a.sent();
-                        output = compiler.apply(void 0, [id, data, opt].concat(Object.values(opt.global)));
+                        output = compiler.apply(void 0, [id, solvedData, opt_1].concat(Object.keys(opt_1.global).map(function (k) { return opt_1.global[k]; })));
                         curLogs_1.push(['time', 'elapsed time - compile success', new Date()]);
-                        outputDebug && outputDebugConsole(curLogs_1); // show log groups..
+                        outputDebug && outputDebugConsole(curLogs_1);
                         return [2 /*return*/, support.uglyInnerHTML ? output.replace(/\r\n/g, '\n') : output];
                     case 3:
                         e_1 = _a.sent();
+                        console.error(e_1);
                         e_1.message = "AJST error (ID: " + id + ") -> " + e_1.message;
-                        throw e_1; // throw next
+                        throw e_1;
                     case 4: return [2 /*return*/];
                 }
             });
         });
     };
-    // Preparing Template
     AJST.prepare = function (id, option) {
         if (option === void 0) { option = {}; }
         return new Promise(function (resolve, reject) {
-            var opt = UTIL_js_1.UTIL.extend({}, DEFAULT_OPTION, option);
+            var opt = UTIL_1.UTIL.extend({}, DEFAULT_OPTION, option);
             var url = opt.url || opt.path.replace(/\$id/g, id);
             if (typeof url === 'function')
                 url = url(id, option) || opt.path.replace(/\$id/g, id);
             try {
                 if (AJST.getTemplate(id))
                     return resolved();
-                (ajaxCache[url] ? ajaxCache[url] : ajaxCache[url] = UTIL_js_1.UTIL.ajax({
+                (ajaxCache[url] ? ajaxCache[url] : ajaxCache[url] = UTIL_1.UTIL.ajax({
                     type: opt.ajaxType,
                     cache: opt.ajaxCache,
                     data: opt.ajaxData,
@@ -603,11 +557,10 @@ define("ajst", ["require", "exports", "lib/UTIL"], function (require, exports, U
                     var arr = [];
                     var cnt = 0;
                     Array.prototype.forEach.call(arrTemplate, function (element, idx) {
-                        // check opt.override id set
                         if (idx === 0 || !opt.override[element.id])
                             arr.push(element);
                     });
-                    UTIL_js_1.UTIL.each(arr, function (element) {
+                    UTIL_1.UTIL.each(arr, function (element) {
                         if (AJST.setTemplateElement(element))
                             cnt++;
                     });
@@ -630,22 +583,18 @@ define("ajst", ["require", "exports", "lib/UTIL"], function (require, exports, U
             }
         });
     };
-    // return old AJST
     AJST.noConflict = function () { return global['AJST'] = _oldAJST; };
-    // get/set Default Option
     AJST.option = function (newOption) {
         if (!newOption)
-            return UTIL_js_1.UTIL.extend({}, DEFAULT_OPTION);
-        if (UTIL_js_1.UTIL.isPlainObject(newOption))
-            UTIL_js_1.UTIL.extend(DEFAULT_OPTION, newOption, CONST_OPTION);
+            return UTIL_1.UTIL.extend({}, DEFAULT_OPTION);
+        if (UTIL_1.UTIL.isPlainObject(newOption))
+            UTIL_1.UTIL.extend(DEFAULT_OPTION, newOption, CONST_OPTION);
         return true;
     };
-    // Remote JSON Data
-    AJST.ajax = function (id, url, option) { return AJST(id, UTIL_js_1.UTIL.ajax({
+    AJST.ajax = function (id, url, option) { return AJST(id, UTIL_1.UTIL.ajax({
         url: url,
         dataType: 'json'
     }), option); };
-    // AJST for iterable data (array or promise)
     AJST.each = function (id, data, option) {
         return __awaiter(this, void 0, void 0, function () {
             var list, dataPromise;
@@ -655,7 +604,7 @@ define("ajst", ["require", "exports", "lib/UTIL"], function (require, exports, U
                     case 1:
                         list = _a.sent();
                         dataPromise = [];
-                        UTIL_js_1.UTIL.each(list, function (v) { return dataPromise.push(AJST(id, v, option)); });
+                        UTIL_1.UTIL.each(list, function (v) { return dataPromise.push(AJST(id, v, option)); });
                         if (!dataPromise.length)
                             return [2 /*return*/, ''];
                         return [4 /*yield*/, Promise.all(dataPromise)];
@@ -664,48 +613,42 @@ define("ajst", ["require", "exports", "lib/UTIL"], function (require, exports, U
             });
         });
     };
-    // Create/Replace Template
     AJST.setTemplate = function (id, tplString) {
         tplCache[id] = CommentStripper.strip(tplString.trim());
         compileCache[id] = null;
         if (id.match(/\.js$/))
             tplCache[id] = "<? " + tplCache[id] + " ?>";
     };
-    // Set template element
     AJST.setTemplateElement = function (element) {
         if (!element.id || element.tagName !== 'SCRIPT')
             return false;
         AJST.setTemplate(element.id, element.innerHTML.replace(/<!--\?/g, '<?').replace(/\?-->/g, '?>'));
         return true;
     };
-    // Template auto collect
     AJST.autocollect = function () {
         if (!DEFAULT_OPTION.autocollect)
             return;
         Array.prototype.forEach.call(document.querySelectorAll('SCRIPT[id]'), AJST.setTemplateElement);
         Array.prototype.forEach.call(document.querySelectorAll('SCRIPT[id]'), function (element) {
-            // auto replace
             if (element.getAttribute('data-ajst')) {
                 var ajax = element.getAttribute('data-ajst-ajax');
                 var data = element.getAttribute('data-ajst-data') ? JSON.parse(element.getAttribute('data-ajst-data')) : undefined;
                 var option = element.getAttribute('data-ajst-option') ? JSON.parse(element.getAttribute('data-ajst-option')) : undefined;
                 (ajax ? AJST.ajax(element.id, ajax, option) : AJST(element.id, data, option)).then(function (tplOutput) {
-                    var tplElementList = UTIL_js_1.UTIL.parseHTML(tplOutput);
-                    UTIL_js_1.UTIL.toArray(tplElementList).forEach(function (tplElement) {
+                    var tplElementList = UTIL_1.UTIL.parseHTML(tplOutput);
+                    UTIL_1.UTIL.toArray(tplElementList).forEach(function (tplElement) {
                         element.parentNode.insertBefore(tplElement, element);
                     });
-                    UTIL_js_1.UTIL.removeElement(element);
+                    UTIL_1.UTIL.removeElement(element);
                 }, function (e) {
                     throw e;
                 });
             }
             else
-                UTIL_js_1.UTIL.removeElement(element);
+                UTIL_1.UTIL.removeElement(element);
         });
     };
-    // Get Template
     AJST.getTemplate = function (id) { return tplCache[id]; };
-    // Get Template Compiler
     AJST.getCompiler = function (id, option) {
         if (!compileCache[id]) {
             var tplString = AJST.getTemplate(id);
@@ -727,12 +670,11 @@ define("ajst", ["require", "exports", "lib/UTIL"], function (require, exports, U
     CONST_OPTION = {
         global: {
             AJST: AJST,
-            util: UTIL_js_1.UTIL,
+            util: UTIL_1.UTIL,
             Promise: Promise
         }
     };
-    UTIL_js_1.UTIL.extend(DEFAULT_OPTION, CONST_OPTION);
-    // Create Template Compiler
+    UTIL_1.UTIL.extend(DEFAULT_OPTION, CONST_OPTION);
     var tplCompiler = function (str, option) {
         var args = '$id, data, option, ' + Object.keys(option.global).join(', '), fn = '\n\
       var print     = function(){ _s += Array.prototype.join.call(arguments,""); },\n\
@@ -816,12 +758,10 @@ define("ajst", ["require", "exports", "lib/UTIL"], function (require, exports, U
             return ";\n_s+='";
     };
     global['AJST'] = AJST;
-    // window event bind for autocollect
     if (support.addEventListener)
         document.addEventListener('DOMContentLoaded', AJST.autocollect, false);
     else
         document['attachEvent']('onreadystatechange', AJST.autocollect);
-    // for module system
     exports.default = AJST;
 });
 //# sourceMappingURL=index.js.map

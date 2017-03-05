@@ -6,10 +6,13 @@
     "sourceMap": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "lib": [ "es2017", "dom" ],
+    "lib": [ "dom", "es2017" ],
     "noImplicitAny": false,
     "suppressImplicitAnyIndexErrors": true,
-    "allowJs": false
+    "allowJs": false,
+    "outFile": "../index.js",
+    "declaration": false,
+    "removeComments": true
   },
   "exclude": [
     "node_modules"

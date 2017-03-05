@@ -1,4 +1,4 @@
-{
+{ 
   "author": {
     "name": "Bum-seok Hwang",
     "email": "bitofsky@naver.com"
@@ -11,8 +11,8 @@
   "devDependencies": {},
   "directories": {},
   "dist": {
-    "shasum": "43b9d9cec28fc5edeadc5e155c2cf63b5d3b3e0c",
-    "tarball": "https://registry.npmjs.org/ajst/-/ajst-1.5.0.tgz"
+    "shasum": "df6d786fb4f9e07ac82b30a16fc29325b49b9d67",
+    "tarball": "https://registry.npmjs.org/ajst/-/ajst-1.5.2.tgz"
   },
   "gitHead": "e4ce42ec5fee6f1e3cdaa1445c730ae431dbbe30",
   "homepage": "https://github.com/bitofsky/Async-JSTemplate#readme",
@@ -39,8 +39,9 @@
     "url": "git+https://github.com/bitofsky/Async-JSTemplate.git"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc -p src"
   },
   "types": "./index.d.ts",
-  "version": "1.5.2"
+  "version": "1.5.3"
 }

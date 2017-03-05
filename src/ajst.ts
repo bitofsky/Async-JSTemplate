@@ -22,7 +22,7 @@
 
 'use strict';
 
-import { UTIL } from './lib/UTIL.js';
+import { UTIL } from './lib/UTIL';
 
 const { outputDebugConsole, support, CommentStripper } = UTIL;
 
@@ -75,10 +75,9 @@ AJST = <AJST.AJST>async function (id, data = undefined, option = undefined) {
             return result;
         });
 
-        data = await pData;
-
+        const solvedData = await pData;
         const compiler = await pCompiler;
-        const output = compiler(id, data, opt, ...Object.values(opt.global)); // generate output text
+        const output = compiler(id, solvedData, opt, ...Object.keys(opt.global).map(k => opt.global[k])); // generate output text
 
         curLogs.push(['time', 'elapsed time - compile success', new Date()]);
 
@@ -88,6 +87,7 @@ AJST = <AJST.AJST>async function (id, data = undefined, option = undefined) {
 
     }
     catch (e) {
+        console.error(e);
         e.message = `AJST error (ID: ${id}) -> ${e.message}`;
         throw e; // throw next
     }
