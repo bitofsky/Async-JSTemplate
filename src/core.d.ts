@@ -86,21 +86,13 @@ declare namespace AJST {
         ajaxData?: object;
         autocollect?: boolean;
         override?: object;
-        global?: object;
+        global?: object | any;
         debug?: boolean;
 
     }
 
-    interface AJSTCompilerContainer {
-        [index: string]: AJSTCompiler;
-    }
-
-    interface AJSTTemplateContainer {
-        [index: string]: string;
-    }
-
-    interface AJSTAjaxContainer {
-        [index: string]: any;
+    interface AJSTCacheContainer<T> {
+        [index: string]: T;
     }
 
 }

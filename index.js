@@ -33,7 +33,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-define("lib/CommentStripper", ["require", "exports"], function (require, exports) {
+define("src/lib/CommentStripper", ["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.CommentStripper = (function () {
@@ -65,7 +65,7 @@ define("lib/CommentStripper", ["require", "exports"], function (require, exports
         return new CommentStripper();
     })();
 });
-define("lib/sprintf", ["require", "exports"], function (require, exports) {
+define("src/lib/sprintf", ["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     function sprintf() {
@@ -212,7 +212,7 @@ define("lib/sprintf", ["require", "exports"], function (require, exports) {
     }
     exports.sprintf = sprintf;
 });
-define("lib/UTIL", ["require", "exports", "lib/CommentStripper", "lib/sprintf"], function (require, exports, CommentStripper_js_1, sprintf_js_1) {
+define("src/lib/UTIL", ["require", "exports", "src/lib/CommentStripper", "src/lib/sprintf"], function (require, exports, CommentStripper_js_1, sprintf_js_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var documentMode = window.documentMode;
@@ -477,205 +477,10 @@ define("lib/UTIL", ["require", "exports", "lib/CommentStripper", "lib/sprintf"],
         }
     })(this || window, (this || window).console || {});
 });
-define("ajst", ["require", "exports", "lib/UTIL"], function (require, exports, UTIL_1) {
-    'use strict';
+define("src/tplCompiler", ["require", "exports"], function (require, exports) {
+    "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    var outputDebugConsole = UTIL_1.UTIL.outputDebugConsole, support = UTIL_1.UTIL.support, CommentStripper = UTIL_1.UTIL.CommentStripper;
-    var global = window;
-    var _oldAJST = global['AJST'];
-    var DEFAULT_OPTION;
-    var CONST_OPTION;
-    var tplCache = {};
-    var ajaxCache = {};
-    var compileCache = {};
-    var AJST;
-    AJST = function (id, data, option) {
-        if (data === void 0) { data = undefined; }
-        if (option === void 0) { option = undefined; }
-        return __awaiter(this, void 0, void 0, function () {
-            var curLogs_1, parentLogs, opt_1, outputDebug, pData, pCompiler, solvedData, compiler, output, e_1;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 3, , 4]);
-                        option = option || {};
-                        curLogs_1 = [];
-                        parentLogs = option['_log'] || [];
-                        opt_1 = UTIL_1.UTIL.extend({}, DEFAULT_OPTION, option);
-                        curLogs_1['id'] = id;
-                        curLogs_1['now'] = new Date();
-                        curLogs_1['isRoot'] = !opt_1.global.$parent;
-                        outputDebug = !!(curLogs_1['isRoot'] && opt_1.debug);
-                        parentLogs.push(curLogs_1);
-                        opt_1._log = curLogs_1;
-                        pData = Promise.resolve(typeof data === 'function' ? data() : data).then(function (result) {
-                            curLogs_1.push(['time', 'elapsed time - data', new Date()]);
-                            curLogs_1.push(['log', 'data', result]);
-                            return result;
-                        });
-                        pCompiler = AJST.prepare(id, opt_1).then(function (result) {
-                            curLogs_1.push(['time', 'elapsed time - tpl prepare', new Date()]);
-                            return result;
-                        });
-                        return [4 /*yield*/, pData];
-                    case 1:
-                        solvedData = _a.sent();
-                        return [4 /*yield*/, pCompiler];
-                    case 2:
-                        compiler = _a.sent();
-                        output = compiler.apply(void 0, [id, solvedData, opt_1].concat(Object.keys(opt_1.global).map(function (k) { return opt_1.global[k]; })));
-                        curLogs_1.push(['time', 'elapsed time - compile success', new Date()]);
-                        outputDebug && outputDebugConsole(curLogs_1);
-                        return [2 /*return*/, support.uglyInnerHTML ? output.replace(/\r\n/g, '\n') : output];
-                    case 3:
-                        e_1 = _a.sent();
-                        console.error(e_1);
-                        e_1.message = "AJST error (ID: " + id + ") -> " + e_1.message;
-                        throw e_1;
-                    case 4: return [2 /*return*/];
-                }
-            });
-        });
-    };
-    AJST.prepare = function (id, option) {
-        if (option === void 0) { option = {}; }
-        return new Promise(function (resolve, reject) {
-            var opt = UTIL_1.UTIL.extend({}, DEFAULT_OPTION, option);
-            var url = opt.url || opt.path.replace(/\$id/g, id);
-            if (typeof url === 'function')
-                url = url(id, option) || opt.path.replace(/\$id/g, id);
-            try {
-                if (AJST.getTemplate(id))
-                    return resolved();
-                (ajaxCache[url] ? ajaxCache[url] : ajaxCache[url] = UTIL_1.UTIL.ajax({
-                    type: opt.ajaxType,
-                    cache: opt.ajaxCache,
-                    data: opt.ajaxData,
-                    url: url,
-                    dataType: 'html'
-                })).then(function (arrTemplate) {
-                    var arr = [];
-                    var cnt = 0;
-                    Array.prototype.forEach.call(arrTemplate, function (element, idx) {
-                        if (idx === 0 || !opt.override[element.id])
-                            arr.push(element);
-                    });
-                    UTIL_1.UTIL.each(arr, function (element) {
-                        if (AJST.setTemplateElement(element))
-                            cnt++;
-                    });
-                    if (!cnt)
-                        AJST.setTemplate(id, arrTemplate.htmlString);
-                }).then(resolved, function () {
-                    reject(new Error('AJST file not found : (ID: ' + id + ', URL: ' + url + ')'));
-                });
-            }
-            catch (e) {
-                reject(e);
-            }
-            function resolved() {
-                try {
-                    resolve(AJST.getCompiler(id, opt));
-                }
-                catch (e) {
-                    reject(e);
-                }
-            }
-        });
-    };
-    AJST.noConflict = function () { return global['AJST'] = _oldAJST; };
-    AJST.option = function (newOption) {
-        if (!newOption)
-            return UTIL_1.UTIL.extend({}, DEFAULT_OPTION);
-        if (UTIL_1.UTIL.isPlainObject(newOption))
-            UTIL_1.UTIL.extend(DEFAULT_OPTION, newOption, CONST_OPTION);
-        return true;
-    };
-    AJST.ajax = function (id, url, option) { return AJST(id, UTIL_1.UTIL.ajax({
-        url: url,
-        dataType: 'json'
-    }), option); };
-    AJST.each = function (id, data, option) {
-        return __awaiter(this, void 0, void 0, function () {
-            var list, dataPromise;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, data];
-                    case 1:
-                        list = _a.sent();
-                        dataPromise = [];
-                        UTIL_1.UTIL.each(list, function (v) { return dataPromise.push(AJST(id, v, option)); });
-                        if (!dataPromise.length)
-                            return [2 /*return*/, ''];
-                        return [4 /*yield*/, Promise.all(dataPromise)];
-                    case 2: return [2 /*return*/, (_a.sent()).join('')];
-                }
-            });
-        });
-    };
-    AJST.setTemplate = function (id, tplString) {
-        tplCache[id] = CommentStripper.strip(tplString.trim());
-        compileCache[id] = null;
-        if (id.match(/\.js$/))
-            tplCache[id] = "<? " + tplCache[id] + " ?>";
-    };
-    AJST.setTemplateElement = function (element) {
-        if (!element.id || element.tagName !== 'SCRIPT')
-            return false;
-        AJST.setTemplate(element.id, element.innerHTML.replace(/<!--\?/g, '<?').replace(/\?-->/g, '?>'));
-        return true;
-    };
-    AJST.autocollect = function () {
-        if (!DEFAULT_OPTION.autocollect)
-            return;
-        Array.prototype.forEach.call(document.querySelectorAll('SCRIPT[id]'), AJST.setTemplateElement);
-        Array.prototype.forEach.call(document.querySelectorAll('SCRIPT[id]'), function (element) {
-            if (element.getAttribute('data-ajst')) {
-                var ajax = element.getAttribute('data-ajst-ajax');
-                var data = element.getAttribute('data-ajst-data') ? JSON.parse(element.getAttribute('data-ajst-data')) : undefined;
-                var option = element.getAttribute('data-ajst-option') ? JSON.parse(element.getAttribute('data-ajst-option')) : undefined;
-                (ajax ? AJST.ajax(element.id, ajax, option) : AJST(element.id, data, option)).then(function (tplOutput) {
-                    var tplElementList = UTIL_1.UTIL.parseHTML(tplOutput);
-                    UTIL_1.UTIL.toArray(tplElementList).forEach(function (tplElement) {
-                        element.parentNode.insertBefore(tplElement, element);
-                    });
-                    UTIL_1.UTIL.removeElement(element);
-                }, function (e) {
-                    throw e;
-                });
-            }
-            else
-                UTIL_1.UTIL.removeElement(element);
-        });
-    };
-    AJST.getTemplate = function (id) { return tplCache[id]; };
-    AJST.getCompiler = function (id, option) {
-        if (!compileCache[id]) {
-            var tplString = AJST.getTemplate(id);
-            if (tplString === undefined)
-                throw new Error('AJST Undefined TPL ID (ID: ' + id + ')');
-            compileCache[id] = tplCompiler(tplString, option);
-        }
-        return compileCache[id];
-    };
-    DEFAULT_OPTION = {
-        path: './tpl/$id',
-        url: null,
-        ajaxType: 'GET',
-        ajaxCache: true,
-        ajaxData: {},
-        autocollect: true,
-        override: {}
-    };
-    CONST_OPTION = {
-        global: {
-            AJST: AJST,
-            util: UTIL_1.UTIL,
-            Promise: Promise
-        }
-    };
-    UTIL_1.UTIL.extend(DEFAULT_OPTION, CONST_OPTION);
-    var tplCompiler = function (str, option) {
+    exports.tplCompiler = function (str, option) {
         var args = '$id, data, option, ' + Object.keys(option.global).join(', '), fn = '\n\
       var print     = function(){ _s += Array.prototype.join.call(arguments,""); },\n\
           printf    = function(){ _s += sprintf.apply(this, arguments); },\n\
@@ -757,11 +562,234 @@ define("ajst", ["require", "exports", "lib/UTIL"], function (require, exports, U
         if (p5)
             return ";\n_s+='";
     };
-    global['AJST'] = AJST;
-    if (support.addEventListener)
-        document.addEventListener('DOMContentLoaded', AJST.autocollect, false);
+});
+define("src/template", ["require", "exports", "src/tplCompiler", "src/lib/CommentStripper"], function (require, exports, tplCompiler_1, CommentStripper_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var tplCache = {};
+    var ajaxCache = {};
+    var compileCache = {};
+    exports.getTemplateFromURL = function (id, getAjax) {
+        if (ajaxCache[id])
+            return ajaxCache[id];
+        else
+            ajaxCache[id] = getAjax();
+    };
+    exports.getTemplate = function (id) { return tplCache[id]; };
+    exports.setTemplate = function (id, tplString) {
+        tplCache[id] = CommentStripper_1.CommentStripper.strip(tplString.trim());
+        compileCache[id] = null;
+        if (id.match(/\.js$/))
+            tplCache[id] = "<? " + tplCache[id] + " ?>";
+    };
+    exports.getCompiler = function (id, option) {
+        if (!compileCache[id]) {
+            var tplString = exports.getTemplate(id);
+            if (tplString === undefined)
+                throw new Error('AJST Undefined TPL ID (ID: ' + id + ')');
+            compileCache[id] = tplCompiler_1.tplCompiler(tplString, option);
+        }
+        return compileCache[id];
+    };
+    exports.setTemplateElement = function (element) {
+        if (!element.id || element.tagName !== 'SCRIPT')
+            return false;
+        exports.setTemplate(element.id, element.innerHTML.replace(/<!--\?/g, '<?').replace(/\?-->/g, '?>'));
+        return true;
+    };
+});
+define("src/option", ["require", "exports", "src/core", "src/lib/UTIL"], function (require, exports, core_1, UTIL_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.DEFAULT_OPTION = {
+        path: './tpl/$id',
+        url: null,
+        ajaxType: 'GET',
+        ajaxCache: true,
+        ajaxData: {},
+        autocollect: true,
+        override: {}
+    };
+    exports.CONST_OPTION = {};
+    exports.CONST_OPTION.global = {};
+    exports.CONST_OPTION.global.Promise = Promise;
+    exports.CONST_OPTION.global.AJST = core_1.default;
+    exports.CONST_OPTION.global.util = UTIL_1.UTIL;
+    UTIL_1.UTIL.extend(exports.DEFAULT_OPTION, exports.CONST_OPTION);
+    exports.option = function (newOption) {
+        if (!newOption)
+            return UTIL_1.UTIL.extend({}, exports.DEFAULT_OPTION);
+        if (UTIL_1.UTIL.isPlainObject(newOption))
+            UTIL_1.UTIL.extend(exports.DEFAULT_OPTION, newOption, exports.CONST_OPTION);
+        return true;
+    };
+});
+define("src/prepare", ["require", "exports", "src/template", "src/lib/UTIL", "src/option"], function (require, exports, template_1, UTIL_2, option_1) {
+    "use strict";
+    var _this = this;
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.prepare = function (id, option) {
+        if (option === void 0) { option = {}; }
+        return __awaiter(_this, void 0, void 0, function () {
+            var opt, url, fromURL, arrTemplate, arr, cnt;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        opt = UTIL_2.UTIL.extend({}, option_1.DEFAULT_OPTION, option);
+                        url = opt.url || opt.path.replace(/\$id/g, id);
+                        if (typeof url === 'function')
+                            url = url(id, option) || opt.path.replace(/\$id/g, id);
+                        if (template_1.getTemplate(id))
+                            return [2 /*return*/, template_1.getCompiler(id, opt)];
+                        fromURL = function () { return UTIL_2.UTIL.ajax({
+                            type: opt.ajaxType,
+                            cache: opt.ajaxCache,
+                            data: opt.ajaxData,
+                            url: url,
+                            dataType: 'html'
+                        }).catch(function (e) {
+                            new Error('AJST file not found : (ID: ' + id + ', URL: ' + url + ')');
+                        }); };
+                        return [4 /*yield*/, template_1.getTemplateFromURL(url, fromURL)];
+                    case 1:
+                        arrTemplate = _a.sent();
+                        arr = [];
+                        cnt = 0;
+                        Array.prototype.forEach.call(arrTemplate, function (element, idx) {
+                            if (idx === 0 || !opt.override[element.id])
+                                arr.push(element);
+                        });
+                        if (!arr.filter(template_1.setTemplateElement).length)
+                            template_1.setTemplate(id, arrTemplate.htmlString);
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+});
+define("src/core", ["require", "exports", "src/lib/UTIL", "src/prepare", "src/option"], function (require, exports, UTIL_3, prepare_1, option_2) {
+    'use strict';
+    var _this = this;
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var outputDebugConsole = UTIL_3.UTIL.outputDebugConsole, support = UTIL_3.UTIL.support, CommentStripper = UTIL_3.UTIL.CommentStripper;
+    var global = window;
+    var _oldAJST = global['AJST'];
+    exports.AJST = function (id, data, option) {
+        if (data === void 0) { data = null; }
+        if (option === void 0) { option = null; }
+        return __awaiter(_this, void 0, void 0, function () {
+            var curLogs_1, parentLogs, opt_1, outputDebug, pData, pCompiler, solvedData, compiler, output, e_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 3, , 4]);
+                        option = option || {};
+                        curLogs_1 = [];
+                        parentLogs = option['_log'] || [];
+                        opt_1 = UTIL_3.UTIL.extend({}, option_2.DEFAULT_OPTION, option);
+                        curLogs_1['id'] = id;
+                        curLogs_1['now'] = new Date();
+                        curLogs_1['isRoot'] = !opt_1.global.$parent;
+                        outputDebug = !!(curLogs_1['isRoot'] && opt_1.debug);
+                        parentLogs.push(curLogs_1);
+                        opt_1._log = curLogs_1;
+                        pData = Promise.resolve(typeof data === 'function' ? data() : data).then(function (result) {
+                            curLogs_1.push(['time', 'elapsed time - data', new Date()]);
+                            curLogs_1.push(['log', 'data', result]);
+                            return result;
+                        });
+                        pCompiler = prepare_1.prepare(id, opt_1).then(function (result) {
+                            curLogs_1.push(['time', 'elapsed time - tpl prepare', new Date()]);
+                            return result;
+                        });
+                        return [4 /*yield*/, pData];
+                    case 1:
+                        solvedData = _a.sent();
+                        return [4 /*yield*/, pCompiler];
+                    case 2:
+                        compiler = _a.sent();
+                        output = compiler.apply(void 0, [id, solvedData, opt_1].concat(Object.keys(opt_1.global).map(function (k) { return opt_1.global[k]; })));
+                        curLogs_1.push(['time', 'elapsed time - compile success', new Date()]);
+                        outputDebug && outputDebugConsole(curLogs_1);
+                        return [2 /*return*/, support.uglyInnerHTML ? output.replace(/\r\n/g, '\n') : output];
+                    case 3:
+                        e_1 = _a.sent();
+                        console.error(e_1);
+                        e_1.message = "AJST error (ID: " + id + ") -> " + e_1.message;
+                        throw e_1;
+                    case 4: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    exports.ajax = function (id, url, option) { return exports.AJST(id, UTIL_3.UTIL.ajax({
+        url: url,
+        dataType: 'json'
+    }), option); };
+    exports.each = function (id, data, option) {
+        return __awaiter(this, void 0, void 0, function () {
+            var list, dataPromise;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, data];
+                    case 1:
+                        list = _a.sent();
+                        dataPromise = [];
+                        UTIL_3.UTIL.each(list, function (v) { return dataPromise.push(exports.AJST(id, v, option)); });
+                        if (!dataPromise.length)
+                            return [2 /*return*/, ''];
+                        return [4 /*yield*/, Promise.all(dataPromise)];
+                    case 2: return [2 /*return*/, (_a.sent()).join('')];
+                }
+            });
+        });
+    };
+    exports.noConflict = function () { return global['AJST'] = _oldAJST; };
+    global['AJST'] = exports.AJST;
+});
+define("src/autocollect", ["require", "exports", "src/core", "src/option", "src/lib/UTIL", "src/template"], function (require, exports, core_2, option_3, UTIL_4, template_2) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.autocollect = function () {
+        if (!option_3.DEFAULT_OPTION.autocollect)
+            return;
+        Array.prototype.forEach.call(document.querySelectorAll('SCRIPT[id]'), template_2.setTemplateElement);
+        Array.prototype.forEach.call(document.querySelectorAll('SCRIPT[id]'), function (element) {
+            if (element.getAttribute('data-ajst')) {
+                var ajaxURL = element.getAttribute('data-ajst-ajax');
+                var data = element.getAttribute('data-ajst-data') ? JSON.parse(element.getAttribute('data-ajst-data')) : undefined;
+                var option = element.getAttribute('data-ajst-option') ? JSON.parse(element.getAttribute('data-ajst-option')) : undefined;
+                (ajaxURL ? core_2.ajax(element.id, ajaxURL, option) : core_2.AJST(element.id, data, option)).then(function (tplOutput) {
+                    var tplElementList = UTIL_4.UTIL.parseHTML(tplOutput);
+                    UTIL_4.UTIL.toArray(tplElementList).forEach(function (tplElement) {
+                        element.parentNode.insertBefore(tplElement, element);
+                    });
+                    UTIL_4.UTIL.removeElement(element);
+                }, function (e) {
+                    throw e;
+                });
+            }
+            else
+                UTIL_4.UTIL.removeElement(element);
+        });
+    };
+    if (UTIL_4.support.addEventListener)
+        document.addEventListener('DOMContentLoaded', exports.autocollect, false);
     else
-        document['attachEvent']('onreadystatechange', AJST.autocollect);
-    exports.default = AJST;
+        document['attachEvent']('onreadystatechange', exports.autocollect);
+});
+define("ajst", ["require", "exports", "src/core", "src/autocollect", "src/core", "src/option", "src/prepare", "src/template", "src/tplCompiler"], function (require, exports, core_3, autocollect_1, core_4, option_4, prepare_2, template_3, tplCompiler_2) {
+    "use strict";
+    function __export(m) {
+        for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+    }
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = core_3.AJST;
+    __export(autocollect_1);
+    __export(core_4);
+    __export(option_4);
+    __export(prepare_2);
+    __export(template_3);
+    __export(tplCompiler_2);
 });
 //# sourceMappingURL=index.js.map

@@ -40,8 +40,9 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc -p src"
+    "build": "tsc -p src",
+    "watch": "tsc -p src -w"
   },
   "types": "./index.d.ts",
-  "version": "1.5.3"
+  "version": "1.5.4"
 }
