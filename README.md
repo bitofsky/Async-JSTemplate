@@ -50,7 +50,7 @@ require(['ajst'], async AJST => {
 # How to use
 tpl/hello.html
 ```html
-Hello, <?include('world.html', {name: 'John Smith'})?>
+Hello, <?include('tpl/world.html', {name: 'John Smith'})?>
 ```
 tpl/world.html
 ```html
