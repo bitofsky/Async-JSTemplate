@@ -783,15 +783,14 @@ define("src/autocollect", ["require", "exports", "src/core", "src/option", "src/
     else
         document['attachEvent']('onreadystatechange', exports.autocollect);
 });
-define("ajst", ["require", "exports", "src/core", "src/autocollect", "src/core", "src/option", "src/prepare", "src/template", "src/tplCompiler"], function (require, exports, core_2, autocollect_1, core_3, option_4, prepare_2, template_3, tplCompiler_2) {
+define("ajst", ["require", "exports", "src/autocollect", "src/core", "src/option", "src/prepare", "src/template", "src/tplCompiler"], function (require, exports, autocollect_1, core_2, option_4, prepare_2, template_3, tplCompiler_2) {
     "use strict";
     function __export(m) {
         for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
     }
     Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = core_2.get;
     __export(autocollect_1);
-    __export(core_3);
+    __export(core_2);
     __export(option_4);
     __export(prepare_2);
     __export(template_3);

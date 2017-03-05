@@ -10,8 +10,8 @@
     "noImplicitAny": false,
     "suppressImplicitAnyIndexErrors": true,
     "allowJs": false,
-    "outFile": "../index.js",
-    "declaration": false,
+    "outFile": "./index.js",
+    "declaration": true,
     "removeComments": true,
     "alwaysStrict": true
   },

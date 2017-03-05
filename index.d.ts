@@ -58,7 +58,7 @@ declare module "src/prepare" {
     export const prepare: (id: string, option?: AJST.AJSTOption) => Promise<AJST.AJSTCompiler>;
 }
 declare module "src/core" {
-    export const AJST: (id: string, data?: any, option?: AJST.AJSTOption) => Promise<string>;
+    export const get: (id: string, data?: any, option?: AJST.AJSTOption) => Promise<string>;
     export const ajax: (id: string, url: string, option: AJST.AJSTOption) => Promise<string>;
     export const each: (id: string, data: any, option: AJST.AJSTOption) => Promise<string>;
     export const noConflict: () => any;
@@ -67,8 +67,6 @@ declare module "src/autocollect" {
     export const autocollect: () => void;
 }
 declare module "ajst" {
-    import { AJST } from "src/core";
-    export default AJST;
     export * from "src/autocollect";
     export * from "src/core";
     export * from "src/option";
