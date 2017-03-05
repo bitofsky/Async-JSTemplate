@@ -9,7 +9,7 @@
   /**
    * AMD(Asynchronous Module Definition)
    */
-  define(['AJST', 'jquery', 'test'], function(AJST, $, TestGroups) {
+  define(['ajst', 'jquery', 'test'], function(AJST, $, TestGroups) {
 
     return function(openCase) {
 
@@ -22,11 +22,11 @@
 
       function newTestGroup(TestList, caseName) {
 
-        console.clear();
+        //console.clear();
 
         ga('send', 'pageview', 'unittest/' + caseName);
 
-        AJST('UnitTest', {
+        AJST.get('UnitTest', {
           TestGroups: TestGroups,
           caseName: caseName
         }).then(function(output) {
