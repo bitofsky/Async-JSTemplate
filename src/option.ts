@@ -1,4 +1,4 @@
-import AJST from './core';
+import { AJST } from './core';
 import { UTIL } from './lib/UTIL';
 
 /**

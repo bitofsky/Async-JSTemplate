@@ -12,7 +12,8 @@
     "allowJs": false,
     "outFile": "../index.js",
     "declaration": false,
-    "removeComments": true
+    "removeComments": true,
+    "alwaysStrict": true
   },
   "exclude": [
     "node_modules"

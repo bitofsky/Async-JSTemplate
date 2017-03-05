@@ -1,4 +1,3 @@
-/// <reference path="src/core.d.ts" />
 declare module "src/lib/CommentStripper" {
     export const CommentStripper: any;
 }
@@ -51,10 +50,9 @@ declare module "src/template" {
     export const setTemplateElement: (element: any) => boolean;
 }
 declare module "src/option" {
-    import AJST from "src/core";
     export const DEFAULT_OPTION: AJST.AJSTOption;
     export const CONST_OPTION: AJST.AJSTOption;
-    export const option: (newOption?: any) => any;
+    export const option: (newOption?: AJST.AJSTOption) => boolean | AJST.AJSTOption;
 }
 declare module "src/prepare" {
     export const prepare: (id: string, option?: AJST.AJSTOption) => Promise<AJST.AJSTCompiler>;

@@ -613,7 +613,7 @@ define("src/option", ["require", "exports", "src/core", "src/lib/UTIL"], functio
     exports.CONST_OPTION = {};
     exports.CONST_OPTION.global = {};
     exports.CONST_OPTION.global.Promise = Promise;
-    exports.CONST_OPTION.global.AJST = core_1.default;
+    exports.CONST_OPTION.global.AJST = core_1.AJST;
     exports.CONST_OPTION.global.util = UTIL_1.UTIL;
     UTIL_1.UTIL.extend(exports.DEFAULT_OPTION, exports.CONST_OPTION);
     exports.option = function (newOption) {
@@ -668,7 +668,7 @@ define("src/prepare", ["require", "exports", "src/template", "src/lib/UTIL", "sr
     };
 });
 define("src/core", ["require", "exports", "src/lib/UTIL", "src/prepare", "src/option"], function (require, exports, UTIL_3, prepare_1, option_2) {
-    'use strict';
+    "use strict";
     var _this = this;
     Object.defineProperty(exports, "__esModule", { value: true });
     var outputDebugConsole = UTIL_3.UTIL.outputDebugConsole, support = UTIL_3.UTIL.support, CommentStripper = UTIL_3.UTIL.CommentStripper;
