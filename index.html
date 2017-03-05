@@ -7,11 +7,8 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="description" content="AJST : Asynchronous JavaScript Template" />
 
-    <!--[if lte IE 7]>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/json2/20121008/json2.min.js"></script>
-    <![endif]-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.3/require.min.js"></script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/systemjs/0.20.9/system-production.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
 
@@ -88,9 +85,7 @@
         }
       });
 
-      require(['AJST', 'index', 'unit_test', 'showdown', 'es6-shim'], function(_AJST, indexReady, unitTest) {
-
-        var AJST = _AJST.default;
+      require(['AJST', 'index', 'unit_test', 'showdown', 'es6-shim'], function(AJST, indexReady, unitTest) {
 
         $(window).on('hashchange', onChangeHash);
 

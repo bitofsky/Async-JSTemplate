@@ -9,9 +9,7 @@
   /**
    * AMD(Asynchronous Module Definition)
    */
-  define(['AJST', 'jquery', 'test'], function(_AJST, $, TestGroups) {
-
-    var AJST = _AJST.default;
+  define(['AJST', 'jquery', 'test'], function(AJST, $, TestGroups) {
 
     return function(openCase) {
 
