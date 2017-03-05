@@ -77,9 +77,8 @@ define("src/lib/sprintf", ["require", "exports"], function (require, exports) {
         var regex = /%%|%(\d+\$)?([-+\'#0 ]*)(\*\d+\$|\*|\d+)?(\.(\*\d+\$|\*|\d+))?([scboxXuidfegEG])/g;
         var a = arguments, format = a[i++];
         var pad = function (str, len, chr, leftJustify) {
-            if (!chr) {
+            if (!chr)
                 chr = ' ';
-            }
             var padding = (str.length >= len) ? '' : Array(1 + len - str.length >>> 0).join(chr);
             return leftJustify ? str + padding : padding + str;
         };
@@ -88,12 +87,10 @@ define("src/lib/sprintf", ["require", "exports"], function (require, exports) {
             if (customPadChar === void 0) { customPadChar = undefined; }
             var diff = minWidth - value.length;
             if (diff > 0) {
-                if (leftJustify || !zeroPad) {
+                if (leftJustify || !zeroPad)
                     value = pad(value, minWidth, customPadChar, leftJustify);
-                }
-                else {
+                else
                     value = value.slice(0, prefix.length) + pad('', diff, '0', true) + value.slice(prefix.length);
-                }
             }
             return value;
         };
@@ -111,16 +108,9 @@ define("src/lib/sprintf", ["require", "exports"], function (require, exports) {
             return justify(value, '', leftJustify, minWidth, zeroPad, customPadChar);
         };
         var doFormat = function (substring, valueIndex, flags, minWidth, _, precision, type) {
-            var number;
-            var prefix;
-            var method;
-            var textTransform;
-            var value;
-            if (substring === '%%') {
+            var number, prefix, method, textTransform, value, leftJustify = false, positivePrefix = '', zeroPad = false, prefixBaseX = false, customPadChar = ' ', flagsl = flags.length;
+            if (substring === '%%')
                 return '%';
-            }
-            var leftJustify = false, positivePrefix = '', zeroPad = false, prefixBaseX = false, customPadChar = ' ';
-            var flagsl = flags.length;
             for (var j = 0; flags && j < flagsl; j++) {
                 switch (flags.charAt(j)) {
                     case ' ':
@@ -143,53 +133,37 @@ define("src/lib/sprintf", ["require", "exports"], function (require, exports) {
                         break;
                 }
             }
-            if (!minWidth) {
+            if (!minWidth)
                 minWidth = 0;
-            }
-            else if (minWidth === '*') {
+            else if (minWidth === '*')
                 minWidth = +a[i++];
-            }
-            else if (minWidth.charAt(0) === '*') {
+            else if (minWidth.charAt(0) === '*')
                 minWidth = +a[minWidth.slice(1, -1)];
-            }
-            else {
+            else
                 minWidth = +minWidth;
-            }
             if (minWidth < 0) {
                 minWidth = -minWidth;
                 leftJustify = true;
             }
-            if (!isFinite(minWidth)) {
+            if (!isFinite(minWidth))
                 throw new Error('sprintf: (minimum-)width must be finite');
-            }
-            if (!precision) {
+            if (!precision)
                 precision = 'fFeE'.indexOf(type) > -1 ? 6 : (type === 'd') ? 0 : undefined;
-            }
-            else if (precision === '*') {
+            else if (precision === '*')
                 precision = +a[i++];
-            }
-            else if (precision.charAt(0) === '*') {
+            else if (precision.charAt(0) === '*')
                 precision = +a[precision.slice(1, -1)];
-            }
-            else {
+            else
                 precision = +precision;
-            }
             value = valueIndex ? a[valueIndex.slice(0, -1)] : a[i++];
             switch (type) {
-                case 's':
-                    return formatString(String(value), leftJustify, minWidth, precision, zeroPad, customPadChar);
-                case 'c':
-                    return formatString(String.fromCharCode(+value), leftJustify, minWidth, precision, zeroPad);
-                case 'b':
-                    return formatBaseX(value, 2, prefixBaseX, leftJustify, minWidth, precision, zeroPad);
-                case 'o':
-                    return formatBaseX(value, 8, prefixBaseX, leftJustify, minWidth, precision, zeroPad);
-                case 'x':
-                    return formatBaseX(value, 16, prefixBaseX, leftJustify, minWidth, precision, zeroPad);
-                case 'X':
-                    return formatBaseX(value, 16, prefixBaseX, leftJustify, minWidth, precision, zeroPad).toUpperCase();
-                case 'u':
-                    return formatBaseX(value, 10, prefixBaseX, leftJustify, minWidth, precision, zeroPad);
+                case 's': return formatString(String(value), leftJustify, minWidth, precision, zeroPad, customPadChar);
+                case 'c': return formatString(String.fromCharCode(+value), leftJustify, minWidth, precision, zeroPad);
+                case 'b': return formatBaseX(value, 2, prefixBaseX, leftJustify, minWidth, precision, zeroPad);
+                case 'o': return formatBaseX(value, 8, prefixBaseX, leftJustify, minWidth, precision, zeroPad);
+                case 'x': return formatBaseX(value, 16, prefixBaseX, leftJustify, minWidth, precision, zeroPad);
+                case 'X': return formatBaseX(value, 16, prefixBaseX, leftJustify, minWidth, precision, zeroPad).toUpperCase();
+                case 'u': return formatBaseX(value, 10, prefixBaseX, leftJustify, minWidth, precision, zeroPad);
                 case 'i':
                 case 'd':
                     number = (+value) | 0;
@@ -208,8 +182,7 @@ define("src/lib/sprintf", ["require", "exports"], function (require, exports) {
                     textTransform = ['toString', 'toUpperCase']['eEfFgG'.indexOf(type) % 2];
                     value = prefix + Math.abs(number)[method](precision);
                     return justify(value, prefix, leftJustify, minWidth, zeroPad)[textTransform]();
-                default:
-                    return substring;
+                default: return substring;
             }
         };
         return format.replace(regex, doFormat);

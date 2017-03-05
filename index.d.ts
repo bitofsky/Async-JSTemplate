@@ -62,7 +62,7 @@ declare module "src/lib/UTIL" {
 }
 declare module "src/tplCompiler" {
     import { ns } from "src/ns";
-    export const tplCompiler: (tplString: string, option: any) => ns.AJSTCompiler;
+    export const tplCompiler: (tplString: string, option: ns.AJSTOption) => ns.AJSTCompiler;
 }
 declare module "src/template" {
     import { ns } from "src/ns";
@@ -70,7 +70,7 @@ declare module "src/template" {
     export const getTemplate: (id: string) => string;
     export const setTemplate: (id: string, tplString: string) => void;
     export const getCompiler: (id: string, option: ns.AJSTOption) => ns.AJSTCompiler;
-    export const setTemplateElement: (element: any) => boolean;
+    export const setTemplateElement: (element: Element) => boolean;
 }
 declare module "src/option" {
     import { ns } from "src/ns";

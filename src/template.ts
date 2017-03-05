@@ -49,7 +49,7 @@ export const getCompiler = (id: string, option: ns.AJSTOption) =>
 /**
  * Set template element
  */
-export const setTemplateElement = function (element) {
+export const setTemplateElement = (element: Element) => {
 
     if (!element.id || element.tagName !== 'SCRIPT') return false;
 

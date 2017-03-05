@@ -26,11 +26,11 @@ export const prepare = async (id: string, option: ns.AJSTOption = {}) => {
 
     const strTemplate = await getTemplateFromURL(url, fromURL); // Template file load from URL
     const allTemplate = UTIL.parseHTML(strTemplate);
-    const newElements = [];
+    const newElements: Element[] = [];
 
     try { // compile error handling
 
-        Array.prototype.forEach.call(allTemplate, function (element, idx) {
+        Array.prototype.forEach.call(allTemplate, (element: Element, idx: number) => {
             // check opt.override id set
             if (idx === 0 || !opt.override[element.id]) newElements.push(element);
         });
