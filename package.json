@@ -1,48 +1,41 @@
 {
+  "name": "ajst",
+  "description": "AJST : Asynchronous JavaScript Template",
+  "main": "./index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc -p .",
+    "watch": "tsc -p . -w"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "types": "./index.d.ts",
+  "version": "1.6.4",
+  "license": "MIT",
+  "readme": "README.md",
   "author": {
     "name": "Bum-seok Hwang",
     "email": "bitofsky@naver.com"
   },
-  "bugs": {
-    "url": "https://github.com/bitofsky/Async-JSTemplate/issues"
-  },
-  "dependencies": {},
-  "description": "AJST : Asynchronous JavaScript Template",
-  "devDependencies": {},
-  "directories": {},
-  "dist": {
-    "shasum": "df6d786fb4f9e07ac82b30a16fc29325b49b9d67",
-    "tarball": "https://registry.npmjs.org/ajst/-/ajst-1.5.2.tgz"
-  },
-  "gitHead": "e4ce42ec5fee6f1e3cdaa1445c730ae431dbbe30",
-  "homepage": "https://github.com/bitofsky/Async-JSTemplate#readme",
-  "keywords": [
-    "Javascript",
-    "Template",
-    "HTML",
-    "Async",
-    "Promise"
-  ],
-  "license": "MIT",
-  "main": "./index.js",
   "maintainers": [
     {
       "name": "bitofsky",
       "email": "bitofsky@naver.com"
     }
   ],
-  "name": "ajst",
-  "optionalDependencies": {},
-  "readme": "ERROR: No README data found!",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/bitofsky/Async-JSTemplate.git"
   },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc -p .",
-    "watch": "tsc -p . -w"
+  "bugs": {
+    "url": "https://github.com/bitofsky/Async-JSTemplate/issues"
   },
-  "types": "./index.d.ts",
-  "version": "1.6.4"
+  "homepage": "http://bitofsky.github.io/Async-JSTemplate/",
+  "keywords": [
+    "Javascript",
+    "Template",
+    "HTML",
+    "Async",
+    "Promise"
+  ]
 }
