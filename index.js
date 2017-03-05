@@ -590,9 +590,8 @@ define("src/prepare", ["require", "exports", "src/template", "src/lib/UTIL", "sr
                 switch (_a.label) {
                     case 0:
                         opt = UTIL_2.UTIL.extend({}, option_1.DEFAULT_OPTION, option);
-                        url = opt.url || opt.path.replace(/\$id/g, id);
-                        if (typeof url === 'function')
-                            url = url(id, option) || opt.path.replace(/\$id/g, id);
+                        url = typeof opt.url === 'function' ? opt.url(id, option) : opt.url;
+                        url = url || opt.path.replace(/\$id/g, id);
                         if (template_1.getTemplate(id))
                             return [2 /*return*/, template_1.getCompiler(id, opt)];
                         fromURL = function () { return UTIL_2.UTIL.ajax({
@@ -632,7 +631,7 @@ define("src/core", ["require", "exports", "src/lib/UTIL", "src/prepare", "src/op
     "use strict";
     var _this = this;
     Object.defineProperty(exports, "__esModule", { value: true });
-    var outputDebugConsole = UTIL_3.UTIL.outputDebugConsole, support = UTIL_3.UTIL.support, CommentStripper = UTIL_3.UTIL.CommentStripper;
+    var outputDebugConsole = UTIL_3.UTIL.outputDebugConsole;
     exports.get = function (id, data, option) {
         if (data === void 0) { data = null; }
         if (option === void 0) { option = null; }

@@ -1,10 +1,11 @@
 export namespace ns {
 
-    export type HTTPMethod = 'get' | 'post';
-
     export interface AJSTCompiler {
         (id: string, data?: any, option?: AJSTOption, ...globalVariables: any[]): string;
     }
+
+    export type AJSTOptionUrlGetter = (id: string, option: AJSTOption) => string;
+    export type AJSTOptionHTTPMethod = 'get' | 'post';
 
     export interface AJSTOption {
 
@@ -16,9 +17,9 @@ export namespace ns {
         /**
          * TPL File URL generator
          */
-        url?: () => string;
+        url?: AJSTOptionUrlGetter | string;
 
-        ajaxType?: HTTPMethod;
+        ajaxType?: AJSTOptionHTTPMethod;
         ajaxCache?: boolean;
         ajaxData?: object;
         autocollect?: boolean;

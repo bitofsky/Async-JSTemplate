@@ -1,13 +1,14 @@
 declare module "src/ns" {
     export namespace ns {
-        type HTTPMethod = 'get' | 'post';
         interface AJSTCompiler {
             (id: string, data?: any, option?: AJSTOption, ...globalVariables: any[]): string;
         }
+        type AJSTOptionUrlGetter = (id: string, option: AJSTOption) => string;
+        type AJSTOptionHTTPMethod = 'get' | 'post';
         interface AJSTOption {
             path?: string;
-            url?: () => string;
-            ajaxType?: HTTPMethod;
+            url?: AJSTOptionUrlGetter | string;
+            ajaxType?: AJSTOptionHTTPMethod;
             ajaxCache?: boolean;
             ajaxData?: object;
             autocollect?: boolean;

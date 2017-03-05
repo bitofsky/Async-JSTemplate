@@ -3,7 +3,7 @@ import { UTIL } from './lib/UTIL';
 import { prepare } from './prepare';
 import { DEFAULT_OPTION, CONST_OPTION } from './option';
 
-const { outputDebugConsole, support, CommentStripper } = UTIL;
+const { outputDebugConsole } = UTIL;
 
 /**
  * Generate AJST Template String

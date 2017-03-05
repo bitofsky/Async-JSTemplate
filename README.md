@@ -24,9 +24,9 @@ npm install ajst --save
 
 ## Use ES-Module (like TypeScript)
 ```javascript
-import * as AJST from 'ajst';
+import * as AJST from 'ajst'; // npm module require
 or
-import * as AJST from 'path to ajst/index.js'; // index.js
+import * as AJST from 'node_modules/ajst/ajst'; // ajst (for ES-Module)
 
 AJST.get(Tpl_ID, data).then(output =>
   $('#output').html(output)
@@ -38,7 +38,7 @@ AJST.get(Tpl_ID, data).then(output =>
 requirejs.config({
   baseUrl: 'js',
   paths: {
-    ajst: 'path to ajst/index' // index.js
+    ajst: 'pathToAJST/index' // ajst/index.js (for AMD bundle)
   }
 })
 require(['ajst'], async AJST => {

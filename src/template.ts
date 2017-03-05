@@ -38,7 +38,7 @@ export const setTemplate = (id: string, tplString: string) => {
     tplCache[id] = id.match(/\.js$/) ? `<? ${trimed} ?>` : trimed;
     compileCache[id] = null;
 
-}
+};
 
 /**
  * Get Template Compiler

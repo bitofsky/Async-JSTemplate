@@ -6,12 +6,10 @@ import { DEFAULT_OPTION } from './option';
 
 export const prepare = async (id: string, option: ns.AJSTOption = {}) => {
 
-    const opt = UTIL.extend({}, DEFAULT_OPTION, option);
+    const opt: ns.AJSTOption = UTIL.extend({}, DEFAULT_OPTION, option);
 
-    let url = opt.url || opt.path.replace(/\$id/g, id);
-
-    if (typeof url === 'function')
-        url = url(id, option) || opt.path.replace(/\$id/g, id);
+    let url = typeof opt.url === 'function' ? opt.url(id, option) : opt.url;
+    url = url || opt.path.replace(/\$id/g, id);
 
     if (getTemplate(id)) // aready have..
         return getCompiler(id, opt);
