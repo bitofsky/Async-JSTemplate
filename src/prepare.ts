@@ -1,5 +1,5 @@
 // Preparing Template
-import { ns } from '../namespace';
+import { ns } from './ns';
 import { getTemplateFromURL, getTemplate, setTemplateElement, setTemplate, getCompiler } from './template';
 import { UTIL } from './lib/UTIL';
 import { DEFAULT_OPTION } from './option';

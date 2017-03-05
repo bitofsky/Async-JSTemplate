@@ -1,4 +1,4 @@
-import { ns } from '../namespace';
+import { ns } from './ns';
 import { UTIL } from './lib/UTIL';
 
 /**

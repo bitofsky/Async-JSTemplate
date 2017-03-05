@@ -1,4 +1,4 @@
-declare module "namespace" {
+declare module "src/ns" {
     export namespace ns {
         type HTTPMethod = 'get' | 'post';
         interface AJSTCompiler {
@@ -60,11 +60,11 @@ declare module "src/lib/UTIL" {
     };
 }
 declare module "src/tplCompiler" {
-    import { ns } from "namespace";
+    import { ns } from "src/ns";
     export const tplCompiler: (tplString: string, option: any) => ns.AJSTCompiler;
 }
 declare module "src/template" {
-    import { ns } from "namespace";
+    import { ns } from "src/ns";
     export const getTemplateFromURL: (id: string, getAjax: () => Promise<any>) => Promise<any>;
     export const getTemplate: (id: string) => string;
     export const setTemplate: (id: string, tplString: string) => void;
@@ -72,17 +72,17 @@ declare module "src/template" {
     export const setTemplateElement: (element: any) => boolean;
 }
 declare module "src/option" {
-    import { ns } from "namespace";
+    import { ns } from "src/ns";
     export const DEFAULT_OPTION: ns.AJSTOption;
     export const CONST_OPTION: ns.AJSTOption;
     export const option: (newOption?: ns.AJSTOption) => boolean | ns.AJSTOption;
 }
 declare module "src/prepare" {
-    import { ns } from "namespace";
+    import { ns } from "src/ns";
     export const prepare: (id: string, option?: ns.AJSTOption) => Promise<ns.AJSTCompiler>;
 }
 declare module "src/core" {
-    import { ns } from "namespace";
+    import { ns } from "src/ns";
     export const get: (id: string, data?: any, option?: ns.AJSTOption) => Promise<string>;
     export const ajax: (id: string, url: string, option: ns.AJSTOption) => Promise<string>;
     export const each: (id: string, data: any, option: ns.AJSTOption) => Promise<string>;
@@ -98,5 +98,5 @@ declare module "ajst" {
     export * from "src/prepare";
     export * from "src/template";
     export * from "src/tplCompiler";
-    export * from "namespace";
+    export * from "src/ns";
 }

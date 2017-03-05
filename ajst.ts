@@ -27,4 +27,4 @@ export * from './src/option';
 export * from './src/prepare';
 export * from './src/template';
 export * from './src/tplCompiler';
-export * from './namespace';
+export * from './src/ns';

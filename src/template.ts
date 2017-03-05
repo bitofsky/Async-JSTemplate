@@ -1,4 +1,4 @@
-import { ns } from '../namespace';
+import { ns } from './ns';
 import { tplCompiler } from './tplCompiler';
 import { CommentStripper } from './lib/CommentStripper';
 
