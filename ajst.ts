@@ -19,7 +19,7 @@
  * @encoding UTF-8
  * @version 1.6
  */
-///<amd-module name="ajst"/>
+/// <amd-module name="ajst"/>
 
 export * from './ajst/autocollect';
 export * from './ajst/core';
