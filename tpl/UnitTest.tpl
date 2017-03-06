@@ -8,7 +8,7 @@
 
         <?
           for( var name in data.TestGroups )
-            printf('<li class="%s"><a href="#unittest/%s"><i class="icon-check"></i><i class="icon-check-empty"></i> %s</a></li>', name==data.caseName ? 'active':'', name, name);
+            printf('<li class="%s"><a href="#UnitTest/%s"><i class="icon-check"></i><i class="icon-check-empty"></i> %s</a></li>', name==data.caseName ? 'active':'', name, name);
         ?>
 
       </ul>

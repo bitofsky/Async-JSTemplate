@@ -5,11 +5,11 @@
   "downloadjs": "https://rawgithub.com/bitofsky/Async-JSTemplate/master/index.js",
   "downloadmin": "https://rawgithub.com/bitofsky/Async-JSTemplate/master/index.js",
   "navLeft": [
-    {"name": "index", "href": "#index", "text": "About", "icon": "icon-bullhorn"},
-    {"name": "unittest", "href": "#unittest", "text": "Unit Test", "icon": "icon-check-sign"},
+    {"name": "About", "href": "#About", "text": "About", "icon": "icon-bullhorn"},
+    {"name": "UnitTest", "href": "#UnitTest", "text": "Unit Test", "icon": "icon-check-sign"},
     {"name": "github", "href": "https://github.com/bitofsky/Async-JSTemplate/", "text": "Github", "icon": "icon-github-alt"},
     {"name": "download", "href": "https://github.com/bitofsky/Async-JSTemplate/archive/master.zip", "text": "Download", "icon": "icon-download-alt"},
-    {"name": "source", "href": "https://rawgithub.com/bitofsky/Async-JSTemplate/master/index.js", "text": "Source", "icon": "icon-code"},
+    {"name": "source", "href": "https://rawgithub.com/bitofsky/Async-JSTemplate/master/dist/ajst.js", "text": "Source", "icon": "icon-code"},
     {"name": "wiki", "href": "https://github.com/bitofsky/Async-JSTemplate/wiki", "text": "Wiki", "icon": "icon-book"}
   ],
   "navRight": [
