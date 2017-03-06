@@ -23,10 +23,18 @@ npm install ajst --save
 ```
 
 ## Use ES-Module (like TypeScript)
+tsconfig.json
+```js
+{
+  "paths": {
+    "ajst": "path to ajst/dist/ajst" // target: ajst.ts
+  }
+}
+```
 ```javascript
-import * as AJST from 'ajst'; // npm module require
+import * as AJST from 'ajst'; // module
 or
-import * as AJST from 'node_modules/ajst/ajst'; // ajst (for ES-Module)
+import * as AJST from 'node_modules/ajst/dist/ajst'; // path
 
 AJST.get(Tpl_ID, data).then(output =>
   $('#output').html(output)
@@ -36,9 +44,8 @@ AJST.get(Tpl_ID, data).then(output =>
 ## Use AMD (like RequireJS)
 ```javascript
 requirejs.config({
-  baseUrl: 'js',
   paths: {
-    ajst: 'pathToAJST/index' // ajst/index.js (for AMD bundle)
+    ajst: 'path to ajst/dist/ajst' // ajst.js (for AMD bundle)
   }
 })
 require(['ajst'], async AJST => {

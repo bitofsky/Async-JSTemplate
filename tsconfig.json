@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "es5",
     "module": "amd",
-    "moduleResolution": "node",
+    "moduleResolution": "classic",
     "sourceMap": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
@@ -14,7 +14,11 @@
     "declaration": true,
     "removeComments": true,
     "alwaysStrict": true,
-    "strictNullChecks": true
+    "strictNullChecks": true,
+    "baseUrl": ".",
+    "paths": {
+      "ajst": ["./dist/ajst"]
+    }
   },
   "exclude": [
     "node_modules"

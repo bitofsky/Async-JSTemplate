@@ -1,7 +1,6 @@
 {
   "name": "ajst",
   "description": "AJST : Asynchronous JavaScript Template",
-  "main": "./index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "./node_modules/.bin/grunt ajst:build",
@@ -16,7 +15,8 @@
     "typescript": "^2.2.1",
     "watch-glob": "^0.1.3"
   },
-  "types": "./index.d.ts",
+  "main": "./dist/ajst.js",
+  "types": "./dist/ajst.d.ts",
   "version": "1.6.6",
   "license": "MIT",
   "readme": "README.md",
