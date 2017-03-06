@@ -1,2 +1,2 @@
 // link
-export * from '../../Async-JSTemplate/ajst';
+export * from '../node_modules/ajst/ajst';

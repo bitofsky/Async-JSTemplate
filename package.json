@@ -8,6 +8,7 @@
   },
   "dependencies": {},
   "devDependencies": {
+    "ajst": "^1.6.5",
     "express": "^4.15.0",
     "grunt": "^1.0.1",
     "jquery": "^3.1.1",
