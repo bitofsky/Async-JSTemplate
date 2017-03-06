@@ -10,7 +10,7 @@ const Base64 = { _keyStr: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0
 ga('send', 'pageview', 'index');
 
 const margin = 70;
-const option: AJST.ns.AJSTOption = AJST.option();
+const option: AJST.Option = AJST.option();
 const ajax = option.global.util.ajax;
 
 let pConfig, pReadme;
