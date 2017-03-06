@@ -1,10 +1,10 @@
-import { ns } from './ns';
+import { Option } from './ns';
 import { UTIL } from './lib/UTIL';
 
 /**
  * Default Option
  */
-export const DEFAULT_OPTION: ns.AJSTOption = {
+export const DEFAULT_OPTION: Option = {
     path: '$id',
     url: null,
     ajaxType: 'get',
@@ -17,7 +17,7 @@ export const DEFAULT_OPTION: ns.AJSTOption = {
 /**
  * Constant Option
  */
-export const CONST_OPTION: ns.AJSTOption = {};
+export const CONST_OPTION: Option = {};
 
 /**
  * get/set Default Option
@@ -28,7 +28,7 @@ export const CONST_OPTION: ns.AJSTOption = {};
  *   add: function(a, b){ return +a + +b; }
  * }});
  */
-export const option = (newOption?: ns.AJSTOption): ns.AJSTOption | boolean => {
+export const option = (newOption?: Option): Option | boolean => {
     if (!newOption)
         return UTIL.extend({}, DEFAULT_OPTION);
     if (UTIL.isPlainObject(newOption))

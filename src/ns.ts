@@ -1,36 +1,40 @@
-export namespace ns {
+/**
+ * Option namespace
+ */
+export declare namespace Option {
+    type url = (id: string, option: Option) => string;
+    type ajaxType = 'get' | 'post';
+}
 
-    export interface AJSTCompiler {
-        (id: string, data?: any, option?: AJSTOption, ...globalVariables: any[]): string;
-    }
+/**
+ * Option
+ */
+export interface Option {
 
-    export type AJSTOptionUrlGetter = (id: string, option: AJSTOption) => string;
-    export type AJSTOptionHTTPMethod = 'get' | 'post';
+    /**
+     * TPL File URL
+     */
+    path?: string;
 
-    export interface AJSTOption {
+    /**
+     * TPL File URL generator
+     */
+    url?: Option.url | string;
 
-        /**
-         * TPL File URL
-         */
-        path?: string;
+    ajaxType?: Option.ajaxType;
+    ajaxCache?: boolean;
+    ajaxData?: object;
+    autocollect?: boolean;
+    override?: object;
+    global?: object | any;
+    debug?: boolean;
 
-        /**
-         * TPL File URL generator
-         */
-        url?: AJSTOptionUrlGetter | string;
+}
 
-        ajaxType?: AJSTOptionHTTPMethod;
-        ajaxCache?: boolean;
-        ajaxData?: object;
-        autocollect?: boolean;
-        override?: object;
-        global?: object | any;
-        debug?: boolean;
+export interface Compiler {
+    (id: string, data?: any, option?: Option, ...globalVariables: any[]): string;
+}
 
-    }
-
-    export interface AJSTCacheContainer<T> {
-        [index: string]: T;
-    }
-
+export interface CacheContainer<T> {
+    [index: string]: T;
 }

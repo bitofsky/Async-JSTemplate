@@ -1,21 +1,21 @@
-import { ns } from './ns';
+import { Option, Compiler, CacheContainer } from './ns';
 import { tplCompiler } from './tplCompiler';
 import { CommentStripper } from './lib/CommentStripper';
 
 /**
  * Template String Cache
  */
-const tplCache: ns.AJSTCacheContainer<string> = {};
+const tplCache: CacheContainer<string> = {};
 
 /**
  * Ajax URL Cache
  */
-const ajaxCache: ns.AJSTCacheContainer<Promise<string>> = {};
+const ajaxCache: CacheContainer<Promise<string>> = {};
 
 /**
  * Template Compiler Cache
  */
-const compileCache: ns.AJSTCacheContainer<ns.AJSTCompiler> = {};
+const compileCache: CacheContainer<Compiler> = {};
 
 /**
  * Get Template from URL
@@ -43,7 +43,7 @@ export const setTemplate = (id: string, tplString: string) => {
 /**
  * Get Template Compiler
  */
-export const getCompiler = (id: string, option: ns.AJSTOption = {}) =>
+export const getCompiler = (id: string, option: Option = {}) =>
     compileCache[id] = compileCache[id] || tplCompiler(getTemplate(id), option);
 
 /**

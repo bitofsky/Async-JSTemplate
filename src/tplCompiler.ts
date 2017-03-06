@@ -1,6 +1,6 @@
 // Create Template Compiler
-import { ns } from './ns';
-export const tplCompiler = (tplString: string, option: ns.AJSTOption) => {
+import { Option, Compiler } from './ns';
+export const tplCompiler = (tplString: string, option: Option) => {
 
     if (tplString === undefined) throw new Error('AJST tplCompiler tplString undefined.');
 
@@ -40,7 +40,7 @@ return Promise.all(_promises).then(function(){
 });`;
 
     try {
-        const compiler = <ns.AJSTCompiler>new Function(args, fn);
+        const compiler = <Compiler>new Function(args, fn);
         return compiler;
     } catch (e) {
 

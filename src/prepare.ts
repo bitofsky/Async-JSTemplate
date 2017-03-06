@@ -1,12 +1,12 @@
 // Preparing Template
-import { ns } from './ns';
+import { Option, Compiler } from './ns';
 import { getTemplateFromURL, getTemplate, setTemplateElement, setTemplate, getCompiler } from './template';
 import { UTIL } from './lib/UTIL';
 import { DEFAULT_OPTION } from './option';
 
-export const prepare = async (id: string, option: ns.AJSTOption = {}) => {
+export const prepare = async (id: string, option: Option = {}) => {
 
-    const opt: ns.AJSTOption = UTIL.extend({}, DEFAULT_OPTION, option);
+    const opt: Option = UTIL.extend({}, DEFAULT_OPTION, option);
 
     let url = typeof opt.url === 'function' ? opt.url(id, option) : opt.url;
     url = url || opt.path.replace(/\$id/g, id);

@@ -1,4 +1,4 @@
-import { ns } from './ns';
+import { Option } from './ns';
 import { UTIL } from './lib/UTIL';
 import { prepare } from './prepare';
 import { DEFAULT_OPTION, CONST_OPTION } from './option';
@@ -8,7 +8,7 @@ const { outputDebugConsole } = UTIL;
 /**
  * Generate AJST Template String
  */
-export const get = async (id: string, data: any = null, option: ns.AJSTOption = null) => {
+export const get = async (id: string, data: any = null, option: Option = null) => {
 
     try {
 
@@ -59,7 +59,7 @@ export const get = async (id: string, data: any = null, option: ns.AJSTOption = 
 /**
  * Remote JSON Data
  */
-export const ajax = (id: string, url: string, option: ns.AJSTOption = {}) => get(id, UTIL.ajax({
+export const ajax = (id: string, url: string, option: Option = {}) => get(id, UTIL.ajax({
     url,
     dataType: 'json'
 }), option);
@@ -67,7 +67,7 @@ export const ajax = (id: string, url: string, option: ns.AJSTOption = {}) => get
 /**
  * AJST for iterable data (array or promise)
  */
-export const each = async function (id: string, data: any, option: ns.AJSTOption = {}) {
+export const each = async function (id: string, data: any, option: Option = {}) {
 
     const list = await data; // resolve promise
     const dataPromise: Promise<string>[] = [];

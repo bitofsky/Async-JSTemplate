@@ -1,24 +1,24 @@
 declare module "src/ns" {
-    export namespace ns {
-        interface AJSTCompiler {
-            (id: string, data?: any, option?: AJSTOption, ...globalVariables: any[]): string;
-        }
-        type AJSTOptionUrlGetter = (id: string, option: AJSTOption) => string;
-        type AJSTOptionHTTPMethod = 'get' | 'post';
-        interface AJSTOption {
-            path?: string;
-            url?: AJSTOptionUrlGetter | string;
-            ajaxType?: AJSTOptionHTTPMethod;
-            ajaxCache?: boolean;
-            ajaxData?: object;
-            autocollect?: boolean;
-            override?: object;
-            global?: object | any;
-            debug?: boolean;
-        }
-        interface AJSTCacheContainer<T> {
-            [index: string]: T;
-        }
+    export namespace Option {
+        type url = (id: string, option: Option) => string;
+        type ajaxType = 'get' | 'post';
+    }
+    export interface Option {
+        path?: string;
+        url?: Option.url | string;
+        ajaxType?: Option.ajaxType;
+        ajaxCache?: boolean;
+        ajaxData?: object;
+        autocollect?: boolean;
+        override?: object;
+        global?: object | any;
+        debug?: boolean;
+    }
+    export interface Compiler {
+        (id: string, data?: any, option?: Option, ...globalVariables: any[]): string;
+    }
+    export interface CacheContainer<T> {
+        [index: string]: T;
     }
 }
 declare module "src/lib/CommentStripper" {
@@ -61,32 +61,32 @@ declare module "src/lib/UTIL" {
     };
 }
 declare module "src/tplCompiler" {
-    import { ns } from "src/ns";
-    export const tplCompiler: (tplString: string, option: ns.AJSTOption) => ns.AJSTCompiler;
+    import { Option, Compiler } from "src/ns";
+    export const tplCompiler: (tplString: string, option: Option) => Compiler;
 }
 declare module "src/template" {
-    import { ns } from "src/ns";
+    import { Option, Compiler } from "src/ns";
     export const getTemplateFromURL: (id: string, getAjax: () => Promise<string>) => Promise<string>;
     export const getTemplate: (id: string) => string;
     export const setTemplate: (id: string, tplString: string) => void;
-    export const getCompiler: (id: string, option?: ns.AJSTOption) => ns.AJSTCompiler;
+    export const getCompiler: (id: string, option?: Option) => Compiler;
     export const setTemplateElement: (element: Element) => boolean;
 }
 declare module "src/option" {
-    import { ns } from "src/ns";
-    export const DEFAULT_OPTION: ns.AJSTOption;
-    export const CONST_OPTION: ns.AJSTOption;
-    export const option: (newOption?: ns.AJSTOption) => boolean | ns.AJSTOption;
+    import { Option } from "src/ns";
+    export const DEFAULT_OPTION: Option;
+    export const CONST_OPTION: Option;
+    export const option: (newOption?: Option) => boolean | Option;
 }
 declare module "src/prepare" {
-    import { ns } from "src/ns";
-    export const prepare: (id: string, option?: ns.AJSTOption) => Promise<ns.AJSTCompiler>;
+    import { Option, Compiler } from "src/ns";
+    export const prepare: (id: string, option?: Option) => Promise<Compiler>;
 }
 declare module "src/core" {
-    import { ns } from "src/ns";
-    export const get: (id: string, data?: any, option?: ns.AJSTOption) => Promise<string>;
-    export const ajax: (id: string, url: string, option?: ns.AJSTOption) => Promise<string>;
-    export const each: (id: string, data: any, option?: ns.AJSTOption) => Promise<string>;
+    import { Option } from "src/ns";
+    export const get: (id: string, data?: any, option?: Option) => Promise<string>;
+    export const ajax: (id: string, url: string, option?: Option) => Promise<string>;
+    export const each: (id: string, data: any, option?: Option) => Promise<string>;
     export const noConflict: () => any;
 }
 declare module "src/autocollect" {
