@@ -43,7 +43,7 @@ export const setTemplate = (id: string, tplString: string) => {
 /**
  * Get Template Compiler
  */
-export const getCompiler = (id: string, option: ns.AJSTOption) =>
+export const getCompiler = (id: string, option: ns.AJSTOption = {}) =>
     compileCache[id] = compileCache[id] || tplCompiler(getTemplate(id), option);
 
 /**

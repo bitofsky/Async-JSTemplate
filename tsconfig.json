@@ -10,7 +10,7 @@
     "noImplicitAny": false,
     "suppressImplicitAnyIndexErrors": true,
     "allowJs": false,
-    "outFile": "./index.js",
+    "outFile": "./dist/ajst.js",
     "declaration": true,
     "removeComments": true,
     "alwaysStrict": true

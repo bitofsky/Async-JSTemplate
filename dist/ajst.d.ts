@@ -69,7 +69,7 @@ declare module "src/template" {
     export const getTemplateFromURL: (id: string, getAjax: () => Promise<string>) => Promise<string>;
     export const getTemplate: (id: string) => string;
     export const setTemplate: (id: string, tplString: string) => void;
-    export const getCompiler: (id: string, option: ns.AJSTOption) => ns.AJSTCompiler;
+    export const getCompiler: (id: string, option?: ns.AJSTOption) => ns.AJSTCompiler;
     export const setTemplateElement: (element: Element) => boolean;
 }
 declare module "src/option" {
