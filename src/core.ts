@@ -8,13 +8,13 @@ const { outputDebugConsole } = UTIL;
 /**
  * Generate AJST Template String
  */
-export const get = async (id: string, data: any = null, option: Option = null) => {
+export const get = async (id: string, data?: any, option?: Option) => {
 
     try {
 
         option = option || {};
 
-        const curLogs = [];
+        const curLogs:Array<Array<any>> = [];
         const parentLogs = option['_log'] || [];
         const opt = UTIL.extend({}, DEFAULT_OPTION, option);
 
@@ -59,7 +59,7 @@ export const get = async (id: string, data: any = null, option: Option = null) =
 /**
  * Remote JSON Data
  */
-export const ajax = (id: string, url: string, option: Option = {}) => get(id, UTIL.ajax({
+export const ajax = (id: string, url: string, option?: Option) => get(id, UTIL.ajax({
     url,
     dataType: 'json'
 }), option);
@@ -67,7 +67,7 @@ export const ajax = (id: string, url: string, option: Option = {}) => get(id, UT
 /**
  * AJST for iterable data (array or promise)
  */
-export const each = async function (id: string, data: any, option: Option = {}) {
+export const each = async function (id: string, data: Iterable<any>, option?: Option) {
 
     const list = await data; // resolve promise
     const dataPromise: Promise<string>[] = [];

@@ -83,8 +83,6 @@ define("src/lib/sprintf", ["require", "exports"], function (require, exports) {
             return leftJustify ? str + padding : padding + str;
         };
         var justify = function (value, prefix, leftJustify, minWidth, zeroPad, customPadChar) {
-            if (zeroPad === void 0) { zeroPad = undefined; }
-            if (customPadChar === void 0) { customPadChar = undefined; }
             var diff = minWidth - value.length;
             if (diff > 0) {
                 if (leftJustify || !zeroPad)
@@ -101,7 +99,6 @@ define("src/lib/sprintf", ["require", "exports"], function (require, exports) {
             return justify(value, prefix, leftJustify, minWidth, zeroPad);
         };
         var formatString = function (value, leftJustify, minWidth, precision, zeroPad, customPadChar) {
-            if (customPadChar === void 0) { customPadChar = undefined; }
             if (precision != null) {
                 value = value.slice(0, precision);
             }
@@ -432,19 +429,6 @@ define("src/lib/UTIL", ["require", "exports", "src/lib/CommentStripper", "src/li
             delete console.timeCounters[name];
             return diff;
         };
-        if (global.document && !global.document.querySelectorAll) {
-            (function (document) {
-                var a = document.styleSheets.length ? document.styleSheets[0] : document.createStyleSheet();
-                document.querySelectorAll = function (e) {
-                    a.addRule(e, 'f:b');
-                    var c = [];
-                    for (var l = document.all, b = 0, f = l.length; b < f; b++)
-                        l[b].currentStyle.f && c.push(l[b]);
-                    a.removeRule(0);
-                    return c;
-                };
-            })(global.document);
-        }
     })(this || window, (this || window).console || {});
 });
 define("src/tplCompiler", ["require", "exports"], function (require, exports) {
@@ -518,7 +502,7 @@ define("src/template", ["require", "exports", "src/tplCompiler", "src/lib/Commen
     exports.setTemplate = function (id, tplString) {
         var trimed = CommentStripper_1.CommentStripper.strip(tplString.trim());
         tplCache[id] = id.match(/\.js$/) ? "<? " + trimed + " ?>" : trimed;
-        compileCache[id] = null;
+        delete compileCache[id];
     };
     exports.getCompiler = function (id, option) {
         if (option === void 0) { option = {}; }
@@ -536,7 +520,7 @@ define("src/option", ["require", "exports", "src/lib/UTIL"], function (require, 
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.DEFAULT_OPTION = {
         path: '$id',
-        url: null,
+        url: undefined,
         ajaxType: 'get',
         ajaxCache: true,
         ajaxData: {},
@@ -565,7 +549,7 @@ define("src/prepare", ["require", "exports", "src/template", "src/lib/UTIL", "sr
                     case 0:
                         opt = UTIL_2.UTIL.extend({}, option_1.DEFAULT_OPTION, option);
                         url = typeof opt.url === 'function' ? opt.url(id, option) : opt.url;
-                        url = url || opt.path.replace(/\$id/g, id);
+                        url = url || (opt.path || '').replace(/\$id/g, id);
                         if (template_1.getTemplate(id))
                             return [2 /*return*/, template_1.getCompiler(id, opt)];
                         fromURL = function () { return UTIL_2.UTIL.ajax({
@@ -584,7 +568,7 @@ define("src/prepare", ["require", "exports", "src/template", "src/lib/UTIL", "sr
                         newElements = [];
                         try {
                             Array.prototype.forEach.call(allTemplate, function (element, idx) {
-                                if (idx === 0 || !opt.override[element.id])
+                                if (idx === 0 || !(opt.override || {})[element.id])
                                     newElements.push(element);
                             });
                             if (!newElements.filter(template_1.setTemplateElement).length)
@@ -606,62 +590,54 @@ define("src/core", ["require", "exports", "src/lib/UTIL", "src/prepare", "src/op
     var _this = this;
     Object.defineProperty(exports, "__esModule", { value: true });
     var outputDebugConsole = UTIL_3.UTIL.outputDebugConsole;
-    exports.get = function (id, data, option) {
-        if (data === void 0) { data = null; }
-        if (option === void 0) { option = null; }
-        return __awaiter(_this, void 0, void 0, function () {
-            var curLogs_1, parentLogs, opt_1, outputDebug, pData, pCompiler, solvedData, compiler, output, e_1;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 3, , 4]);
-                        option = option || {};
-                        curLogs_1 = [];
-                        parentLogs = option['_log'] || [];
-                        opt_1 = UTIL_3.UTIL.extend({}, option_2.DEFAULT_OPTION, option);
-                        curLogs_1['id'] = id;
-                        curLogs_1['now'] = new Date();
-                        curLogs_1['isRoot'] = !opt_1.global.$parent;
-                        outputDebug = !!(curLogs_1['isRoot'] && opt_1.debug);
-                        parentLogs.push(curLogs_1);
-                        opt_1._log = curLogs_1;
-                        pData = Promise.resolve(typeof data === 'function' ? data() : data).then(function (result) {
-                            curLogs_1.push(['time', 'elapsed time - data', new Date()]);
-                            curLogs_1.push(['log', 'data', result]);
-                            return result;
-                        });
-                        pCompiler = prepare_1.prepare(id, opt_1).then(function (result) {
-                            curLogs_1.push(['time', 'elapsed time - tpl prepare', new Date()]);
-                            return result;
-                        });
-                        return [4 /*yield*/, pData];
-                    case 1:
-                        solvedData = _a.sent();
-                        return [4 /*yield*/, pCompiler];
-                    case 2:
-                        compiler = _a.sent();
-                        output = compiler.apply(void 0, [id, solvedData, opt_1].concat(Object.keys(opt_1.global).map(function (k) { return opt_1.global[k]; })));
-                        curLogs_1.push(['time', 'elapsed time - compile success', new Date()]);
-                        outputDebug && outputDebugConsole(curLogs_1);
-                        return [2 /*return*/, output];
-                    case 3:
-                        e_1 = _a.sent();
-                        e_1.message = "AJST error (ID: " + id + ")\n" + e_1.message;
-                        throw e_1;
-                    case 4: return [2 /*return*/];
-                }
-            });
+    exports.get = function (id, data, option) { return __awaiter(_this, void 0, void 0, function () {
+        var curLogs_1, parentLogs, opt_1, outputDebug, pData, pCompiler, solvedData, compiler, output, e_1;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 3, , 4]);
+                    option = option || {};
+                    curLogs_1 = [];
+                    parentLogs = option['_log'] || [];
+                    opt_1 = UTIL_3.UTIL.extend({}, option_2.DEFAULT_OPTION, option);
+                    curLogs_1['id'] = id;
+                    curLogs_1['now'] = new Date();
+                    curLogs_1['isRoot'] = !opt_1.global.$parent;
+                    outputDebug = !!(curLogs_1['isRoot'] && opt_1.debug);
+                    parentLogs.push(curLogs_1);
+                    opt_1._log = curLogs_1;
+                    pData = Promise.resolve(typeof data === 'function' ? data() : data).then(function (result) {
+                        curLogs_1.push(['time', 'elapsed time - data', new Date()]);
+                        curLogs_1.push(['log', 'data', result]);
+                        return result;
+                    });
+                    pCompiler = prepare_1.prepare(id, opt_1).then(function (result) {
+                        curLogs_1.push(['time', 'elapsed time - tpl prepare', new Date()]);
+                        return result;
+                    });
+                    return [4 /*yield*/, pData];
+                case 1:
+                    solvedData = _a.sent();
+                    return [4 /*yield*/, pCompiler];
+                case 2:
+                    compiler = _a.sent();
+                    output = compiler.apply(void 0, [id, solvedData, opt_1].concat(Object.keys(opt_1.global).map(function (k) { return opt_1.global[k]; })));
+                    curLogs_1.push(['time', 'elapsed time - compile success', new Date()]);
+                    outputDebug && outputDebugConsole(curLogs_1);
+                    return [2 /*return*/, output];
+                case 3:
+                    e_1 = _a.sent();
+                    e_1.message = "AJST error (ID: " + id + ")\n" + e_1.message;
+                    throw e_1;
+                case 4: return [2 /*return*/];
+            }
         });
-    };
-    exports.ajax = function (id, url, option) {
-        if (option === void 0) { option = {}; }
-        return exports.get(id, UTIL_3.UTIL.ajax({
-            url: url,
-            dataType: 'json'
-        }), option);
-    };
+    }); };
+    exports.ajax = function (id, url, option) { return exports.get(id, UTIL_3.UTIL.ajax({
+        url: url,
+        dataType: 'json'
+    }), option); };
     exports.each = function (id, data, option) {
-        if (option === void 0) { option = {}; }
         return __awaiter(this, void 0, void 0, function () {
             var list, dataPromise;
             return __generator(this, function (_a) {

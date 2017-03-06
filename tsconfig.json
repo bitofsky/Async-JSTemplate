@@ -13,7 +13,8 @@
     "outFile": "./dist/ajst.js",
     "declaration": true,
     "removeComments": true,
-    "alwaysStrict": true
+    "alwaysStrict": true,
+    "strictNullChecks": true
   },
   "exclude": [
     "node_modules"

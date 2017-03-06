@@ -6,7 +6,7 @@ import { UTIL } from './lib/UTIL';
  */
 export const DEFAULT_OPTION: Option = {
     path: '$id',
-    url: null,
+    url: undefined,
     ajaxType: 'get',
     ajaxCache: true,
     ajaxData: {},

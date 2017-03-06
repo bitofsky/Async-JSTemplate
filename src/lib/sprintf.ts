@@ -11,7 +11,7 @@ export function sprintf() {
         const padding = (str.length >= len) ? '' : Array(1 + len - str.length >>> 0).join(chr);
         return leftJustify ? str + padding : padding + str;
     };
-    const justify = function (value, prefix, leftJustify, minWidth, zeroPad = undefined, customPadChar = undefined) {
+    const justify = function (value, prefix, leftJustify, minWidth, zeroPad?: boolean, customPadChar?: string) {
         const diff = minWidth - value.length;
         if (diff > 0) {
             if (leftJustify || !zeroPad)
@@ -27,7 +27,7 @@ export function sprintf() {
         value = prefix + pad(number.toString(base), precision || 0, '0', false);
         return justify(value, prefix, leftJustify, minWidth, zeroPad);
     };
-    const formatString = function (value, leftJustify, minWidth, precision, zeroPad, customPadChar = undefined) {
+    const formatString = function (value, leftJustify, minWidth, precision, zeroPad, customPadChar?: string) {
         if (precision != null) {
             value = value.slice(0, precision);
         }

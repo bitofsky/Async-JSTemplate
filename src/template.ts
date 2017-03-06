@@ -36,7 +36,7 @@ export const setTemplate = (id: string, tplString: string) => {
     const trimed = CommentStripper.strip(tplString.trim());
 
     tplCache[id] = id.match(/\.js$/) ? `<? ${trimed} ?>` : trimed;
-    compileCache[id] = null;
+    delete compileCache[id];
 
 };
 

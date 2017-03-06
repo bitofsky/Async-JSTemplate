@@ -76,7 +76,7 @@ declare module "src/option" {
     import { Option } from "src/ns";
     export const DEFAULT_OPTION: Option;
     export const CONST_OPTION: Option;
-    export const option: (newOption?: Option) => boolean | Option;
+    export const option: (newOption?: Option | undefined) => boolean | Option;
 }
 declare module "src/prepare" {
     import { Option, Compiler } from "src/ns";
@@ -84,9 +84,9 @@ declare module "src/prepare" {
 }
 declare module "src/core" {
     import { Option } from "src/ns";
-    export const get: (id: string, data?: any, option?: Option) => Promise<string>;
-    export const ajax: (id: string, url: string, option?: Option) => Promise<string>;
-    export const each: (id: string, data: any, option?: Option) => Promise<string>;
+    export const get: (id: string, data?: any, option?: Option | undefined) => Promise<string>;
+    export const ajax: (id: string, url: string, option?: Option | undefined) => Promise<string>;
+    export const each: (id: string, data: Iterable<any>, option?: Option | undefined) => Promise<string>;
     export const noConflict: () => any;
 }
 declare module "src/autocollect" {

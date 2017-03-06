@@ -53,7 +53,7 @@ export const UTIL = {
     },
     toArray: function (o) {
         if (!support.argumentsSlice) {
-            const ret = [];
+            const ret: any[] = [];
             UTIL.each(o, function (x) {
                 ret.push(x);
             });
@@ -230,7 +230,7 @@ export const UTIL = {
 
 function param(a) {
 
-    const s = [];
+    const s: string[] = [];
 
     // If traditional, encode the "old" way (the way 1.3.2 or older
     // did it), otherwise encode params recursively.
@@ -302,22 +302,5 @@ function param(a) {
         delete console.timeCounters[name];
         return diff;
     };
-
-    /**
-     * IE7 document.querySelectorAll
-     */
-    if (global.document && !global.document.querySelectorAll) {
-        (function (document) {
-            const a = document.styleSheets.length ? document.styleSheets[0] : document.createStyleSheet();
-            document.querySelectorAll = function (e) {
-                a.addRule(e, 'f:b');
-                let c = [];
-                for (let l = document.all, b = 0, f = l.length; b < f; b++)
-                    l[b].currentStyle.f && c.push(l[b]);
-                a.removeRule(0);
-                return c;
-            };
-        })(global.document);
-    }
 
 })(this || window, (this || window).console || {});

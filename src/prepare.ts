@@ -9,7 +9,7 @@ export const prepare = async (id: string, option: Option = {}) => {
     const opt: Option = UTIL.extend({}, DEFAULT_OPTION, option);
 
     let url = typeof opt.url === 'function' ? opt.url(id, option) : opt.url;
-    url = url || opt.path.replace(/\$id/g, id);
+    url = url || (opt.path || '').replace(/\$id/g, id);
 
     if (getTemplate(id)) // aready have..
         return getCompiler(id, opt);
@@ -32,7 +32,7 @@ export const prepare = async (id: string, option: Option = {}) => {
 
         Array.prototype.forEach.call(allTemplate, (element: Element, idx: number) => {
             // check opt.override id set
-            if (idx === 0 || !opt.override[element.id]) newElements.push(element);
+            if (idx === 0 || !(opt.override || {})[element.id]) newElements.push(element);
         });
 
         if (!newElements.filter(setTemplateElement).length) // if just text nodes
