@@ -17,6 +17,10 @@
         "removeComments": true,
         "alwaysStrict": true
     },
+    "include": [
+        "lib/**/*",
+        "tab/**/*"
+    ],
     "exclude": [
         "node_modules"
     ]
