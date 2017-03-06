@@ -35,7 +35,7 @@ module.exports = function (grunt) {
 
         await execute(); // init build
 
-        watchGlob(['**/*.ts'], { delay: 100 }, execute, execute);
+        watchGlob(['tsconfig.json', '**/*.ts'], { delay: 100 }, execute, execute);
 
     });
 

@@ -33,7 +33,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-define(["require", "exports", "jquery", "../lib/ajst", "showdown"], function (require, exports, $, AJST, Showdown) {
+define(["require", "exports", "jquery", "ajst", "showdown"], function (require, exports, $, AJST, Showdown) {
     "use strict";
     var _this = this;
     Object.defineProperty(exports, "__esModule", { value: true });

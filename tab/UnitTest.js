@@ -1,4 +1,4 @@
-define(["require", "exports", "jquery", "../lib/ajst", "../lib/TestGroup"], function (require, exports, $, AJST, TestGroup_1) {
+define(["require", "exports", "jquery", "ajst", "../lib/TestGroup"], function (require, exports, $, AJST, TestGroup_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var UnitTest = function (openCase) {

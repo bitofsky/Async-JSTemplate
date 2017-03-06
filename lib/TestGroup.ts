@@ -2,7 +2,7 @@
  * test
  */
 import * as $ from 'jquery';
-import * as AJST from './ajst';
+import * as AJST from 'ajst';
 
 var returnTestResult = function (testData, testResult, testOutput) { };
 

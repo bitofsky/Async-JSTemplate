@@ -1,5 +1,5 @@
+import * as AJST from 'ajst';
 import * as $ from 'jquery';
-import * as AJST from './ajst';
 import About from '../tab/About';
 import UnitTest from '../tab/UnitTest';
 

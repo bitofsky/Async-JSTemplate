@@ -2,7 +2,7 @@
  * Unit Test
  */
 import * as $ from 'jquery';
-import * as AJST from '../lib/ajst';
+import * as AJST from 'ajst';
 import TestGroups from '../lib/TestGroup';
 
 const UnitTest = function (openCase) {
