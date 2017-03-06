@@ -23,18 +23,8 @@ npm install ajst --save
 ```
 
 ## Use ES-Module (like TypeScript)
-tsconfig.json
-```js
-{
-  "paths": {
-    "ajst": "path to ajst/dist/ajst" // target: ajst.ts
-  }
-}
-```
 ```javascript
 import * as AJST from 'ajst'; // module
-or
-import * as AJST from 'node_modules/ajst/dist/ajst'; // path
 
 AJST.get(Tpl_ID, data).then(output =>
   $('#output').html(output)
