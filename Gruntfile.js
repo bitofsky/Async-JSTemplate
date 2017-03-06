@@ -5,7 +5,6 @@ module.exports = function (grunt) {
     const buildTsc = project => new Promise((resolve, reject) => {
         const args = ['-p', project];
         grunt.log.writeln(`tsc ${args.join(' ')} : ${new Date()}`);
-        try { require('fs').unlinkSync('./index.d.ts'); } catch (e) { } // for recreate
         grunt.util.spawn({
             cmd: 'tsc',
             args,

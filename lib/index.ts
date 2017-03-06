@@ -32,5 +32,3 @@ function onChangeHash(onHashChanged) {
             name = 'About';
     }
 }
-
-});
