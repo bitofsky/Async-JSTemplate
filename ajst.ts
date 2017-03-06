@@ -21,10 +21,10 @@
  */
 ///<amd-module name="ajst"/>
 
-export * from '../src/autocollect';
-export * from '../src/core';
-export * from '../src/option';
-export * from '../src/prepare';
-export * from '../src/template';
-export * from '../src/tplCompiler';
-export * from '../src/ns';
+export * from './ajst/autocollect';
+export * from './ajst/core';
+export * from './ajst/option';
+export * from './ajst/prepare';
+export * from './ajst/template';
+export * from './ajst/tplCompiler';
+export * from './ajst/ns';

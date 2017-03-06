@@ -33,11 +33,11 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-define("src/ns", ["require", "exports"], function (require, exports) {
+define("ajst/ns", ["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
 });
-define("src/lib/CommentStripper", ["require", "exports"], function (require, exports) {
+define("ajst/lib/CommentStripper", ["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.CommentStripper = (function () {
@@ -69,7 +69,7 @@ define("src/lib/CommentStripper", ["require", "exports"], function (require, exp
         return new CommentStripper();
     })();
 });
-define("src/lib/sprintf", ["require", "exports"], function (require, exports) {
+define("ajst/lib/sprintf", ["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     function sprintf() {
@@ -186,7 +186,7 @@ define("src/lib/sprintf", ["require", "exports"], function (require, exports) {
     }
     exports.sprintf = sprintf;
 });
-define("src/lib/UTIL", ["require", "exports", "src/lib/CommentStripper", "src/lib/sprintf"], function (require, exports, CommentStripper_js_1, sprintf_js_1) {
+define("ajst/lib/UTIL", ["require", "exports", "ajst/lib/CommentStripper", "ajst/lib/sprintf"], function (require, exports, CommentStripper_js_1, sprintf_js_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var documentMode = window.documentMode;
@@ -431,7 +431,7 @@ define("src/lib/UTIL", ["require", "exports", "src/lib/CommentStripper", "src/li
         };
     })(this || window, (this || window).console || {});
 });
-define("src/tplCompiler", ["require", "exports"], function (require, exports) {
+define("ajst/tplCompiler", ["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.tplCompiler = function (tplString, option) {
@@ -489,7 +489,7 @@ define("src/tplCompiler", ["require", "exports"], function (require, exports) {
             return ";\n_s+='";
     };
 });
-define("src/template", ["require", "exports", "src/tplCompiler", "src/lib/CommentStripper"], function (require, exports, tplCompiler_1, CommentStripper_1) {
+define("ajst/template", ["require", "exports", "ajst/tplCompiler", "ajst/lib/CommentStripper"], function (require, exports, tplCompiler_1, CommentStripper_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var tplCache = {};
@@ -515,7 +515,7 @@ define("src/template", ["require", "exports", "src/tplCompiler", "src/lib/Commen
         return true;
     };
 });
-define("src/option", ["require", "exports", "src/lib/UTIL"], function (require, exports, UTIL_1) {
+define("ajst/option", ["require", "exports", "ajst/lib/UTIL"], function (require, exports, UTIL_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.DEFAULT_OPTION = {
@@ -536,7 +536,7 @@ define("src/option", ["require", "exports", "src/lib/UTIL"], function (require, 
         return true;
     };
 });
-define("src/prepare", ["require", "exports", "src/template", "src/lib/UTIL", "src/option"], function (require, exports, template_1, UTIL_2, option_1) {
+define("ajst/prepare", ["require", "exports", "ajst/template", "ajst/lib/UTIL", "ajst/option"], function (require, exports, template_1, UTIL_2, option_1) {
     "use strict";
     var _this = this;
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -585,7 +585,7 @@ define("src/prepare", ["require", "exports", "src/template", "src/lib/UTIL", "sr
         });
     };
 });
-define("src/core", ["require", "exports", "src/lib/UTIL", "src/prepare", "src/option"], function (require, exports, UTIL_3, prepare_1, option_2) {
+define("ajst/core", ["require", "exports", "ajst/lib/UTIL", "ajst/prepare", "ajst/option"], function (require, exports, UTIL_3, prepare_1, option_2) {
     "use strict";
     var _this = this;
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -664,7 +664,7 @@ define("src/core", ["require", "exports", "src/lib/UTIL", "src/prepare", "src/op
     option_2.CONST_OPTION.global.util = UTIL_3.UTIL;
     UTIL_3.UTIL.extend(option_2.DEFAULT_OPTION, option_2.CONST_OPTION);
 });
-define("src/autocollect", ["require", "exports", "src/core", "src/option", "src/lib/UTIL", "src/template"], function (require, exports, core_1, option_3, UTIL_4, template_2) {
+define("ajst/autocollect", ["require", "exports", "ajst/core", "ajst/option", "ajst/lib/UTIL", "ajst/template"], function (require, exports, core_1, option_3, UTIL_4, template_2) {
     "use strict";
     var _this = this;
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -701,7 +701,7 @@ define("src/autocollect", ["require", "exports", "src/core", "src/option", "src/
     else
         document['attachEvent']('onreadystatechange', exports.autocollect);
 });
-define("ajst", ["require", "exports", "src/autocollect", "src/core", "src/option", "src/prepare", "src/template", "src/tplCompiler"], function (require, exports, autocollect_1, core_2, option_4, prepare_2, template_3, tplCompiler_2) {
+define("ajst", ["require", "exports", "ajst/autocollect", "ajst/core", "ajst/option", "ajst/prepare", "ajst/template", "ajst/tplCompiler"], function (require, exports, autocollect_1, core_2, option_4, prepare_2, template_3, tplCompiler_2) {
     "use strict";
     function __export(m) {
         for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];

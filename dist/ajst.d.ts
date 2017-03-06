@@ -1,4 +1,4 @@
-declare module "src/ns" {
+declare module "ajst/ns" {
     export namespace Option {
         type url = (id: string, option: Option) => string;
         type ajaxType = 'get' | 'post';
@@ -21,13 +21,13 @@ declare module "src/ns" {
         [index: string]: T;
     }
 }
-declare module "src/lib/CommentStripper" {
+declare module "ajst/lib/CommentStripper" {
     export const CommentStripper: any;
 }
-declare module "src/lib/sprintf" {
+declare module "ajst/lib/sprintf" {
     export function sprintf(): any;
 }
-declare module "src/lib/UTIL" {
+declare module "ajst/lib/UTIL" {
     export const support: {
         addEventListener: boolean;
         argumentsSlice: boolean;
@@ -60,44 +60,44 @@ declare module "src/lib/UTIL" {
         ajax: (option: any) => Promise<{}>;
     };
 }
-declare module "src/tplCompiler" {
-    import { Option, Compiler } from "src/ns";
+declare module "ajst/tplCompiler" {
+    import { Option, Compiler } from "ajst/ns";
     export const tplCompiler: (tplString: string, option: Option) => Compiler;
 }
-declare module "src/template" {
-    import { Option, Compiler } from "src/ns";
+declare module "ajst/template" {
+    import { Option, Compiler } from "ajst/ns";
     export const getTemplateFromURL: (id: string, getAjax: () => Promise<string>) => Promise<string>;
     export const getTemplate: (id: string) => string;
     export const setTemplate: (id: string, tplString: string) => void;
     export const getCompiler: (id: string, option?: Option) => Compiler;
     export const setTemplateElement: (element: Element) => boolean;
 }
-declare module "src/option" {
-    import { Option } from "src/ns";
+declare module "ajst/option" {
+    import { Option } from "ajst/ns";
     export const DEFAULT_OPTION: Option;
     export const CONST_OPTION: Option;
     export const option: (newOption?: Option | undefined) => boolean | Option;
 }
-declare module "src/prepare" {
-    import { Option, Compiler } from "src/ns";
+declare module "ajst/prepare" {
+    import { Option, Compiler } from "ajst/ns";
     export const prepare: (id: string, option?: Option) => Promise<Compiler>;
 }
-declare module "src/core" {
-    import { Option } from "src/ns";
+declare module "ajst/core" {
+    import { Option } from "ajst/ns";
     export const get: (id: string, data?: any, option?: Option | undefined) => Promise<string>;
     export const ajax: (id: string, url: string, option?: Option | undefined) => Promise<string>;
     export const each: (id: string, data: Iterable<any>, option?: Option | undefined) => Promise<string>;
     export const noConflict: () => any;
 }
-declare module "src/autocollect" {
+declare module "ajst/autocollect" {
     export const autocollect: () => void;
 }
 declare module "ajst" {
-    export * from "src/autocollect";
-    export * from "src/core";
-    export * from "src/option";
-    export * from "src/prepare";
-    export * from "src/template";
-    export * from "src/tplCompiler";
-    export * from "src/ns";
+    export * from "ajst/autocollect";
+    export * from "ajst/core";
+    export * from "ajst/option";
+    export * from "ajst/prepare";
+    export * from "ajst/template";
+    export * from "ajst/tplCompiler";
+    export * from "ajst/ns";
 }

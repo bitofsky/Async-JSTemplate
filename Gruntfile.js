@@ -14,7 +14,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-clean');
 
     grunt.initConfig({
-        clean: { build: ['./src/**.js', './src/**.map'] }
+        clean: { build: ['./ajst/**.js', './ajst/**.map'] }
     });
 
     grunt.registerTask('ajst:build', 'Typescript Build', async function () {
@@ -42,7 +42,7 @@ module.exports = function (grunt) {
 
         execute(); // init build
 
-        watchGlob(['tsconfig.json', 'ajst/ajst.ts', 'src/**/*.ts'], { delay: 100 }, execute, execute);
+        watchGlob(['tsconfig.json', 'ajst.ts', 'ajst/**/*.ts'], { delay: 100 }, execute, execute);
 
     });
 

@@ -1,9 +1,11 @@
-// Preparing Template
 import { Option, Compiler } from './ns';
 import { getTemplateFromURL, getTemplate, setTemplateElement, setTemplate, getCompiler } from './template';
 import { UTIL } from './lib/UTIL';
 import { DEFAULT_OPTION } from './option';
 
+/**
+ * Preparing Template
+ */
 export const prepare = async (id: string, option: Option = {}) => {
 
     const opt: Option = UTIL.extend({}, DEFAULT_OPTION, option);

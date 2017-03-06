@@ -5,6 +5,7 @@ import { DEFAULT_OPTION, CONST_OPTION } from './option';
 
 const { outputDebugConsole } = UTIL;
 
+
 /**
  * Generate AJST Template String
  */

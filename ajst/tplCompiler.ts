@@ -1,6 +1,8 @@
-// Create Template Compiler
 import { Option, Compiler } from './ns';
 
+/**
+ * Create Template Compiler
+ */
 export const tplCompiler = (tplString: string, option: Option) => {
 
     if (tplString === undefined) throw new Error('AJST tplCompiler tplString undefined.');
