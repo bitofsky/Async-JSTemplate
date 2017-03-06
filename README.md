@@ -1,6 +1,8 @@
 AJST : Asynchronous JavaScript Template
 ================
 
+[![npm version](https://badge.fury.io/js/ajst.svg)](https://badge.fury.io/js/ajst)
+
 # Introduce
 
 AJST is a JavaScript template engine based on Promise A+.
