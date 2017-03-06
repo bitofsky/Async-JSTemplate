@@ -85,8 +85,8 @@ declare module "src/prepare" {
 declare module "src/core" {
     import { ns } from "src/ns";
     export const get: (id: string, data?: any, option?: ns.AJSTOption) => Promise<string>;
-    export const ajax: (id: string, url: string, option: ns.AJSTOption) => Promise<string>;
-    export const each: (id: string, data: any, option: ns.AJSTOption) => Promise<string>;
+    export const ajax: (id: string, url: string, option?: ns.AJSTOption) => Promise<string>;
+    export const each: (id: string, data: any, option?: ns.AJSTOption) => Promise<string>;
     export const noConflict: () => any;
 }
 declare module "src/autocollect" {
