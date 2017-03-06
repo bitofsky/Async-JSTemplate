@@ -10,7 +10,7 @@ const port = 3000;
 app.use('/', express.static(__dirname));
 
 // AJST module serving
-app.use('/ajst', express.static(__dirname + '/../Async-JSTemplate/dist')); // for develope ajst..
+app.use('/ajst', express.static(__dirname + '/node_modules/ajst/dist')); // for develope ajst..
 
 // Server Start
 server.listen(port, () => console.log(`Express on : http://127.0.0.1:${port}`));
