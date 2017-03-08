@@ -17,7 +17,7 @@
   },
   "main": "./dist/ajst.js",
   "types": "./dist/ajst.d.ts",
-  "version": "1.6.9",
+  "version": "1.6.10",
   "license": "MIT",
   "readme": "README.md",
   "author": {
