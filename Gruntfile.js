@@ -3,7 +3,7 @@ module.exports = function (grunt) {
     const buildTsc = project => new Promise((resolve, reject) => {
         const args = ['-p', project, '--listEmittedFiles'];
         grunt.log.writeln(`tsc ${args.join(' ')} : ${new Date()}`);
-        try { require('fs').unlinkSync('./dist/ajst.d.ts'); } catch (e) { } // for recreate
+        //try { require('fs').unlinkSync('./dist/ajst.d.ts'); } catch (e) { } // for recreate
         grunt.util.spawn({
             cmd: 'tsc',
             args,
@@ -11,23 +11,17 @@ module.exports = function (grunt) {
         }, err => resolve(err));
     });
 
-    grunt.loadNpmTasks('grunt-contrib-clean');
-
-    grunt.initConfig({
-        clean: { build: ['./ajst/**.js', './ajst/**.map'] }
-    });
-
     grunt.registerTask('ajst:build', 'Typescript Build', async function () {
 
         require('time-grunt')(grunt);
-
-        grunt.task.run('clean:build');
 
         const project = '.';
         const done = this.async();
         const err = await buildTsc(project);
 
         err && grunt.log.error(err);
+
+        //await buildTsc('./tsconfig.commonjs.json');
 
         done(err ? false : true);
 

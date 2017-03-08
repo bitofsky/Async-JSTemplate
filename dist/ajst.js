@@ -499,6 +499,11 @@ define("ajst/template", ["require", "exports", "ajst/tplCompiler", "ajst/lib/Com
         return ajaxCache[id] = ajaxCache[id] || getAjax();
     };
     exports.getTemplate = function (id) { return tplCache[id]; };
+    exports.flushCaches = function () {
+        tplCache = {};
+        ajaxCache = {};
+        compileCache = {};
+    };
     exports.setTemplate = function (id, tplString) {
         var trimed = CommentStripper_1.CommentStripper.strip(tplString.trim());
         tplCache[id] = id.match(/\.js$/) ? "<? " + trimed + " ?>" : trimed;

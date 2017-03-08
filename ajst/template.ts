@@ -5,17 +5,17 @@ import { CommentStripper } from './lib/CommentStripper';
 /**
  * Template String Cache
  */
-const tplCache: CacheContainer<string> = {};
+let tplCache: CacheContainer<string> = {};
 
 /**
  * Ajax URL Cache
  */
-const ajaxCache: CacheContainer<Promise<string>> = {};
+let ajaxCache: CacheContainer<Promise<string>> = {};
 
 /**
  * Template Compiler Cache
  */
-const compileCache: CacheContainer<Compiler> = {};
+let compileCache: CacheContainer<Compiler> = {};
 
 /**
  * Get Template from URL
@@ -27,6 +27,15 @@ export const getTemplateFromURL = (id: string, getAjax: () => Promise<string>) =
  * Get Template
  */
 export const getTemplate = (id: string) => tplCache[id];
+
+/** 
+ * Remove all caches
+ */
+export const flushCaches = () => {
+    tplCache = {};
+    ajaxCache = {};
+    compileCache = {};
+};
 
 /**
  * Create/Replace Template

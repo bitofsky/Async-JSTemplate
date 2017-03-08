@@ -2,11 +2,16 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const tplCompiler_1 = require("./tplCompiler");
 const CommentStripper_1 = require("./lib/CommentStripper");
-const tplCache = {};
-const ajaxCache = {};
-const compileCache = {};
+let tplCache = {};
+let ajaxCache = {};
+let compileCache = {};
 exports.getTemplateFromURL = (id, getAjax) => ajaxCache[id] = ajaxCache[id] || getAjax();
 exports.getTemplate = (id) => tplCache[id];
+exports.flushCaches = () => {
+    tplCache = {};
+    ajaxCache = {};
+    compileCache = {};
+};
 exports.setTemplate = (id, tplString) => {
     const trimed = CommentStripper_1.CommentStripper.strip(tplString.trim());
     tplCache[id] = id.match(/\.js$/) ? `<? ${trimed} ?>` : trimed;

@@ -68,6 +68,7 @@ declare module "ajst/template" {
     import { Option, Compiler } from "ajst/ns";
     export const getTemplateFromURL: (id: string, getAjax: () => Promise<string>) => Promise<string>;
     export const getTemplate: (id: string) => string;
+    export const flushCaches: () => void;
     export const setTemplate: (id: string, tplString: string) => void;
     export const getCompiler: (id: string, option?: Option) => Compiler;
     export const setTemplateElement: (element: Element) => boolean;
