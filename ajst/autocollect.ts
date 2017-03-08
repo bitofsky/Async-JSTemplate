@@ -16,20 +16,20 @@ export const autocollect = () => {
 
 };
 
-const resolveElement = async element => {
+const resolveElement = async (element: Element) => {
 
     // auto replace
     if (!element.getAttribute('data-ajst'))
         return UTIL.removeElement(element);
 
     const ajaxURL = element.getAttribute('data-ajst-ajax');
-    const data = element.getAttribute('data-ajst-data') ? JSON.parse(element.getAttribute('data-ajst-data')) : undefined;
-    const option = element.getAttribute('data-ajst-option') ? JSON.parse(element.getAttribute('data-ajst-option')) : undefined;
+    const data = element.getAttribute('data-ajst-data') ? JSON.parse(element.getAttribute('data-ajst-data') || '') : undefined;
+    const option = element.getAttribute('data-ajst-option') ? JSON.parse(element.getAttribute('data-ajst-option') || '') : undefined;
     const tplOutput = await (ajaxURL ? ajax(element.id, ajaxURL, option) : get(element.id, data, option));
     const tplElementList = UTIL.parseHTML(tplOutput);
 
-    UTIL.toArray(tplElementList).forEach(function (tplElement) {
-        element.parentNode.insertBefore(tplElement, element);
+    UTIL.toArray(tplElementList).forEach(function (tplElement: Element) {
+        element.parentNode && element.parentNode.insertBefore(tplElement, element);
     });
 
     UTIL.removeElement(element);

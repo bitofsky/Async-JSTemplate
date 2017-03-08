@@ -266,7 +266,7 @@ define("ajst/lib/UTIL", ["require", "exports", "ajst/lib/CommentStripper", "ajst
             return key === undefined || Object.hasOwnProperty.call(o, key);
         },
         removeElement: function (element) {
-            element.parentNode.removeChild(element);
+            element.parentNode && element.parentNode.removeChild(element);
         },
         extend: function (o) {
             var args = [];
@@ -605,7 +605,7 @@ define("ajst/core", ["require", "exports", "ajst/lib/UTIL", "ajst/prepare", "ajs
                     curLogs_1['isRoot'] = !opt_1.global.$parent;
                     outputDebug = !!(curLogs_1['isRoot'] && opt_1.debug);
                     parentLogs.push(curLogs_1);
-                    opt_1._log = curLogs_1;
+                    opt_1['_log'] = curLogs_1;
                     pData = Promise.resolve(typeof data === 'function' ? data() : data).then(function (result) {
                         curLogs_1.push(['time', 'elapsed time - data', new Date()]);
                         curLogs_1.push(['log', 'data', result]);
@@ -682,14 +682,14 @@ define("ajst/autocollect", ["require", "exports", "ajst/core", "ajst/option", "a
                     if (!element.getAttribute('data-ajst'))
                         return [2 /*return*/, UTIL_4.UTIL.removeElement(element)];
                     ajaxURL = element.getAttribute('data-ajst-ajax');
-                    data = element.getAttribute('data-ajst-data') ? JSON.parse(element.getAttribute('data-ajst-data')) : undefined;
-                    option = element.getAttribute('data-ajst-option') ? JSON.parse(element.getAttribute('data-ajst-option')) : undefined;
+                    data = element.getAttribute('data-ajst-data') ? JSON.parse(element.getAttribute('data-ajst-data') || '') : undefined;
+                    option = element.getAttribute('data-ajst-option') ? JSON.parse(element.getAttribute('data-ajst-option') || '') : undefined;
                     return [4 /*yield*/, (ajaxURL ? core_1.ajax(element.id, ajaxURL, option) : core_1.get(element.id, data, option))];
                 case 1:
                     tplOutput = _a.sent();
                     tplElementList = UTIL_4.UTIL.parseHTML(tplOutput);
                     UTIL_4.UTIL.toArray(tplElementList).forEach(function (tplElement) {
-                        element.parentNode.insertBefore(tplElement, element);
+                        element.parentNode && element.parentNode.insertBefore(tplElement, element);
                     });
                     UTIL_4.UTIL.removeElement(element);
                     return [2 /*return*/];

@@ -12,13 +12,13 @@ export const support = {
     cors: 'withCredentials' in new XMLHttpRequest()
 };
 
-export const outputDebugConsole = logList => {
+export const outputDebugConsole = (logList: any) => {
 
     const id = logList.id, now = logList.now, isRoot = logList.isRoot;
 
     console[isRoot ? 'groupCollapsed' : 'group'].call(console, 'AJST TPL -', id);
 
-    logList.forEach(log => {
+    logList.forEach((log: any) => {
 
         if (log.id && log.now)
             return outputDebugConsole(log);
@@ -39,7 +39,7 @@ export const UTIL = {
     sprintf,
     param,
     outputDebugConsole,
-    each: function (o, eachFunction) {
+    each: function (o: any, eachFunction: (v: any, key: string | number, o: any) => void) {
         if (UTIL.isArray(o))
             o.forEach(eachFunction);
         else if (UTIL.isPlainObject(o))
@@ -51,7 +51,7 @@ export const UTIL = {
                 eachFunction(o[i], i, o);
         }
     },
-    toArray: function (o) {
+    toArray: function (o: any) {
         if (!support.argumentsSlice) {
             const ret: any[] = [];
             UTIL.each(o, function (x) {
@@ -62,25 +62,25 @@ export const UTIL = {
         else
             return Array.prototype.slice.call(o);
     },
-    tag_escape: function (s) {
+    tag_escape: function (s: string) {
         return s.toString().replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/'/g, '&#039;').replace(/"/g, '&quot;');
     },
-    tag_unescape: function (s) {
+    tag_unescape: function (s: string) {
         return s.toString().replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&#0*39;/g, '\'').replace(/&quot;/g, '"').replace(/&amp;/g, '&');
     },
-    makeUID: function (prefix) {
+    makeUID: function (prefix?: string) {
         return (prefix || '') + (+(new Date())) + UTIL.randomFromTo(0, 9999999999);
     },
-    randomFromTo: function (from, to) {
+    randomFromTo: function (from: number, to: number) {
         return Math.floor(Math.random() * (to - from + 1) + from);
     },
-    isFunction: function (o) {
+    isFunction: function (o: any) {
         return typeof o === 'function';
     },
-    isArray: function (o) {
+    isArray: function (o: any) {
         return o && o.constructor === Array;
     },
-    isPlainObject: function (o) {
+    isPlainObject: function (o: any) {
         if (!o || typeof o !== 'object' || String(o) !== '[object Object]')
             return false;
         const ctor = typeof o.constructor === 'function' && o.constructor.prototype;
@@ -90,11 +90,11 @@ export const UTIL = {
         for (key in o) { }
         return key === undefined || Object.hasOwnProperty.call(o, key);
     },
-    removeElement: function (element) {
-        element.parentNode.removeChild(element);
+    removeElement: function (element: Element) {
+        element.parentNode && element.parentNode.removeChild(element);
     },
-    extend: function (o, ...args) {
-        Array.prototype.slice.call(arguments, 1).forEach(function (source) {
+    extend: function (o: {}, ...args: any[]) {
+        Array.prototype.slice.call(arguments, 1).forEach(function (source: any) {
             if (source) {
                 for (let prop in source) {
                     if (UTIL.isPlainObject(source[prop])) {
@@ -112,20 +112,20 @@ export const UTIL = {
         });
         return o;
     },
-    parseHTML: function (htmlString) {
+    parseHTML: function (htmlString: string) {
 
         const container = document.createElement('div');
         container.innerHTML = htmlString;
         return container.childNodes;
 
     },
-    parseXML: function (xmlString) {
+    parseXML: function (xmlString: string) {
         return (new DOMParser()).parseFromString(xmlString, 'application/xml');
     },
-    ajax: function (option) {
+    ajax: function (option: object) {
         return new Promise(function (resolve, reject) {
 
-            const opt = UTIL.extend({
+            const opt: any = UTIL.extend({
                 type: 'GET',
                 url: '.',
                 header: { 'Content-Type': 'text/plain; charset=utf-8' },
@@ -143,7 +143,7 @@ export const UTIL = {
 
             function newXMLHttpRequest() {
 
-                let xhr;
+                let xhr: any;
 
                 if (!support.cors && opt.useCors && XDomainRequest) {
                     xhr = new XDomainRequest();
@@ -174,7 +174,7 @@ export const UTIL = {
 
             }
 
-            function sendRequest(xhr) {
+            function sendRequest(xhr: any) {
 
                 let body = UTIL.isPlainObject(opt.data) ? UTIL.param(opt.data) : opt.data;
 
@@ -208,7 +208,7 @@ export const UTIL = {
 
             }
 
-            function parseDataType(source) {
+            function parseDataType(source: string) {
 
                 switch (opt.dataType.toLowerCase()) {
                     case 'html':
@@ -228,7 +228,7 @@ export const UTIL = {
     }
 };
 
-function param(a) {
+function param(a: any) {
 
     const s: string[] = [];
 
@@ -241,16 +241,16 @@ function param(a) {
     // Return the resulting serialization
     return s.join('&').replace(/%20/g, '+');
 
-    function add(key, value) {
+    function add(key: any, value: any) {
         // If value is a function, invoke it and return its value
         value = UTIL.isFunction(value) ? value() : value;
         s[s.length] = encodeURIComponent(key) + '=' + encodeURIComponent(value);
     }
 
-    function buildParams(prefix, obj) {
+    function buildParams(prefix: any, obj: any) {
         if (UTIL.isArray(obj)) {
             // Serialize array item.
-            obj.forEach(function (v, i) {
+            obj.forEach(function (v: any, i: any) {
 
                 buildParams(prefix + '[' + (typeof v === 'object' || UTIL.isArray(v) ? i : '') + ']', v);
 
@@ -289,12 +289,12 @@ function param(a) {
     console.dir = console.dir || console.log;
     console.debug = console.debug || console.dir;
     console.timeCounters = console.timeCounters || {};
-    console.time = console.time || function (name, reset) {
+    console.time = console.time || function (name: string, reset: any) {
         if (!name || (!reset && console.timeCounters[name]))
             return;
         console.timeCounters[name] = +(new Date());
     };
-    console.timeEnd = console.timeEnd || function (name) {
+    console.timeEnd = console.timeEnd || function (name: string) {
         if (!console.timeCounters[name])
             return;
         const diff = +(new Date()) - console.timeCounters[name];

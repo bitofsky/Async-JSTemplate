@@ -15,9 +15,9 @@ export const get = async (id: string, data?: any, option?: Option) => {
 
         option = option || {};
 
-        const curLogs:Array<Array<any>> = [];
+        const curLogs: Array<Array<any>> = [];
         const parentLogs = option['_log'] || [];
-        const opt = UTIL.extend({}, DEFAULT_OPTION, option);
+        const opt: Option = UTIL.extend({}, DEFAULT_OPTION, option);
 
         curLogs['id'] = id;
         curLogs['now'] = new Date();
@@ -27,7 +27,7 @@ export const get = async (id: string, data?: any, option?: Option) => {
 
         parentLogs.push(curLogs);
 
-        opt._log = curLogs;
+        opt['_log'] = curLogs;
 
         const pData = Promise.resolve(typeof data === 'function' ? data() : data).then(result => {
             curLogs.push(['time', 'elapsed time - data', new Date()]);
@@ -73,7 +73,7 @@ export const each = async function (id: string, data: Iterable<any>, option?: Op
     const list = await data; // resolve promise
     const dataPromise: Promise<string>[] = [];
 
-    UTIL.each(list, v => dataPromise.push(get(id, v, option)));
+    UTIL.each(list, (v: any) => dataPromise.push(get(id, v, option)));
 
     if (!dataPromise.length)
         return '';

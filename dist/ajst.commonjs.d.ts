@@ -44,20 +44,20 @@ declare module "ajst/lib/UTIL" {
         sprintf: () => any;
         param: (a: any) => string;
         outputDebugConsole: (logList: any) => void;
-        each: (o: any, eachFunction: (v: any, key: string | number, o: any) => void) => void;
+        each: (o: any, eachFunction: any) => void;
         toArray: (o: any) => any;
-        tag_escape: (s: string) => string;
-        tag_unescape: (s: string) => string;
-        makeUID: (prefix?: string | undefined) => string;
-        randomFromTo: (from: number, to: number) => number;
+        tag_escape: (s: any) => any;
+        tag_unescape: (s: any) => any;
+        makeUID: (prefix: any) => any;
+        randomFromTo: (from: any, to: any) => number;
         isFunction: (o: any) => boolean;
         isArray: (o: any) => boolean;
         isPlainObject: (o: any) => any;
-        removeElement: (element: Element) => void;
-        extend: (o: {}, ...args: any[]) => {};
-        parseHTML: (htmlString: string) => NodeList;
-        parseXML: (xmlString: string) => Document;
-        ajax: (option: object) => Promise<{}>;
+        removeElement: (element: any) => void;
+        extend: (o: any, ...args: any[]) => any;
+        parseHTML: (htmlString: any) => NodeList;
+        parseXML: (xmlString: any) => Document;
+        ajax: (option: any) => Promise<{}>;
     };
 }
 declare module "ajst/tplCompiler" {

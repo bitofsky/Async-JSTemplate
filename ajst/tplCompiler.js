@@ -1,12 +1,8 @@
-import { Option, Compiler } from './ns';
-
-/**
- * Create Template Compiler
- */
-export const tplCompiler = (tplString: string, option: Option) => {
-
-    if (tplString === undefined) throw new Error('AJST tplCompiler tplString undefined.');
-
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.tplCompiler = (tplString, option) => {
+    if (tplString === undefined)
+        throw new Error('AJST tplCompiler tplString undefined.');
     const args = `$id, data, option, ${Object.keys(option.global).join(', ')}`;
     const fn = `
 var print          = function(){ _s += Array.prototype.join.call(arguments, ''); };
@@ -41,12 +37,11 @@ var _s = '${tplString.replace(regexp_remove_ws, replace_remove_ws).replace(regex
 return Promise.all(_promises).then(function(){
     return _s;
 });`;
-
     try {
-        const compiler = <Compiler>new Function(args, fn);
+        const compiler = new Function(args, fn);
         return compiler;
-    } catch (e) {
-
+    }
+    catch (e) {
         if (option.debug) {
             console.log('AJST tplCompiler Debug');
             console.log(e.message);
@@ -55,25 +50,18 @@ return Promise.all(_promises).then(function(){
             console.log('args: ', args);
             console.log('fn: ', fn);
         }
-
         throw e;
-
     }
-
 };
-
 const regexp_remove_ws = /(?:<\?([\s\S]+?)\?>)/g;
-
-const replace_remove_ws = (s: string) => s
+const replace_remove_ws = (s) => s
     .split('\n')
     .join(' ')
     .replace(/'/g, '_ESCAPE__1_')
     .replace(/"/g, '_ESCAPE__2_')
     .replace(/\\n/g, '_ESCAPE__NEWLINE_');
-
 const regexp_escape = /_ESCAPE__1_|_ESCAPE__2_|{{script}}|{{\/script}}|_ESCAPE__NEWLINE_/g;
-
-const replace_escape = (s: string) => {
+const replace_escape = (s) => {
     return {
         _ESCAPE__1_: '\'',
         _ESCAPE__2_: '"',
@@ -82,21 +70,20 @@ const replace_escape = (s: string) => {
         _ESCAPE__NEWLINE_: '\\n'
     }[s] || s;
 };
-
 const regexp_compile = /([\s'\\])(?![^\?]*\?>)|(?:<\?(=)([\s\S]+?)\?>)|(<\?)|(\?>)/g;
-
-const replace_compile = (s: string, p1: string, p2: string, p3: string, p4: string, p5: string) => {
-    if (p1) // whitespace, quote and backslash in interpolation context
+const replace_compile = (s, p1, p2, p3, p4, p5) => {
+    if (p1)
         return {
             '\n': '\\n',
             '\r': '\\r',
             '\t': '\\t',
             ' ': ' '
         }[s] || '\\' + s;
-    if (p2) // interpolation: <?=prop?>
+    if (p2)
         return `'+(${p3})+'`;
-    if (p4) // evaluation start tag: <?
+    if (p4)
         return `';\n`;
-    if (p5) // evaluation end tag: ?>
+    if (p5)
         return `;\n_s+='`;
 };
+//# sourceMappingURL=tplCompiler.js.map

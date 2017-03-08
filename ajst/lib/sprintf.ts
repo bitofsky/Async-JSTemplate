@@ -6,12 +6,12 @@ export function sprintf() {
     let i = 0;
     const regex = /%%|%(\d+\$)?([-+\'#0 ]*)(\*\d+\$|\*|\d+)?(\.(\*\d+\$|\*|\d+))?([scboxXuidfegEG])/g;
     const a = arguments, format = a[i++];
-    const pad = function (str, len, chr, leftJustify) {
+    const pad = function (str: any, len: any, chr: any, leftJustify: any) {
         if (!chr) chr = ' ';
         const padding = (str.length >= len) ? '' : Array(1 + len - str.length >>> 0).join(chr);
         return leftJustify ? str + padding : padding + str;
     };
-    const justify = function (value, prefix, leftJustify, minWidth, zeroPad?: boolean, customPadChar?: string) {
+    const justify = function (value: any, prefix: any, leftJustify: any, minWidth: any, zeroPad?: boolean, customPadChar?: string) {
         const diff = minWidth - value.length;
         if (diff > 0) {
             if (leftJustify || !zeroPad)
@@ -21,19 +21,19 @@ export function sprintf() {
         }
         return value;
     };
-    const formatBaseX = function (value, base, prefix, leftJustify, minWidth, precision, zeroPad) {
+    const formatBaseX = function (value: any, base: any, prefix: any, leftJustify: any, minWidth: any, precision: any, zeroPad: any) {
         const number = value >>> 0;
         prefix = prefix && number && { '2': '0b', '8': '0', '16': '0x' }[base] || '';
         value = prefix + pad(number.toString(base), precision || 0, '0', false);
         return justify(value, prefix, leftJustify, minWidth, zeroPad);
     };
-    const formatString = function (value, leftJustify, minWidth, precision, zeroPad, customPadChar?: string) {
+    const formatString = function (value: any, leftJustify: any, minWidth: any, precision: any, zeroPad: any, customPadChar?: string) {
         if (precision != null) {
             value = value.slice(0, precision);
         }
         return justify(value, '', leftJustify, minWidth, zeroPad, customPadChar);
     };
-    const doFormat = function (substring, valueIndex, flags, minWidth, _, precision, type) {
+    const doFormat = function (substring: any, valueIndex: any, flags: any, minWidth: any, _: any, precision: any, type: any) {
 
         let number, prefix, method, textTransform, value, leftJustify = false, positivePrefix = '', zeroPad = false, prefixBaseX = false, customPadChar = ' ', flagsl = flags.length;
 
