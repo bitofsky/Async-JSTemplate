@@ -2,8 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const UTIL_1 = require("./lib/UTIL");
 exports.DEFAULT_OPTION = {
-    path: '$id',
-    url: undefined,
+    url: '$id',
     ajaxType: 'get',
     ajaxCache: true,
     ajaxData: {},

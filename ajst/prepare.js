@@ -13,10 +13,10 @@ const UTIL_1 = require("./lib/UTIL");
 const option_1 = require("./option");
 exports.prepare = (id, option = {}) => __awaiter(this, void 0, void 0, function* () {
     const opt = UTIL_1.UTIL.extend({}, option_1.DEFAULT_OPTION, option);
-    let url = typeof opt.url === 'function' ? opt.url(id, option) : opt.url;
-    url = url || (opt.path || '').replace(/\$id/g, id);
-    let importJsUrl = typeof opt.importJsUrl === 'function' ? opt.importJsUrl(id, option) : opt.importJsUrl;
-    importJsUrl = importJsUrl || (opt.importJsPath || '').replace(/\$id/g, id);
+    let url = (typeof opt.url === 'function' ? opt.url(id, option) : opt.url) || id;
+    url = url.replace(/\$id/g, id);
+    let importJsUrl = (typeof opt.importJsUrl === 'function' ? opt.importJsUrl(id, option) : opt.importJsUrl) || id;
+    importJsUrl = importJsUrl.replace(/\$id/g, id);
     if (template_1.getTemplate(id))
         return template_1.getCompiler(id, opt);
     const fromURL = () => UTIL_1.UTIL.ajax({

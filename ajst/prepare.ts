@@ -10,11 +10,11 @@ export const prepare = async (id: string, option: Option = {}): Promise<Compiler
 
     const opt: Option = UTIL.extend({}, DEFAULT_OPTION, option);
 
-    let url = typeof opt.url === 'function' ? opt.url(id, option) : opt.url;
-    url = url || (opt.path || '').replace(/\$id/g, id);
+    let url = (typeof opt.url === 'function' ? opt.url(id, option) : opt.url) || id;
+    url = url.replace(/\$id/g, id);
 
-    let importJsUrl = typeof opt.importJsUrl === 'function' ? opt.importJsUrl(id, option) : opt.importJsUrl;
-    importJsUrl = importJsUrl || (opt.importJsPath || '').replace(/\$id/g, id);
+    let importJsUrl = (typeof opt.importJsUrl === 'function' ? opt.importJsUrl(id, option) : opt.importJsUrl) || id;
+    importJsUrl = importJsUrl.replace(/\$id/g, id);
 
     if (getTemplate(id)) // aready have..
         return getCompiler(id, opt);

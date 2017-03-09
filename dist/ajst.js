@@ -531,8 +531,7 @@ define("ajst/option", ["require", "exports", "ajst/lib/UTIL"], function (require
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.DEFAULT_OPTION = {
-        path: '$id',
-        url: undefined,
+        url: '$id',
         ajaxType: 'get',
         ajaxCache: true,
         ajaxData: {},
@@ -560,10 +559,10 @@ define("ajst/prepare", ["require", "exports", "ajst/template", "ajst/lib/UTIL", 
                 switch (_b.label) {
                     case 0:
                         opt = UTIL_2.UTIL.extend({}, option_1.DEFAULT_OPTION, option);
-                        url = typeof opt.url === 'function' ? opt.url(id, option) : opt.url;
-                        url = url || (opt.path || '').replace(/\$id/g, id);
-                        importJsUrl = typeof opt.importJsUrl === 'function' ? opt.importJsUrl(id, option) : opt.importJsUrl;
-                        importJsUrl = importJsUrl || (opt.importJsPath || '').replace(/\$id/g, id);
+                        url = (typeof opt.url === 'function' ? opt.url(id, option) : opt.url) || id;
+                        url = url.replace(/\$id/g, id);
+                        importJsUrl = (typeof opt.importJsUrl === 'function' ? opt.importJsUrl(id, option) : opt.importJsUrl) || id;
+                        importJsUrl = importJsUrl.replace(/\$id/g, id);
                         if (template_1.getTemplate(id))
                             return [2 /*return*/, template_1.getCompiler(id, opt)];
                         fromURL = function () { return UTIL_2.UTIL.ajax({

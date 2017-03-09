@@ -12,17 +12,11 @@ export declare namespace Option {
 export interface Option {
 
     /**
-     * TPL File URL
-     */
-    path?: string;
-
-    /**
      * TPL File URL generator
      */
     url?: Option.url | string;
 
     importJs?: boolean;
-    importJsPath?: string;
     importJsUrl?: Option.url | string;
 
     ajaxType?: Option.ajaxType;
