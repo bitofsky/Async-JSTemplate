@@ -7,7 +7,7 @@ $(window).on('hashchange', onChangeHash);
 
 $(function () {
 
-    AJST.option({ path: './tpl/$id.tpl', debug: true });
+    AJST.option({ url: './tpl/$id.tpl', debug: true });
     AJST.autocollect();
 
     AJST.ajax('index', './data/config.json').then(function (output) {
