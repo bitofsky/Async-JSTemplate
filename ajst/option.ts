@@ -6,6 +6,8 @@ import { UTIL } from './lib/UTIL';
  */
 export const DEFAULT_OPTION: Option = {
     url: '$id',
+    importJs: false,
+    importJsUrl: '$id.js',
     ajaxType: 'get',
     ajaxCache: true,
     ajaxData: {},

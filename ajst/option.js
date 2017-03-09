@@ -3,6 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const UTIL_1 = require("./lib/UTIL");
 exports.DEFAULT_OPTION = {
     url: '$id',
+    importJs: false,
+    importJsUrl: '$id.js',
     ajaxType: 'get',
     ajaxCache: true,
     ajaxData: {},

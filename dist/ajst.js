@@ -532,6 +532,8 @@ define("ajst/option", ["require", "exports", "ajst/lib/UTIL"], function (require
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.DEFAULT_OPTION = {
         url: '$id',
+        importJs: false,
+        importJsUrl: '$id.js',
         ajaxType: 'get',
         ajaxCache: true,
         ajaxData: {},
