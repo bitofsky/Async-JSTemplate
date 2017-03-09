@@ -5,6 +5,9 @@ export declare namespace Option {
 export interface Option {
     path?: string;
     url?: Option.url | string;
+    importJs?: boolean;
+    importJsPath?: string;
+    importJsUrl?: Option.url | string;
     ajaxType?: Option.ajaxType;
     ajaxCache?: boolean;
     ajaxData?: object;

@@ -6,6 +6,9 @@ declare module "ajst/ns" {
     export interface Option {
         path?: string;
         url?: Option.url | string;
+        importJs?: boolean;
+        importJsPath?: string;
+        importJsUrl?: Option.url | string;
         ajaxType?: Option.ajaxType;
         ajaxCache?: boolean;
         ajaxData?: object;
@@ -66,10 +69,11 @@ declare module "ajst/tplCompiler" {
 }
 declare module "ajst/template" {
     import { Option, Compiler } from "ajst/ns";
-    export const getTemplateFromURL: (id: string, getAjax: () => Promise<string>) => Promise<string>;
+    export const getStringFromURL: (url: string, getAjax: () => Promise<string>) => Promise<string>;
     export const getTemplate: (id: string) => string;
     export const flushCaches: () => void;
     export const setTemplate: (id: string, tplString: string) => void;
+    export const setImportJs: (id: string, importJs: string) => void;
     export const getCompiler: (id: string, option?: Option) => Compiler;
     export const setTemplateElement: (element: Element) => boolean;
 }

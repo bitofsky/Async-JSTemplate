@@ -493,21 +493,28 @@ define("ajst/template", ["require", "exports", "ajst/tplCompiler", "ajst/lib/Com
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var tplCache = {};
+    var importJsCache = {};
     var ajaxCache = {};
     var compileCache = {};
-    exports.getTemplateFromURL = function (id, getAjax) {
-        return ajaxCache[id] = ajaxCache[id] || getAjax();
+    exports.getStringFromURL = function (url, getAjax) {
+        return ajaxCache[url] = ajaxCache[url] || getAjax();
     };
     exports.getTemplate = function (id) { return tplCache[id]; };
     exports.flushCaches = function () {
         tplCache = {};
         ajaxCache = {};
         compileCache = {};
+        importJsCache = {};
     };
     exports.setTemplate = function (id, tplString) {
         var trimed = CommentStripper_1.CommentStripper.strip(tplString.trim());
         tplCache[id] = id.match(/\.js$/) ? "<? " + trimed + " ?>" : trimed;
+        if (importJsCache[id])
+            tplCache[id] += "<? " + importJsCache[id] + " ?>";
         delete compileCache[id];
+    };
+    exports.setImportJs = function (id, importJs) {
+        importJsCache[id] = importJs;
     };
     exports.getCompiler = function (id, option) {
         if (option === void 0) { option = {}; }
@@ -516,7 +523,7 @@ define("ajst/template", ["require", "exports", "ajst/tplCompiler", "ajst/lib/Com
     exports.setTemplateElement = function (element) {
         if (!element.id || element.tagName !== 'SCRIPT')
             return false;
-        exports.setTemplate(element.id, element.innerHTML.replace(/<!--\?/g, '<?').replace(/\?-->/g, '?>'));
+        exports.setTemplate(element.id, element.innerHTML);
         return true;
     };
 });
@@ -548,13 +555,15 @@ define("ajst/prepare", ["require", "exports", "ajst/template", "ajst/lib/UTIL", 
     exports.prepare = function (id, option) {
         if (option === void 0) { option = {}; }
         return __awaiter(_this, void 0, void 0, function () {
-            var opt, url, fromURL, strTemplate, allTemplate, newElements;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            var opt, url, importJsUrl, fromURL, importJsFromURL, _a, strTemplate, strImportJs, allTemplate, newElements;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0:
                         opt = UTIL_2.UTIL.extend({}, option_1.DEFAULT_OPTION, option);
                         url = typeof opt.url === 'function' ? opt.url(id, option) : opt.url;
                         url = url || (opt.path || '').replace(/\$id/g, id);
+                        importJsUrl = typeof opt.importJsUrl === 'function' ? opt.importJsUrl(id, option) : opt.importJsUrl;
+                        importJsUrl = importJsUrl || (opt.importJsPath || '').replace(/\$id/g, id);
                         if (template_1.getTemplate(id))
                             return [2 /*return*/, template_1.getCompiler(id, opt)];
                         fromURL = function () { return UTIL_2.UTIL.ajax({
@@ -566,12 +575,23 @@ define("ajst/prepare", ["require", "exports", "ajst/template", "ajst/lib/UTIL", 
                         }).catch(function (e) {
                             throw new Error("AJST prepare failed : file not found (ID: " + id + ", URL: " + url + ")");
                         }); };
-                        return [4 /*yield*/, template_1.getTemplateFromURL(url, fromURL)];
+                        importJsFromURL = function () { return UTIL_2.UTIL.ajax({
+                            type: 'get',
+                            cache: opt.ajaxCache,
+                            data: opt.ajaxData,
+                            url: importJsUrl,
+                            dataType: 'text'
+                        }); };
+                        return [4 /*yield*/, Promise.all([
+                                template_1.getStringFromURL(url, fromURL),
+                                opt.importJs ? template_1.getStringFromURL(importJsUrl, importJsFromURL) : ''
+                            ])];
                     case 1:
-                        strTemplate = _a.sent();
+                        _a = _b.sent(), strTemplate = _a[0], strImportJs = _a[1];
                         allTemplate = UTIL_2.UTIL.parseHTML(strTemplate);
                         newElements = [];
                         try {
+                            strImportJs && template_1.setImportJs(id, strImportJs);
                             Array.prototype.forEach.call(allTemplate, function (element, idx) {
                                 if (idx === 0 || !(opt.override || {})[element.id])
                                     newElements.push(element);

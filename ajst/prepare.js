@@ -15,6 +15,8 @@ exports.prepare = (id, option = {}) => __awaiter(this, void 0, void 0, function*
     const opt = UTIL_1.UTIL.extend({}, option_1.DEFAULT_OPTION, option);
     let url = typeof opt.url === 'function' ? opt.url(id, option) : opt.url;
     url = url || (opt.path || '').replace(/\$id/g, id);
+    let importJsUrl = typeof opt.importJsUrl === 'function' ? opt.importJsUrl(id, option) : opt.importJsUrl;
+    importJsUrl = importJsUrl || (opt.importJsPath || '').replace(/\$id/g, id);
     if (template_1.getTemplate(id))
         return template_1.getCompiler(id, opt);
     const fromURL = () => UTIL_1.UTIL.ajax({
@@ -26,10 +28,21 @@ exports.prepare = (id, option = {}) => __awaiter(this, void 0, void 0, function*
     }).catch(e => {
         throw new Error(`AJST prepare failed : file not found (ID: ${id}, URL: ${url})`);
     });
-    const strTemplate = yield template_1.getTemplateFromURL(url, fromURL);
+    const importJsFromURL = () => UTIL_1.UTIL.ajax({
+        type: 'get',
+        cache: opt.ajaxCache,
+        data: opt.ajaxData,
+        url: importJsUrl,
+        dataType: 'text'
+    });
+    const [strTemplate, strImportJs] = yield Promise.all([
+        template_1.getStringFromURL(url, fromURL),
+        opt.importJs ? template_1.getStringFromURL(importJsUrl, importJsFromURL) : ''
+    ]);
     const allTemplate = UTIL_1.UTIL.parseHTML(strTemplate);
     const newElements = [];
     try {
+        strImportJs && template_1.setImportJs(id, strImportJs);
         Array.prototype.forEach.call(allTemplate, (element, idx) => {
             if (idx === 0 || !(opt.override || {})[element.id])
                 newElements.push(element);

@@ -21,6 +21,10 @@ export interface Option {
      */
     url?: Option.url | string;
 
+    importJs?: boolean;
+    importJsPath?: string;
+    importJsUrl?: Option.url | string;
+
     ajaxType?: Option.ajaxType;
     ajaxCache?: boolean;
     ajaxData?: object;

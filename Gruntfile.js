@@ -21,7 +21,7 @@ module.exports = function (grunt) {
 
         err && grunt.log.error(err);
 
-        //await buildTsc('./tsconfig.commonjs.json');
+        await buildTsc('./tsconfig.commonjs.json');
 
         done(err ? false : true);
 
