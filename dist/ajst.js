@@ -514,6 +514,7 @@ define("ajst/template", ["require", "exports", "ajst/tplCompiler", "ajst/lib/Com
         delete compileCache[id];
     };
     exports.setImportJs = function (id, importJs) {
+        var trimed = CommentStripper_1.CommentStripper.strip(importJs.trim());
         importJsCache[id] = importJs;
     };
     exports.getCompiler = function (id, option) {

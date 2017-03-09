@@ -60,6 +60,7 @@ export const setTemplate = (id: string, tplString: string) => {
 };
 
 export const setImportJs = (id: string, importJs: string) => {
+    const trimed = CommentStripper.strip(importJs.trim());
     importJsCache[id] = importJs;
 };
 

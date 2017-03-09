@@ -22,6 +22,7 @@ exports.setTemplate = (id, tplString) => {
     delete compileCache[id];
 };
 exports.setImportJs = (id, importJs) => {
+    const trimed = CommentStripper_1.CommentStripper.strip(importJs.trim());
     importJsCache[id] = importJs;
 };
 exports.getCompiler = (id, option = {}) => compileCache[id] = compileCache[id] || tplCompiler_1.tplCompiler(exports.getTemplate(id), option);
