@@ -17,15 +17,10 @@ exports.flushCaches = () => {
 exports.setTemplate = (id, tplString) => {
     const trimed = CommentStripper_1.CommentStripper.strip(tplString.trim());
     tplCache[id] = id.match(/\.js$/) ? `<? ${trimed} ?>` : trimed;
-    if (importJsCache[id])
-        tplCache[id] += `<? ${importJsCache[id]} ?>`;
     delete compileCache[id];
 };
-exports.setImportJs = (id, importJs) => {
-    const trimed = CommentStripper_1.CommentStripper.strip(importJs.trim());
-    importJsCache[id] = importJs;
-};
-exports.getCompiler = (id, option = {}) => compileCache[id] = compileCache[id] || tplCompiler_1.tplCompiler(exports.getTemplate(id), option);
+exports.setImportJs = (id, importJs) => importJsCache[id] = importJs;
+exports.getCompiler = (id, option = {}) => compileCache[id] = compileCache[id] || tplCompiler_1.tplCompiler(exports.getTemplate(id), importJsCache[id] || '', option);
 exports.setTemplateElement = (element) => {
     if (!element.id || element.tagName !== 'SCRIPT')
         return false;

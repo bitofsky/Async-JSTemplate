@@ -52,23 +52,20 @@ export const setTemplate = (id: string, tplString: string) => {
 
     tplCache[id] = id.match(/\.js$/) ? `<? ${trimed} ?>` : trimed;
 
-    if (importJsCache[id])
-        tplCache[id] += `<? ${importJsCache[id]} ?>`;
-
     delete compileCache[id];
 
 };
 
-export const setImportJs = (id: string, importJs: string) => {
-    const trimed = CommentStripper.strip(importJs.trim());
-    importJsCache[id] = importJs;
-};
+/**
+ * Set Import JS String
+ */
+export const setImportJs = (id: string, importJs: string) => importJsCache[id] = importJs;
 
 /**
  * Get Template Compiler
  */
 export const getCompiler = (id: string, option: Option = {}) =>
-    compileCache[id] = compileCache[id] || tplCompiler(getTemplate(id), option);
+    compileCache[id] = compileCache[id] || tplCompiler(getTemplate(id), importJsCache[id] || '', option);
 
 /**
  * Set template element

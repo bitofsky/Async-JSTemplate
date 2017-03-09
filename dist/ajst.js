@@ -434,11 +434,11 @@ define("ajst/lib/UTIL", ["require", "exports", "ajst/lib/CommentStripper", "ajst
 define("ajst/tplCompiler", ["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    exports.tplCompiler = function (tplString, option) {
+    exports.tplCompiler = function (tplString, importJs, option) {
         if (tplString === undefined)
             throw new Error('AJST tplCompiler tplString undefined.');
         var args = "$id, data, option, " + Object.keys(option.global).join(', ');
-        var fn = "\nvar print          = function(){ _s += Array.prototype.join.call(arguments, ''); };\nvar printf         = function(){ _s += sprintf.apply(this, arguments); };\nvar uid            = util.makeUID('template');\nvar sprintf        = util.sprintf;\nvar _promises      = [];\nvar includeExecute = function(){\n    var uid     = util.makeUID('include');\n    var syncOut = undefined;\n    var args    = util.toArray(arguments);\n    util.extend(args, {2:{global:{$parent:$id},_log:option._log}});\n    _s += uid;\n    _promises.push(\n        this.apply(this, args).then(function(output){\n            syncOut = output;\n            _s = _s.replace(uid, output);\n        })\n    );\n    return syncOut !== undefined ? syncOut : uid;\n};\nvar include = function(){\n    return includeExecute.apply(AJSTget, arguments);\n};\nvar includeAjax = function(){\n    return includeExecute.apply(AJSTajax, arguments);\n};\nvar includeEach = function(id, data, option){\n    return includeExecute.apply(AJSTeach, arguments);\n};\nvar _s = '" + tplString.replace(regexp_remove_ws, replace_remove_ws).replace(regexp_compile, replace_compile).replace(regexp_escape, replace_escape) + "';\nreturn Promise.all(_promises).then(function(){\n    return _s;\n});";
+        var fn = "\nvar print          = function(){ _s += Array.prototype.join.call(arguments, ''); };\nvar printf         = function(){ _s += sprintf.apply(this, arguments); };\nvar uid            = util.makeUID('template');\nvar sprintf        = util.sprintf;\nvar _promises      = [];\nvar includeExecute = function(){\n    var uid     = util.makeUID('include');\n    var syncOut = undefined;\n    var args    = util.toArray(arguments);\n    util.extend(args, {2:{global:{$parent:$id},_log:option._log}});\n    _s += uid;\n    _promises.push(\n        this.apply(this, args).then(function(output){\n            syncOut = output;\n            _s = _s.replace(uid, output);\n        })\n    );\n    return syncOut !== undefined ? syncOut : uid;\n};\nvar include = function(){\n    return includeExecute.apply(AJSTget, arguments);\n};\nvar includeAjax = function(){\n    return includeExecute.apply(AJSTajax, arguments);\n};\nvar includeEach = function(id, data, option){\n    return includeExecute.apply(AJSTeach, arguments);\n};\nvar PromisePush = function(oPromise){ _promises.push(oPromise); };\nvar _s = '" + tplString.replace(regexp_remove_ws, replace_remove_ws).replace(regexp_compile, replace_compile).replace(regexp_escape, replace_escape) + "';\n" + (importJs ? "(function(){\n    " + importJs + "\n}());" : '') + "\nreturn Promise.all(_promises).then(function(){\n    return _s;\n});";
         try {
             var compiler = new Function(args, fn);
             return compiler;
@@ -509,17 +509,12 @@ define("ajst/template", ["require", "exports", "ajst/tplCompiler", "ajst/lib/Com
     exports.setTemplate = function (id, tplString) {
         var trimed = CommentStripper_1.CommentStripper.strip(tplString.trim());
         tplCache[id] = id.match(/\.js$/) ? "<? " + trimed + " ?>" : trimed;
-        if (importJsCache[id])
-            tplCache[id] += "<? " + importJsCache[id] + " ?>";
         delete compileCache[id];
     };
-    exports.setImportJs = function (id, importJs) {
-        var trimed = CommentStripper_1.CommentStripper.strip(importJs.trim());
-        importJsCache[id] = importJs;
-    };
+    exports.setImportJs = function (id, importJs) { return importJsCache[id] = importJs; };
     exports.getCompiler = function (id, option) {
         if (option === void 0) { option = {}; }
-        return compileCache[id] = compileCache[id] || tplCompiler_1.tplCompiler(exports.getTemplate(id), option);
+        return compileCache[id] = compileCache[id] || tplCompiler_1.tplCompiler(exports.getTemplate(id), importJsCache[id] || '', option);
     };
     exports.setTemplateElement = function (element) {
         if (!element.id || element.tagName !== 'SCRIPT')

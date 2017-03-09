@@ -63,7 +63,7 @@ declare module "ajst/lib/UTIL" {
 }
 declare module "ajst/tplCompiler" {
     import { Option, Compiler } from "ajst/ns";
-    export const tplCompiler: (tplString: string, option: Option) => Compiler;
+    export const tplCompiler: (tplString: string, importJs: string, option: Option) => Compiler;
 }
 declare module "ajst/template" {
     import { Option, Compiler } from "ajst/ns";
@@ -71,7 +71,7 @@ declare module "ajst/template" {
     export const getTemplate: (id: string) => string;
     export const flushCaches: () => void;
     export const setTemplate: (id: string, tplString: string) => void;
-    export const setImportJs: (id: string, importJs: string) => void;
+    export const setImportJs: (id: string, importJs: string) => string;
     export const getCompiler: (id: string, option?: Option) => Compiler;
     export const setTemplateElement: (element: Element) => boolean;
 }

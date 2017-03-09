@@ -3,7 +3,7 @@ import { Option, Compiler } from './ns';
 /**
  * Create Template Compiler
  */
-export const tplCompiler = (tplString: string, option: Option) => {
+export const tplCompiler = (tplString: string, importJs: string, option: Option) => {
 
     if (tplString === undefined) throw new Error('AJST tplCompiler tplString undefined.');
 
@@ -37,7 +37,11 @@ var includeAjax = function(){
 var includeEach = function(id, data, option){
     return includeExecute.apply(AJSTeach, arguments);
 };
+var PromisePush = function(oPromise){ _promises.push(oPromise); };
 var _s = '${tplString.replace(regexp_remove_ws, replace_remove_ws).replace(regexp_compile, replace_compile).replace(regexp_escape, replace_escape)}';
+${importJs ? `(function(){
+    ${importJs}
+}());` : ''}
 return Promise.all(_promises).then(function(){
     return _s;
 });`;
