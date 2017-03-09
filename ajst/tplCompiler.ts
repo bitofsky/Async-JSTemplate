@@ -38,10 +38,10 @@ var includeEach = function(id, data, option){
     return includeExecute.apply(AJSTeach, arguments);
 };
 var PromisePush = function(oPromise){ _promises.push(oPromise); };
-var _s = '${tplString.replace(regexp_remove_ws, replace_remove_ws).replace(regexp_compile, replace_compile).replace(regexp_escape, replace_escape)}';
 ${importJs ? `(function(){
     ${importJs}
 }());` : ''}
+var _s = '${tplString.replace(regexp_remove_ws, replace_remove_ws).replace(regexp_compile, replace_compile).replace(regexp_escape, replace_escape)}';
 return Promise.all(_promises).then(function(){
     return _s;
 });`;
