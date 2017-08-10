@@ -7,8 +7,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 var __generator = (this && this.__generator) || function (thisArg, body) {
-    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t;
-    return { next: verb(0), "throw": verb(1), "return": verb(2) };
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
@@ -562,7 +562,7 @@ define("ajst/prepare", ["require", "exports", "ajst/template", "ajst/lib/UTIL", 
                         importJsUrl = (typeof opt.importJsUrl === 'function' ? opt.importJsUrl(id, option) : opt.importJsUrl) || id;
                         importJsUrl = importJsUrl.replace(/\$id/g, id);
                         if (template_1.getTemplate(id))
-                            return [2 /*return*/, template_1.getCompiler(id, opt)];
+                            return [2, template_1.getCompiler(id, opt)];
                         fromURL = function () { return UTIL_2.UTIL.ajax({
                             type: opt.ajaxType,
                             cache: opt.ajaxCache,
@@ -579,7 +579,7 @@ define("ajst/prepare", ["require", "exports", "ajst/template", "ajst/lib/UTIL", 
                             url: importJsUrl,
                             dataType: 'text'
                         }); };
-                        return [4 /*yield*/, Promise.all([
+                        return [4, Promise.all([
                                 template_1.getStringFromURL(url, fromURL),
                                 opt.importJs ? template_1.getStringFromURL(importJsUrl, importJsFromURL) : ''
                             ])];
@@ -595,13 +595,13 @@ define("ajst/prepare", ["require", "exports", "ajst/template", "ajst/lib/UTIL", 
                             });
                             if (!newElements.filter(template_1.setTemplateElement).length)
                                 template_1.setTemplate(id, strTemplate);
-                            return [2 /*return*/, template_1.getCompiler(id, opt)];
+                            return [2, template_1.getCompiler(id, opt)];
                         }
                         catch (e) {
                             e.message = "AJST Prepare failed : compile (ID: " + id + ", URL: " + url + ")\n" + e.message;
                             throw e;
                         }
-                        return [2 /*return*/];
+                        return [2];
                 }
             });
         });
@@ -637,21 +637,21 @@ define("ajst/core", ["require", "exports", "ajst/lib/UTIL", "ajst/prepare", "ajs
                         curLogs_1.push(['time', 'elapsed time - tpl prepare', new Date()]);
                         return result;
                     });
-                    return [4 /*yield*/, pData];
+                    return [4, pData];
                 case 1:
                     solvedData = _a.sent();
-                    return [4 /*yield*/, pCompiler];
+                    return [4, pCompiler];
                 case 2:
                     compiler = _a.sent();
                     output = compiler.apply(void 0, [id, solvedData, opt_1].concat(Object.keys(opt_1.global).map(function (k) { return opt_1.global[k]; })));
                     curLogs_1.push(['time', 'elapsed time - compile success', new Date()]);
                     outputDebug && outputDebugConsole(curLogs_1);
-                    return [2 /*return*/, output];
+                    return [2, output];
                 case 3:
                     e_1 = _a.sent();
                     e_1.message = "AJST error (ID: " + id + ")\n" + e_1.message;
                     throw e_1;
-                case 4: return [2 /*return*/];
+                case 4: return [2];
             }
         });
     }); };
@@ -664,15 +664,15 @@ define("ajst/core", ["require", "exports", "ajst/lib/UTIL", "ajst/prepare", "ajs
             var list, dataPromise;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, data];
+                    case 0: return [4, data];
                     case 1:
                         list = _a.sent();
                         dataPromise = [];
                         UTIL_3.UTIL.each(list, function (v) { return dataPromise.push(exports.get(id, v, option)); });
                         if (!dataPromise.length)
-                            return [2 /*return*/, ''];
-                        return [4 /*yield*/, Promise.all(dataPromise)];
-                    case 2: return [2 /*return*/, (_a.sent()).join('')];
+                            return [2, ''];
+                        return [4, Promise.all(dataPromise)];
+                    case 2: return [2, (_a.sent()).join('')];
                 }
             });
         });
@@ -702,11 +702,11 @@ define("ajst/autocollect", ["require", "exports", "ajst/core", "ajst/option", "a
             switch (_a.label) {
                 case 0:
                     if (!element.getAttribute('data-ajst'))
-                        return [2 /*return*/, UTIL_4.UTIL.removeElement(element)];
+                        return [2, UTIL_4.UTIL.removeElement(element)];
                     ajaxURL = element.getAttribute('data-ajst-ajax');
                     data = element.getAttribute('data-ajst-data') ? JSON.parse(element.getAttribute('data-ajst-data') || '') : undefined;
                     option = element.getAttribute('data-ajst-option') ? JSON.parse(element.getAttribute('data-ajst-option') || '') : undefined;
-                    return [4 /*yield*/, (ajaxURL ? core_1.ajax(element.id, ajaxURL, option) : core_1.get(element.id, data, option))];
+                    return [4, (ajaxURL ? core_1.ajax(element.id, ajaxURL, option) : core_1.get(element.id, data, option))];
                 case 1:
                     tplOutput = _a.sent();
                     tplElementList = UTIL_4.UTIL.parseHTML(tplOutput);
@@ -714,7 +714,7 @@ define("ajst/autocollect", ["require", "exports", "ajst/core", "ajst/option", "a
                         element.parentNode && element.parentNode.insertBefore(tplElement, element);
                     });
                     UTIL_4.UTIL.removeElement(element);
-                    return [2 /*return*/];
+                    return [2];
             }
         });
     }); };

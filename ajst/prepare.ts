@@ -19,7 +19,7 @@ export const prepare = async (id: string, option: Option = {}): Promise<Compiler
     if (getTemplate(id)) // aready have..
         return getCompiler(id, opt);
 
-    const fromURL = () => UTIL.ajax({
+    const fromURL = () => <Promise<string>>UTIL.ajax({
         type: opt.ajaxType,
         cache: opt.ajaxCache,
         data: opt.ajaxData,
@@ -29,7 +29,7 @@ export const prepare = async (id: string, option: Option = {}): Promise<Compiler
         throw new Error(`AJST prepare failed : file not found (ID: ${id}, URL: ${url})`);
     });
 
-    const importJsFromURL = () => UTIL.ajax({
+    const importJsFromURL = () => <Promise<string>>UTIL.ajax({
         type: 'get',
         cache: opt.ajaxCache,
         data: opt.ajaxData,

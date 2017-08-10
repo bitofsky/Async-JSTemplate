@@ -7,7 +7,7 @@ const server = http.createServer(app);
 const port = 3000;
 
 // AJST gh-page branch
-app.use('/', express.static(__dirname + '/../../AJST-page'));
+app.use('/', express.static(__dirname + '/../../Async-JSTemplate-page'));
 
 // AJST module serving
 app.use('/ajst', express.static(__dirname + '/../dist')); // for develope ajst..
